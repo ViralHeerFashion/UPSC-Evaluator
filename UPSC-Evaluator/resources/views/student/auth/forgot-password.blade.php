@@ -2,16 +2,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-style-mode" content="1">
-    <title>Sign Up</title>
+    <title>Forgot password</title>
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
     <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/fontawesome-all.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/feature.css')}}">
-    <!-- <link rel="stylesheet" href="{{asset('css/animation.css')}}"> -->
-    <!-- <link rel="stylesheet" href="{{asset('css/slick.css')}}"> -->
-    <!-- <link rel="stylesheet" href="{{asset('css/slick-theme.css')}}"> -->
-    <!-- <link rel="stylesheet" href="{{asset('css/bootstrap-select.min.css')}}"> -->
-    <!-- <link rel="stylesheet" href="{{asset('css/prism.css')}}"> -->
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <style>
         .three-body {position: relative;display: inline-block;height: 35px;width: 35px;animation: spin78236 2s infinite linear;}
@@ -35,7 +30,7 @@
             0%, 100% {transform: translateY(0%) scale(1);opacity: 1;}
             50% {transform: translateY(66%) scale(0.65);opacity: 0.8;}
         }
-        .basic-info-container, .otp-container, .form-loader, .invalid-otp-error-message, .error-message, .success-message, .resend-otp-container, .otp-expire-container{display: none;}
+        .basic-info-container, .otp-container, .form-loader, .error-message, .success-message, .forgot-passowrd-container, .otp-expire-container{display: none;}
         .error{color: #c64d4d;display: block;text-align: left;}
         .disable-button{opacity: 0.6;cursor: not-allowed;pointer-events: none;}
         .show-inline {display: inline-block !important;}
@@ -59,10 +54,6 @@
                                         <div class="three-body__dot"></div>
                                         <div class="three-body__dot"></div>
                                     </div>
-                                    <div class="alert alert-danger alert-dismissible fade show invalid-otp-error-message" role="alert">
-                                        Invalid OTP
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
                                     <div class="alert alert-danger alert-dismissible fade show error-message" role="alert">
                                         <span class="error-message-container"></span>
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -71,43 +62,30 @@
                                         <span class="success-message-container"></span>
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
-                                    <div class="alert alert-success alert-dismissible fade show otp-expire-container" role="alert" @if(!is_null($user) && !$user->is_registered) style="display: block;" @endif>
+                                    <div class="alert alert-success alert-dismissible fade show otp-expire-container" role="alert">
                                         This OTP will expire in <span class="second">30</span> seconds.
                                     </div>
-                                    <form action="{{route('student.register.store')}}" method="POST" id="register-form">
+                                    <form action="{{route('student.register.store')}}" method="POST" id="login-form">
                                         @csrf
-                                        <div class="input-section phone-container" @if(!is_null($user)) style="display: none;" @endif>
+                                        <div class="input-section phone-container">
                                             <div class="icon"><i class="fa-solid fa-phone"></i></div>
                                             <input type="number" placeholder="Enter Your Phone" name="phone" id="phone">
                                         </div>
-                                        <div class="input-section otp-container" @if(!is_null($user)) style="display: {{ !$user->is_registered ? 'block' : 'none' }};" @endif>
+                                        <div class="input-section otp-container">
                                             <div class="icon"><i class="feather-user"></i></div>
                                             <input type="number" placeholder="Enter Your OTP" name="otp">
                                         </div>
-                                        <div class="forget-text resend-otp-container"><span><a class="btn-read-more resend-otp resend-otp-container" href="javascript:void(0);"><span>Resend OTP</span></a></span></div>
-                                        <div class="input-section mail-section basic-info-container" @if(!is_null($user) && $user->is_registered) style="display: block;" @endif>
-                                            <div class="icon"><i class="fa-solid fa-user"></i></div>
-                                            <input type="text" placeholder="Full Name" name="name">
-                                        </div>
-                                        <div class="input-section mail-section basic-info-container" @if(!is_null($user) && $user->is_registered) style="display: block;" @endif>
-                                            <div class="icon"><i class="fa-sharp fa-regular fa-envelope"></i></div>
-                                            <input type="email" placeholder="Email address (Optional)" name="email" id="email">
-                                        </div>
-                                        <div class="input-section password-section basic-info-container" @if(!is_null($user) && $user->is_registered) style="display: block;" @endif>
+                                        <div class="forget-text forgot-text-element otp-container"><a class="btn-read-more resend-otp otp-container" href="javascript:void(0);"><span>Resend OTP</span></a></div>
+                                        <div class="input-section password-section forgot-passowrd-container">
                                             <div class="icon"><i class="fa-sharp fa-regular fa-lock"></i></div>
                                             <input type="password" placeholder="Create Password" name="password" id="password">
                                         </div>
-                                        <div class="input-section password-section basic-info-container" @if(!is_null($user) && $user->is_registered) style="display: block;" @endif>
+                                        <div class="input-section password-section forgot-passowrd-container">
                                             <div class="icon"><i class="fa-sharp fa-regular fa-lock"></i></div>
                                             <input type="password" placeholder="Confirm Password" name="confirm_password">
                                         </div>
-                                        <button type="submit" class="btn-default submit-btn">{{ $button_message }}</button>
+                                        <button type="submit" class="btn-default submit-btn">Send OTP</button>
                                     </form>
-                                </div>
-                                <div class="signup-box-footer">
-                                    <div class="bottom-text">
-                                        Do you have an account? <a class="btn-read-more ml--5" href="signin.html"><span>Sign In</span></a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -189,39 +167,12 @@
     <script>
         let timer = null;
         $(document).ready(function(){
-            @if(!is_null($user) && !$user->is_registered)
-            resetOTP();
-            @endif
-            $("#register-form").validate({
+            $("#login-form").validate({
                 rules: {
                     phone: {
                         required: true,
                         minlength: 10,
-                        maxlength: 10,
-                        remote: {
-                            url: "{{route('student.register.check-field')}}",
-                            type: "GET",
-                            data: {
-                                phone: function() {
-                                    return $('#phone').val();
-                                }
-                            }
-                        }
-                    },
-                    name: {
-                        required: true
-                    },
-                    email: {
-                        email: true,
-                        remote: {
-                            url: "{{route('student.register.check-field')}}",
-                            type: "GET",
-                            data: {
-                                email: function() {
-                                    return $('#email').val();
-                                }
-                            }
-                        }
+                        maxlength: 10
                     },
                     password: {
                         required: true,
@@ -234,10 +185,8 @@
                 },
                 messages: {
                     phone: {
-                        remote: "Account with this number is already exists!"
-                    },
-                    email: {
-                        remote: "This email is already exists!"
+                        minlength: "Please enter valid phone number",
+                        maxlength: "Please enter valid phone number"
                     },
                     confirm_password: {
                         equalTo: "This is not match with password"
@@ -247,14 +196,15 @@
                     error.insertAfter(element.parent());
                 },
                 submitHandler: function(form){
-                    let form_data = $('#register-form')
+                    let form_data = $('#login-form')
                             .find(':input')
                             .filter(function () {
                                 return $(this).is(':visible') || $(this).attr('name') === '_token';
                             })
                             .serialize(); 
+                    
                     $.ajax({
-                        url: "{{ route('student.register.store') }}",
+                        url: "{{ route('student.forgotPassword') }}",
                         method: "POST",
                         data: form_data,
                         beforeSend: function(){
@@ -269,15 +219,24 @@
                                 $(".submit-btn").removeClass('disable-button');
                                 $("."+response.elements.hide_element).hide();
                                 $("."+response.elements.show_element).show();
+                                if ("error_message" in response) {
+                                    $(".error-message-container").text(response.error_message);
+                                    $(".error-message").show();   
+                                } else {
+                                    $(".error-message-container").text('');
+                                    $(".error-message").hide();   
+                                }
                                 if (response.elements.show_element == 'otp-container') {
                                     resetOTP();
                                 } else {
                                     $(".otp-expire-container").hide();
                                 }
-                                if ("otp_invalid" in response) {
-                                    $(".invalid-otp-error-message").show();   
+                                if ("success_message" in response) {
+                                    $(".success-message-container").text(response.success_message);
+                                    $(".success-message").show();   
                                 } else {
-                                    $(".invalid-otp-error-message").hide();   
+                                    $(".success-message-container").text('');
+                                    $(".success-message").hide();   
                                 }
                             }
                             $(".submit-btn").text(response.button_message);
@@ -285,37 +244,37 @@
                     })
                 }
             });
-        });
-        $(".resend-otp").on('click', function(){
-            $.ajax({
-                url: "{{ route('student.otpResend', ['register_event']) }}",
-                method: "GET",
-                beforeSend: function(){
-                    $(".form-loader").addClass("show-inline");
-                    $(".submit-btn").addClass('disable-button');
-                },
-                success: function(response) {
-                    $(".form-loader").removeClass("show-inline");
-                    $(".submit-btn").removeClass('disable-button');
-                    if ("error_message" in response) {
-                        $(".error-message-container").text(response.error_message);
-                        $(".error-message").show();   
-                    } else {
-                        $(".error-message-container").text('');
-                        $(".error-message").hide();   
+            $(".resend-otp").on('click', function(){
+                $.ajax({
+                    url: "{{ route('student.otpResend') }}",
+                    method: "GET",
+                    beforeSend: function(){
+                        $(".form-loader").addClass("show-inline");
+                        $(".submit-btn").addClass('disable-button');
+                    },
+                    success: function(response) {
+                        $(".form-loader").removeClass("show-inline");
+                        $(".submit-btn").removeClass('disable-button');
+                        if ("error_message" in response) {
+                            $(".error-message-container").text(response.error_message);
+                            $(".error-message").show();   
+                        } else {
+                            $(".error-message-container").text('');
+                            $(".error-message").hide();   
+                        }
+                        if ("success_message" in response) {
+                            $(".success-message-container").text(response.success_message);
+                            $(".success-message").show();   
+                        } else {
+                            $(".success-message-container").text('');
+                            $(".success-message").hide();   
+                        }
+                        resetOTP();
                     }
-                    if ("success_message" in response) {
-                        $(".success-message-container").text(response.success_message);
-                        $(".success-message").show();   
-                    } else {
-                        $(".success-message-container").text('');
-                        $(".success-message").hide();   
-                    }
-                    $(".resend-otp-container").hide();
-                    resetOTP();
-                }
-            })
+                })
+            });
         });
+        
         function resetOTP() {
             if (timer !== null) {
                 clearInterval(timer);

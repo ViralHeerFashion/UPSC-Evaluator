@@ -1,0 +1,16 @@
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<script src="{{asset('js/waypoint.min.js')}}"></script>
+<script src="{{asset('js/wow.min.js')}}"></script>
+<script src="{{asset('js/counterup.min.js')}}"></script>
+<script src="{{asset('js/sal.min.js')}}"></script>
+<script src="{{asset('js/slick.min.js')}}"></script>
+<script src="{{asset('js/text-type.js')}}"></script>
+<script src="{{asset('js/prism.js')}}"></script>
+<script src="{{asset('js/jquery.style.swicher.js')}}"></script>
+<script src="{{asset('js/bootstrap-select.min.js')}}"></script>
+<script src="{{asset('js/backto-top.js')}}"></script>
+<script src="{{asset('js/js.cookie.js')}}"></script>
+<script src="{{asset('js/jquery-one-page-nav.js')}}"></script>
+<script src="{{asset('js/main.js')}}"></script>
+<script src="{{asset('js/plugins/validate/jquery.validate.min.js')}}"></script>

@@ -20770,7 +20770,7 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
 }
 @media only screen and (max-width: 479px) {
   :root {
-    --sidebar-width: 250px;
+    --sidebar-width: 320px;
   }
 }
 
@@ -22038,7 +22038,7 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
 }
 @media only screen and (max-width: 479px) {
   .expand-btn-grp button.popup-dashboardleft-btn {
-    left: 250px;
+    left: 295px;
   }
 }
 .expand-btn-grp button.popup-dashboardleft-btn.collapsed {
