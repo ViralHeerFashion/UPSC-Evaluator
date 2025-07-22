@@ -114,7 +114,7 @@
 
         popupleftdashboard: function(e){
             function updateSidebar() {
-                if ($(window).width() >= 1600) {
+                if ($(window).width() >= 1400) {
                     $('.popup-dashboardleft-btn').removeClass('collapsed');
                     $('.popup-dashboardleft-section').removeClass('collapsed');
                 } else {

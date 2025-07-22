@@ -355,7 +355,7 @@
             </div>
             <div class="detail-row">
                 <span class="detail-label">Amount</span>
-                <span class="detail-value total-amount success-amount">{{ number_format($recharge->amount) }}</span>
+                <span class="detail-value total-amount success-amount">₹{{ number_format($recharge->amount) }}</span>
             </div>
         </div>
         
