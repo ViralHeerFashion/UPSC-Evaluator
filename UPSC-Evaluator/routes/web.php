@@ -6,7 +6,8 @@ use App\Http\Controllers\Student\{
     DashboardController,
     ScreeningQuestionController,
     RechargeController,
-    ProfileController
+    ProfileController,
+    MainsEvaluationController
 };
 
 
@@ -57,6 +58,14 @@ Route::middleware('auth')->group(function(){
                     Route::post('/update-password', 'updatePassword')->name('profile.update-password');
 
                     Route::get('/check-email', 'checkEmail')->name('profile.check-email');
+                });
+            });
+
+            Route::prefix('mains-evaluation')->group(function(){
+                Route::controller(MainsEvaluationController::class)->group(function(){
+                    Route::get('', 'index')->name('mains-evaluation');
+                    // Route::view('', 'student.mains-evaluation.index')->name('mains-evaluation');
+                    Route::any('/make-evaluate', 'makeEvaluate')->name('mains-evaluation.make-evaluate');
                 });
             });
 

@@ -1,0 +1,38 @@
+<div id="answersheet-upload-modal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+    <form action="{{ route('student.mains-evaluation.make-evaluate') }}" method="post" id="evaluate-form">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content wrapper">
+                <div class="chat-form">
+                    <div class="premium-upload-container">
+                        <input type="file" id="answer_sheet" class="premium-upload-input" name="answer_sheet" accept=".pdf">
+                        <label for="answer_sheet" class="premium-upload-label">
+                            <div class="upload-icon-wrapper">
+                                <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15" stroke="#805AF5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M17 8L12 3L7 8" stroke="#805AF5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 3V15" stroke="#805AF5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="upload-text-content">
+                                <h3 class="upload-title">Upload Your Answersheet</h3>
+                                <p class="upload-subtitle">Drag & drop files here or click to browse</p>
+                            </div>
+                            <button type="button" class="btn btn-default change-answersheet-btn">Change</button>
+                            <div class="upload-details">
+                                <span class="detail-item">Max 10MB</span>
+                                <span class="detail-separator">•</span>
+                                <span class="detail-item">Only PDF allowed</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="bottom-btn mt--20 text-right">
+                    <button type="submit" class="btn-default btn-small round">Make Evaluate</button>
+                </div>
+                <button type="button" class="close-button" data-bs-dismiss="modal">
+                    <i class="fa-sharp fa-regular fa-x"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

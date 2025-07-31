@@ -287,7 +287,7 @@
                             <a class="d-flex align-items-center" href="#">
                                 <div class="inner d-flex align-items-center">
                                     <div class="img-box">
-                                        <!-- <img src="images/user-profile.png" alt="Admin"> -->
+                                        <img src="{{ asset('images/user-profile.jpg') }}" alt="Admin">
                                     </div>
                                     <div class="content">
                                         <span class="title ">{{ auth()->user()->name }}</span>
@@ -303,10 +303,10 @@
                             <div class="inner">
                                 <div class="rbt-admin-profile">
                                     <div class="admin-thumbnail">
-                                        <!-- <img src="images/team-01sm.jpg" alt="User Images"> -->
+                                        <img src="{{ asset('images/user-profile.jpg') }}" alt="User Images">
                                     </div>
                                     <div class="admin-info">
-                                        <span class="name">Adam Milner</span>
+                                        <span class="name">{{ auth()->user()->name }}</span>
                                         <a class="rbt-btn-link color-primary" href="{{ route('student.profile') }}">View Profile</a>
                                     </div>
                                 </div>

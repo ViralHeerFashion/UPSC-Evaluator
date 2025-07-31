@@ -8,6 +8,7 @@
                             <!-- <li>
                                 <a href="javascript:void(0);"><img src="/images/text.png" alt="AI Generator"><span>Text Generator</span></a>
                             </li> -->
+                            <li><a href="{{ route('student.mains-evaluation') }}" class="answer-evaluation"><img src="{{ asset('images/photo.png') }}" alt="Question paper evaluation"><span>Answer Evaluation</span></a></li>
                             <li><a href="{{ route('student.recharge') }}" class="wallet-recharge"><img src="{{ asset('images/wallet-recharge.png') }}" alt="Wallet Recharge"><span>Recharge</span></a></li>
                             {{-- 
                             <li><a href="javascript:void(0);"><img src="/images/photo.png" alt="AI Generator"><span>Image Generator</span>

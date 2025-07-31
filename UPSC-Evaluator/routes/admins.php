@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
 	AuthController,
 	DashboardController,
-	UsersController
+	UsersController,
+	TestController
 };
 
 Route::middleware('guest:admin')->group(function () {
@@ -26,4 +27,6 @@ Route::middleware('auth:admin')->group(function(){
 			Route::get('/{id}/attempted-question', 'getAttemptedQuestion')->name('users.attemtedQuestion');
 		});
 	});
+
+	Route::get('/test', [TestController::class, 'index']);
 });
