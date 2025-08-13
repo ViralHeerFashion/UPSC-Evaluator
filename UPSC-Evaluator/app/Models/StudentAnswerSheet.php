@@ -13,6 +13,6 @@ class StudentAnswerSheet extends Model
 
     public function student_answer_evaluation()
     {
-        return $this->hasMany(StudentAnswerEvaluation::class, 'student_answersheet_id', 'id');    
+        return $this->hasMany(StudentAnswerEvaluation::class, 'student_answersheet_id', 'id')->limit(1);    
     }
 }
