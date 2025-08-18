@@ -50,7 +50,7 @@ class MainsEvaluationController extends Controller
             EOD;
 
             preg_match('/^(.*?)\n\*\*/s', $model_answer, $intro_match);
-            $model_answer_intro = isset($intro_match[1]) ? trim($intro_match[1]) : '';
+            $model_answer_intro = isset($intro_match[1]) ? trim($intro_match[1]) : null;
 
             $student_answer_evaluation = new StudentAnswerEvaluation;
             $student_answer_evaluation->student_answersheet_id = 1;
@@ -62,7 +62,31 @@ class MainsEvaluationController extends Controller
             $student_answer_evaluation->model_answer_intro = $model_answer_intro;
             $student_answer_evaluation->save();
 
-            preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_SET_ORDER);
+            preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_OFFSET_CAPTURE);
+
+            foreach ($matches[1] as $i => $titleMatch) {
+                $key   = trim($titleMatch[0]);       // actual text
+                $value = trim($matches[2][$i][0]);   // actual text
+
+                $modelAnswer = new ModelAnswer;
+                $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                $modelAnswer->title = $key;
+                $modelAnswer->description = $value;
+                $modelAnswer->save();
+            }
+
+            // ------------------- Footer -------------------
+            $last_match_end = 0;
+            if (!empty($matches[0])) {
+                $last = end($matches[0]);
+                $last_match_end = $last[1] + strlen($last[0]); // works now (offset + length)
+            }
+
+            $student_answer_evaluation->model_answer_conclusion = trim(substr($model_answer, $last_match_end));
+            $student_answer_evaluation->save();
+
+
+            /*preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_SET_ORDER);
 
             foreach ($matches as $match) {
                 $key = trim($match[1]);
@@ -74,6 +98,15 @@ class MainsEvaluationController extends Controller
                 $model_answer->description = $value;
                 $model_answer->save();
             }
+
+            $last_match_end = 0;
+            if (!empty($matches[0])) {
+                $last = end($matches[0]);
+                $last_match_end = $last[1] + strlen($last[0]);
+            }
+
+            $student_answer_evaluation->model_answer_conclusion = trim(substr($model_answer, $last_match_end));
+            $student_answer_evaluation->save();*/
 
             if (isset($question['micro_marking_grid']) && isset($question['micro_marking_grid']['components'])) {
                 foreach ($question['micro_marking_grid']['components'] as $key => $micro_marking_grid) {
