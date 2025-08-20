@@ -14,3 +14,4 @@
 <script src="{{asset('js/jquery-one-page-nav.js')}}"></script>
 <script src="{{asset('js/main.js')}}"></script>
 <script src="{{asset('js/plugins/validate/jquery.validate.min.js')}}"></script>
+<script src="{{asset('js/plugins/toastr/toastr.min.js')}}"></script>

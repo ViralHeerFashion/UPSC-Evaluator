@@ -6,17 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Smalot\PdfParser\Parser;
 use App\Models\{
     StudentAnswerSheet,
     StudentAnswerEvaluation,
     QuestionMicroMarkingGrid,
     StrengthSnapShot,
     GapAnalysisPriorityFixes,
-    ModelAnswer
+    ModelAnswer,
+    Wallet
 };
 
 class MainsEvaluationController extends Controller
 {
+    private $per_page_evaluation_charge = 5;
     public function index()
     {
         $student_answer_sheet = StudentAnswerSheet::with([
@@ -30,17 +33,35 @@ class MainsEvaluationController extends Controller
             }
         ])->findOrFail(1);
 
+        // return response()->json($student_answer_sheet);
+
         return view('student.mains-evaluation.index', compact('student_answer_sheet'));
     }
 
     public function makeEvaluate(Request $request)
     {
+
+        $parser = new Parser();
+        $pdf = $parser->parseFile($request->file('answer_sheet')->getPathname());
+        $total_page_available_in_pdf = count($pdf->getPages());
+        $wallet_amount = $this->getWalleTotal();
+        $evaluation_charge = $this->per_page_evaluation_charge * $total_page_available_in_pdf;
+        if ($evaluation_charge > $wallet_amount) {
+            return response()->json([
+                'success' => false,
+                'message' => "Do don't have enough balance for this evaluation"
+            ]);
+        }
+
         $student_answer_sheet = new StudentAnswerSheet;
         $student_answer_sheet->user_id = Auth::id();
         $student_answer_sheet->pdf = ($request->hasFile('answer_sheet')) ? $request->file('answer_sheet')->store('answer_sheets') : "";
         $student_answer_sheet->save();
 
         $response = Storage::disk('public')->get('response/response.json');
+        $student_answer_sheet->api_response = $response;
+        $student_answer_sheet->save();
+
         $response = json_decode($response, true);
 
         foreach ($response['questions'] as $key => $question) {
@@ -53,7 +74,7 @@ class MainsEvaluationController extends Controller
             $model_answer_intro = isset($intro_match[1]) ? trim($intro_match[1]) : null;
 
             $student_answer_evaluation = new StudentAnswerEvaluation;
-            $student_answer_evaluation->student_answersheet_id = 1;
+            $student_answer_evaluation->student_answersheet_id = $student_answer_sheet->id;
             $student_answer_evaluation->question = $question['question_text'];
             $student_answer_evaluation->deconstruction = $question['question_deconstruction'];
             $student_answer_evaluation->micro_marking_grid_total_marks = $question['micro_marking_grid']['total_marks'];
@@ -65,8 +86,8 @@ class MainsEvaluationController extends Controller
             preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_OFFSET_CAPTURE);
 
             foreach ($matches[1] as $i => $titleMatch) {
-                $key   = trim($titleMatch[0]);       // actual text
-                $value = trim($matches[2][$i][0]);   // actual text
+                $key   = trim($titleMatch[0]);
+                $value = trim($matches[2][$i][0]);
 
                 $modelAnswer = new ModelAnswer;
                 $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
@@ -75,7 +96,6 @@ class MainsEvaluationController extends Controller
                 $modelAnswer->save();
             }
 
-            // ------------------- Footer -------------------
             $last_match_end = 0;
             if (!empty($matches[0])) {
                 $last = end($matches[0]);
@@ -153,8 +173,18 @@ class MainsEvaluationController extends Controller
             }
         ])->findOrFail($student_answer_sheet->id);
 
-        return view('student.mains-evaluation.partials.questions', compact(
-            'student_answer_sheet'
-        ));
+        return response()->json([
+            'success' => true,
+            'message' => "PDF proccess successfully...",
+            'view' => view('student.mains-evaluation.partials.questions', compact(
+                'student_answer_sheet'
+            ))->render(),
+            'student_answer_sheet_id' => $student_answer_sheet->id
+        ]);
+    }
+
+    private function getWalleTotal()
+    {
+        return Wallet::where('user_id', Auth::id())->sum('amount');
     }
 }

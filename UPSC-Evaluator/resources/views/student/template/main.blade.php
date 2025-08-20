@@ -31,3 +31,13 @@
     @yield('script')
 </body>
 </html>
+<script>
+    $(document).ready(function(){
+        toastr.options = {
+            progressBar: true,
+            showMethod: 'slideDown',
+            positionClass: 'toast-top-right',
+            timeOut: 2000
+        };
+    });
+</script>
