@@ -172,6 +172,8 @@
     .mt-5px{margin-top: 4px!important;}
     .section-content{padding-bottom: 0!important;}
     .custom-margin-bottom{margin-bottom: 50px!important;border-bottom: 2px dashed grey;padding-bottom: 25px;}
+    .w35{width: 35px!important;}
+    .w20{width: 20px!important;}
 </style>
 @endsection
 @section('tab-name')
@@ -225,6 +227,9 @@
             <div class="chat-box ai-speech">
                 <div class="inner">
                     <div class="answers-container" id="answers-container">
+                        {{-- 
+                        @include('student.mains-evaluation.partials.questions')
+                        --}}
                     </div>
                 </div>
             </div> 
@@ -331,13 +336,13 @@
         const dashboards = document.querySelectorAll('.dashboard');
         
         dashboards.forEach(dashboard => {
-            // Get data attributes for this dashboard
+            
             const score = parseInt(dashboard.getAttribute('data-score'));
             const total = parseInt(dashboard.getAttribute('data-total'));
             
             const percentage = Math.round((score / total) * 100);
             
-            // Get DOM elements within this dashboard
+            
             const emoji = dashboard.querySelector('.emoji-container');
             const scoreValue = dashboard.querySelector('.score-value');
             const progressFill = dashboard.querySelector('.progress-fill');
@@ -346,15 +351,12 @@
             const messageTitle = dashboard.querySelector('.message-title');
             const messageContent = dashboard.querySelector('.message-content');
             
-            // Set score display
             scoreValue.innerHTML = `${score}<span>/${total}</span>`;
             
-            // Set progress values
             progressFill.style.setProperty('--progress-percent', `${percentage}%`);
             positionIndicator.style.setProperty('--progress-percent', `${percentage}%`);
             positionIndicator.textContent = `${score}`;
             
-            // Create markers dynamically (3-4 markers based on total)
             const markerCount = Math.min(4, total);
             const markerStep = total / (markerCount - 1);
             
@@ -369,7 +371,6 @@
                 markersContainer.appendChild(marker);
             }
             
-            // Set emoji and message based on performance
             if (percentage >= 80) {
                 emoji.textContent = '🎉';
                 messageTitle.textContent = 'Excellent Work!';
@@ -384,7 +385,6 @@
                 messageContent.textContent = 'You\'ll improve with more study!';
             }
             
-            // Animate marker points
             const markerPoints = dashboard.querySelectorAll('.marker-point');
             markerPoints.forEach((point, index) => {
                 setTimeout(() => {
@@ -401,7 +401,7 @@
     let i = 0;
     let current = "";
 
-    const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6"];
+    const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
 
     const instantBlocks = [
         '<div class="chat-content custom-margin-bottom">',
@@ -489,15 +489,16 @@
 
 
     function renderDashboardAnimations() {
-        console.log("the animations are running");
-        
         const dashboards = document.querySelectorAll('.dashboard');
-
+        
         dashboards.forEach(dashboard => {
-            const score = parseInt(dashboard.dataset.score);
-            const total = parseInt(dashboard.dataset.total);
+            
+            const score = parseInt(dashboard.getAttribute('data-score'));
+            const total = parseInt(dashboard.getAttribute('data-total'));
+            
             const percentage = Math.round((score / total) * 100);
-
+            
+            
             const emoji = dashboard.querySelector('.emoji-container');
             const scoreValue = dashboard.querySelector('.score-value');
             const progressFill = dashboard.querySelector('.progress-fill');
@@ -505,27 +506,16 @@
             const markersContainer = dashboard.querySelector('.markers');
             const messageTitle = dashboard.querySelector('.message-title');
             const messageContent = dashboard.querySelector('.message-content');
-
-            // Set score
+            
             scoreValue.innerHTML = `${score}<span>/${total}</span>`;
-
-            // Reset bar first
-            progressFill.style.width = "0%";
-            positionIndicator.style.left = "0%";
-
-            // Force reflow (so animation restarts)
-            progressFill.offsetWidth;
-
-            // Animate to target
-            progressFill.style.width = `${percentage}%`;
-            positionIndicator.style.left = `${percentage}%`;
+            
+            progressFill.style.setProperty('--progress-percent', `${percentage}%`);
+            positionIndicator.style.setProperty('--progress-percent', `${percentage}%`);
             positionIndicator.textContent = `${score}`;
-
-            // Markers
-            markersContainer.innerHTML = "";
+            
             const markerCount = Math.min(4, total);
             const markerStep = total / (markerCount - 1);
-
+            
             for (let i = 0; i < markerCount; i++) {
                 const markerValue = Math.round(i * markerStep);
                 const marker = document.createElement('div');
@@ -536,23 +526,21 @@
                 `;
                 markersContainer.appendChild(marker);
             }
-
-            // Emoji & message
+            
             if (percentage >= 80) {
                 emoji.textContent = '🎉';
                 messageTitle.textContent = 'Excellent Work!';
-                messageContent.textContent = "You're mastering this subject!";
+                messageContent.textContent = 'You\'re mastering this subject!';
             } else if (percentage >= 50) {
                 emoji.textContent = '🎯';
                 messageTitle.textContent = 'Good Progress!';
-                messageContent.textContent = "Keep up the good work!";
+                messageContent.textContent = 'Keep up the good work!';
             } else {
                 emoji.textContent = '💪';
                 messageTitle.textContent = 'Keep Practicing!';
-                messageContent.textContent = "You'll improve with more study!";
+                messageContent.textContent = 'You\'ll improve with more study!';
             }
-
-            // Animate marker points
+            
             const markerPoints = dashboard.querySelectorAll('.marker-point');
             markerPoints.forEach((point, index) => {
                 setTimeout(() => {

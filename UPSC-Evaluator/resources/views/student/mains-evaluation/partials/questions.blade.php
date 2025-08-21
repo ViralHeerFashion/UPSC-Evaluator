@@ -8,8 +8,8 @@
 <div class="chat-content">
     <section class="evaluation-section">
         <div class="section-header">
-            <div class="section-number-">
-                <img src="{{ asset('images/icons/question-deconstruction.svg') }}" style="width: 35px;">
+            <div>
+                <img src="{{ asset('images/icons/qd.svg') }}" class="w35">
             </div>
             <h6 class="title">Question Deconstruction</h6>
         </div>
@@ -21,8 +21,8 @@
 <div class="chat-content">
     <section class="evaluation-section">
         <div class="section-header">
-            <div class="section-number-">
-                <img src="{{ asset('images/icons/google-triangle.svg') }}" style="width: 35px;">
+            <div>
+                <img src="{{ asset('images/icons/gt.svg') }}" class="w35">
             </div>
             <h6 class="title">Micro-Marking Grid</h6>
         </div>
@@ -57,16 +57,16 @@
 <div class="chat-content">
     <section class="evaluation-section">
         <div class="section-header">
-            <div class="section-number-">
-                <img src="{{ asset('images/icons/google-triangle.svg') }}" style="width: 35px;">
+            <div>
+                <img src="{{ asset('images/icons/st.svg') }}" class="w35">
             </div>
             <h6 class="title">Strengths Snapshot</h6>
         </div>
         <div class="section-content">
-            <ul class="evaluation-list- -strengths-list strength-snapshot-list">
+            <ul class="strength-snapshot-list">
                 @foreach($question->strength_snapshot as $snapshot)
                 <li>
-                    <img src="{{ asset('images/icons/list.svg') }}" style="width: 35px;">
+                    <img src="{{ asset('images/icons/li.svg') }}" class="w35">
                     {{ $snapshot->snapshot }}
                 </li>
                 @endforeach
@@ -77,8 +77,8 @@
 <div class="chat-content">
     <section class="evaluation-section">
         <div class="section-header">
-            <div class="section-number-">
-                <img src="{{ asset('images/icons/gap-analysis.svg') }}" style="width: 35px;">
+            <div>
+                <img src="{{ asset('images/icons/ga.svg') }}" class="w35">
             </div>
             <h6 class="title">Gap Analysis & Priority Fixes</h6>
         </div>
@@ -89,7 +89,7 @@
                 <div class="gap-item">
                     <div class="gap-title">
                         <div class="gap-number-">
-                            <img src="{{ asset('images/icons/gap-analysis-title.svg') }}" style="width: 20px;">
+                            <img src="{{ asset('images/icons/gat.svg') }}" class="w20">
                         </div>
                         <h4>{{ $gap_analysis_priority_fix->gap }}</h4>
                     </div>
@@ -97,7 +97,7 @@
                     <div class="analysis-section">
                         <div class="section-header">
                             <div class="section-dot-" style="">
-                                <img src="{{ asset('images/icons/gap-analysis-impact.svg') }}" style="width: 20px;">
+                                <img src="{{ asset('images/icons/gai.svg') }}" class="w20">
                             </div>
                             <h5>Impact Analysis</h5>
                         </div>
@@ -107,7 +107,7 @@
                     <div class="analysis-section">
                         <div class="section-header">
                             <div class="section-dot-" style="">
-                                <img src="{{ asset('images/icons/gap-analysis-solutions.svg') }}" style="width: 20px;">
+                                <img src="{{ asset('images/icons/gas.svg') }}" class="w20">
                             </div>
                             <h5>Optimal Solution</h5>
                         </div>
@@ -123,8 +123,8 @@
 <div class="chat-content">
     <section class="evaluation-section">
         <div class="section-header">
-            <div class="section-number-">
-                <img src="{{ asset('images/icons/model-answer.svg') }}" style="width: 35px;">
+            <div>
+                <img src="{{ asset('images/icons/ma.svg') }}" class="w35">
             </div>
             <h6 class="title">Model Answer</h6>
         </div>
@@ -136,7 +136,7 @@
                 @foreach($question->model_answer as $model_answer)
                 <div class="model-title-wrapper">
                     <div class="model-icon">
-                        <img src="{{ asset('images/icons/model-answer-title.svg') }}" style="width: 35px;">
+                        <img src="{{ asset('images/icons/mat.svg') }}" class="w35">
                     </div>
                     <h5 class="model-title">{{ $model_answer->title }}</h5>
                 </div>
@@ -152,8 +152,8 @@
 <div class="chat-content custom-margin-bottom">
     <section class="evaluation-section">
         <div class="section-header">
-            <div class="section-number-">
-                <img src="{{ asset('images/icons/mark-breakdown.svg') }}" style="width: 35px;">
+            <div>
+                <img src="{{ asset('images/icons/mb.svg') }}" class="w35">
             </div>
             <h6 class="title">Marks Breakdown</h6>
         </div>
