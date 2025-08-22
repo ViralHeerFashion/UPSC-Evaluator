@@ -174,6 +174,26 @@
     .custom-margin-bottom{margin-bottom: 50px!important;border-bottom: 2px dashed grey;padding-bottom: 25px;}
     .w35{width: 35px!important;}
     .w20{width: 20px!important;}
+    .chat-loader-container{display: none;}
+
+
+
+
+
+    .loader-container {width: 100%;background-color: var(--card-color);border-radius: 20px;padding: 30px;box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);border: 1px solid var(--border-color);}
+    .loader-container h1 {text-align: center;margin-bottom: 20px;color: var(--text-primary);font-weight: 600;background: linear-gradient(90deg, var(--secondary-accent), #8A63D2);-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-size: 20px;}
+    .loader {width: 100%;height: 22px;background: var(--bg-color);border-radius: 15px;overflow: hidden;position: relative;border: 1px solid var(--border-color);box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);margin: 10px 0;}
+    .loader-progress {height: 100%;width: 0%;background: linear-gradient(90deg, var(--secondary-accent), #8A63D2);border-radius: 15px;transition: width 0.3s ease;position: relative;overflow: hidden;}
+    .loader-progress::after {content: '';position: absolute;top: 0;left: 0;bottom: 0;right: 0;background-image: linear-gradient( -45deg,  rgba(255, 255, 255, 0.2) 25%,  transparent 25%,  transparent 50%,  rgba(255, 255, 255, 0.2) 50%,  rgba(255, 255, 255, 0.2) 75%,  transparent 75%,  transparent);z-index: 1;background-size: 30px 30px;animation: move 1s linear infinite;border-radius: 15px;overflow: hidden;}
+    @keyframes move {
+        0% {background-position: 0 0;}
+        100% {background-position: 30px 30px;}
+    }
+    .percentage {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);color: var(--text-primary);font-size: 12px;font-weight: 600;z-index: 3;text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);}
+    .loader-info {display: flex;justify-content: space-between;width: 100%;color: var(--text-secondary);font-size: 14px;margin-bottom: 20px;}
+    .decoration {position: absolute;width: 200px;height: 200px;background: radial-gradient(circle, var(--highlight-color) 0%, transparent 70%);border-radius: 50%;z-index: -1;}
+    .decoration-1 {top: -100px;right: -100px;}
+    .decoration-2 {bottom: -100px;left: -100px;}
 </style>
 @endsection
 @section('tab-name')
@@ -248,6 +268,14 @@
 @section('script')
 <script>
     $(document).ready(function(){
+
+        let progress = 0;
+        let loadTime = 120;
+        let interval;
+
+        $("#answer-container").html('<div class="chat-section generate-section"><div class="author"><img src="assets/images/icons/loader-one.gif" alt="Loader Images"></div><div class="chat-content"><h6 class="title color-text-off mb--0">Generating answers for you…</h6></div></div>');
+        $("#answer-container").show();
+
         $(".answer-evaluation").addClass('active');
         $.validator.addMethod("pdfValidation", function(value, element) {
             if (!element.files || element.files.length === 0) {
@@ -273,14 +301,21 @@
 
             },
             submitHandler: function(form){
-                
-                let url = "{{ route('student.mains-evaluation.make-evaluate') }}";
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+
+                var url = "{{ route('student.mains-evaluation.generate-task') }}";
                 var file = $("#answer_sheet")[0].files[0];
                 
                 var formData = new FormData();
                 formData.append('answer_sheet', file);
                 formData.append('_token', '{{ csrf_token() }}');
-                console.log(formData);
+                
                 $.ajax({
                     url: url,
                     method: "POST",
@@ -288,24 +323,93 @@
                     processData: false,
                     contentType: false,
                     beforeSend: function(){
-                        $(".user-size-pdf-container").html('<h6 class="title">You</h6><p class="mt-5px"><i class="fa-solid fa-file-pdf"></i> <span class="pdf-name">answer.pdf</span></p>');
-                        $(".user-size-pdf-container .pdf-name").text(file.name);
-                    },
-                    success: function(response) {
-                        console.log(response);
                         
-                        $("#answersheet-upload-modal").modal('hide');
-                        if (!response.success) {
-                            toastr.error(response.message, 'Error');
-                        } else {
-                            toastr.success(response.message, 'Success');
-                            $(".answers-container").show();
-                            typeWriterHTML(response.view, "answers-container", 0.003, renderDashboardAnimations);
-                        }
                     }
-                });
+                }).then(function(response) {
+                 
+                    if (response.success) {
 
-                console.log("This is a run");return false;
+                        $("#answers-container").html(`
+                        <div class="decoration decoration-1"></div>
+                            <div class="decoration decoration-2"></div>
+                            
+                            <div class="loader-container">                                
+                                <div class="loader-info">
+                                    <span><i class="fas fa-hourglass-start"></i> 0%</span>
+                                    <span id="remainingTime">3.0s remaining</span>
+                                    <span><i class="fas fa-flag-checkered"></i> 100%</span>
+                                </div>
+                                
+                                <div class="loader">
+                                    <div class="loader-progress" id="loaderProgress">
+                                        <div class="percentage" id="percentage">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `);
+                        function startLoader(duration) {
+                            $('#completionMessage').css('opacity', '0');
+                            
+                            progress = 0;
+                            $('#loaderProgress').css('width', '0%');
+                            $('#percentage').text('0%');
+                            $('#remainingTime').text(duration.toFixed(1) + 's remaining');
+                            
+                            if (interval) {
+                                clearInterval(interval);
+                            }
+                            
+                            const intervalTime = 100 / (duration * 10);
+                            let elapsedTime = 0;
+                            
+                            interval = setInterval(function() {
+                                progress += intervalTime;
+                                elapsedTime += 0.1;
+                                
+                                if (progress >= 100) {
+                                    progress = 100;
+                                    clearInterval(interval);
+                                    
+                                    $('#completionMessage').css('opacity', '1');
+                                }
+                                
+                                $('#loaderProgress').css('width', progress + '%');
+                                $('#percentage').text(Math.round(progress) + '%');
+                                
+                                const remaining = (duration * (100 - progress) / 100).toFixed(1);
+                                $('#remainingTime').text(remaining + 's remaining');
+                            }, 100);
+                        }
+                        startLoader(response.loader_second);
+
+                        let task_id = response.task_id;
+                        let process_url = "{{ route('student.mains-evaluation.process-task', ':task_id') }}".replace(':task_id', task_id);
+
+                        return $.ajax({
+                            url: process_url,
+                            type: "POST",
+                            data: { _token: '{{ csrf_token() }}' },
+                            processData: false,
+                            contentType: false
+                        });
+                    } else {
+                        toastr.error("Something went wrong please support our team.", 'Error');
+                        return $.Deferred().resolve({ message: "No second call needed" }).promise();
+                    }
+
+                }).then(function(response) {
+                    if (!response.success) {
+                        toastr.error(response.message, 'Error');
+                    } else {
+                        toastr.success(response.message, 'Success');
+                        typeWriterHTML(response.view, "answers-container", 0.003, renderDashboardAnimations);
+                    }
+
+                }).fail(function(err) {
+                    // toastr.error("Something went wrong please support our team.", 'Error');
+                    toastr.error("Something went wrong please support our team.", 'Error');
+                });
 
                 return false;
             }
@@ -394,98 +498,94 @@
         });
     });
 
-   function typeWriterHTML(html, elementId, speed = 50, callback = null) {
-    const element = document.getElementById(elementId);
-    element.innerHTML = "";
+    function typeWriterHTML(html, elementId, speed = 50, callback = null) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = "";
 
-    let i = 0;
-    let current = "";
+        let i = 0;
+        let current = "";
 
-    const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
+        const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
 
-    const instantBlocks = [
-        '<div class="chat-content custom-margin-bottom">',
-        '<div class="dashboard'
-    ];
+        const instantBlocks = [
+            '<div class="chat-content custom-margin-bottom">',
+            '<div class="dashboard'
+        ];
 
-    function typing() {
-        if (i >= html.length) {
-            if (typeof callback === "function") {
-                callback(); // ✅ ensure callback always runs
-            }
-            return;
-        }
-
-        let inserted = false;
-
-        // --- Instant blocks ---
-        for (let block of instantBlocks) {
-            if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
-                let depth = 0;
-                let j = i;
-
-                while (j < html.length) {
-                    if (html.slice(j, j + 5).toLowerCase() === "<div") {
-                        depth++;
-                    } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
-                        depth--;
-                        if (depth === 0) {
-                            j += 6;
-                            break;
-                        }
-                    }
-                    j++;
+        function typing() {
+            if (i >= html.length) {
+                if (typeof callback === "function") {
+                    callback();
                 }
-
-                current += html.slice(i, j);
-                element.innerHTML = current;
-                i = j;
-                inserted = true;
-                break;
+                return;
             }
-        }
 
-        // --- Instant tags ---
-        if (!inserted && html[i] === "<") {
-            for (let tagName of instantTags) {
-                if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
-                    let endTag = "</" + tagName + ">";
-                    let endIndex = html.toLowerCase().indexOf(endTag, i);
+            let inserted = false;
 
-                    if (endIndex !== -1) {
-                        endIndex += endTag.length;
-                    } else {
-                        endIndex = html.indexOf(">", i) + 1;
+            for (let block of instantBlocks) {
+                if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
+                    let depth = 0;
+                    let j = i;
+
+                    while (j < html.length) {
+                        if (html.slice(j, j + 5).toLowerCase() === "<div") {
+                            depth++;
+                        } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
+                            depth--;
+                            if (depth === 0) {
+                                j += 6;
+                                break;
+                            }
+                        }
+                        j++;
                     }
 
-                    current += html.slice(i, endIndex);
+                    current += html.slice(i, j);
                     element.innerHTML = current;
-                    i = endIndex;
+                    i = j;
                     inserted = true;
                     break;
                 }
             }
-        }
 
-        // --- Regular char typing ---
-        if (!inserted) {
-            current += html[i];
-            element.innerHTML = current;
-            i++;
-        }
+            if (!inserted && html[i] === "<") {
+                for (let tagName of instantTags) {
+                    if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
+                        let endTag = "</" + tagName + ">";
+                        let endIndex = html.toLowerCase().indexOf(endTag, i);
 
-        // Continue typing OR finish
-        if (i < html.length) {
-            setTimeout(typing, inserted ? 0 : speed);
-        } else {
-            if (typeof callback === "function") {
-                callback(); // ✅ ensure callback runs at end
+                        if (endIndex !== -1) {
+                            endIndex += endTag.length;
+                        } else {
+                            endIndex = html.indexOf(">", i) + 1;
+                        }
+
+                        current += html.slice(i, endIndex);
+                        element.innerHTML = current;
+                        i = endIndex;
+                        inserted = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!inserted) {
+                current += html[i];
+                element.innerHTML = current;
+                i++;
+            }
+
+            if (i < html.length) {
+                setTimeout(typing, inserted ? 0 : speed);
+            } else {
+                if (typeof callback === "function") {
+                    callback();
+                }
             }
         }
-    }
 
-    typing();
-}
+        typing();
+    }
 
 
     function renderDashboardAnimations() {
@@ -549,5 +649,14 @@
             });
         });
     }
+</script>
+
+<script>
+    $(document).ready(function() {
+        
+        
+       
+        
+    });
 </script>
 @endsection

@@ -66,6 +66,10 @@ Route::middleware('auth')->group(function(){
                     Route::get('', 'index')->name('mains-evaluation');
                     // Route::view('', 'student.mains-evaluation.index')->name('mains-evaluation');
                     Route::any('/make-evaluate', 'makeEvaluate')->name('mains-evaluation.make-evaluate');
+
+                    // Viral
+                    Route::post('/generate-task', 'generateTask')->name('mains-evaluation.generate-task');
+                    Route::post('/{task_id}/process-task', 'processTask')->name('mains-evaluation.process-task');
                 });
             });
 
