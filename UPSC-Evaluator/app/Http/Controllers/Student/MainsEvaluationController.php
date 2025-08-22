@@ -127,8 +127,7 @@ class MainsEvaluationController extends Controller
             
                 $response = json_decode(curl_exec($ch));
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                
-                // error_log(json_encode($response), 0);
+                curl_close($ch);
 
                 $api_status = isset($response->result) && !empty($response->result) ? "SUCCESS" : $response->status;
                 if($api_status == "SUCCESS") {
@@ -136,9 +135,14 @@ class MainsEvaluationController extends Controller
                     $student_answer_sheet->save();
                 }
                 sleep(5);
-            } while ($api_status != "SUCCESS");
+            } while ($api_status != "SUCCESS" || $api_status == "FAILURE");
 
-            
+            if($api_status == "FAILURE") {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Something went wrong while processing your answersheet. Please try again later or contact our support team."
+                ]);
+            }           
 
             foreach ($response->result->questions as $key => $question) {
                 

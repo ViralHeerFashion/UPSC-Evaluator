@@ -323,7 +323,9 @@
                     processData: false,
                     contentType: false,
                     beforeSend: function(){
-                        
+                        $("#answersheet-upload-modal").modal('hide');
+                        $(".user-size-pdf-container").html('<h6 class="title">You</h6><p class="mt-5px"><i class="fa-solid fa-file-pdf"></i> <span class="pdf-name">answer.pdf</span></p>');
+                        $(".user-size-pdf-container .pdf-name").text(file.name);
                     }
                 }).then(function(response) {
                  
@@ -348,6 +350,7 @@
                             </div>
                         </div>
                         `);
+                        $("#answers-container").show();
                         function startLoader(duration) {
                             $('#completionMessage').css('opacity', '0');
                             
@@ -407,7 +410,6 @@
                     }
 
                 }).fail(function(err) {
-                    // toastr.error("Something went wrong please support our team.", 'Error');
                     toastr.error("Something went wrong please support our team.", 'Error');
                 });
 
