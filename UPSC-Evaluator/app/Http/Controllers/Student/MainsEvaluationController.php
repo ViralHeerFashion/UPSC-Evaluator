@@ -91,6 +91,7 @@ class MainsEvaluationController extends Controller
         if (isset($response->task_id) && !empty($response->task_id)) {
             $student_answer_sheet->task_id = $response->task_id;
             $student_answer_sheet->save();
+            Storage::delete($student_answer_sheet->pdf);
         }
 
         return response()->json([
@@ -235,8 +236,6 @@ class MainsEvaluationController extends Controller
             $wallet->student_answersheet_id = $student_answer_sheet->id;
             $wallet->amount = -$student_answer_sheet->evaluation_charge;
             $wallet->save();
-
-            Storage::delete($student_answer_sheet->pdf);
 
             return response()->json([
                 'success' => true,
