@@ -469,7 +469,7 @@
                         audio.play();
                     }
                 }).then(function(response) {
-                 
+                    
                     if (response.success) {
                         audio.pause();
                         $("#answers-container").html(`
@@ -521,7 +521,7 @@
                                 $('#loaderProgress').css('width', progress + '%');
                                 $('#percentage').text(Math.round(progress) + '%');
                                 
-                                const remining = (duration * (100 - progress) / 100).toFixed(1);
+                                const remaining = (duration * (100 - progress) / 100).toFixed(1);
                                 // const remaining = duration - 1;
                                 $('#remainingTime').text(remaining + ' remaining');
                             }, 500);
@@ -539,16 +539,24 @@
                             contentType: false
                         });
                     } else {
-                        toastr.error("Something went wrong please support our team.", 'Error');
-                        return $.Deferred().resolve({ message: "No second call needed" }).promise();
+                        audio.pause();
+                        $("#answers-container").html('');
+                        if("server_busy" in response) {
+                            toastr.info(response.message, 'Info');
+                        } else {
+                            toastr.error("Something went wrong please support our team.", 'Error');
+                        }
+                        return $.Deferred().resolve().promise();
                     }
 
                 }).then(function(response) {
-                    if (!response.success) {
-                        toastr.error(response.message, 'Error');
-                    } else {
-                        toastr.success(response.message, 'Success');
-                        typeWriterHTML(response.view, "answers-container", 0.003, renderDashboardAnimations);
+                    if(response != undefined) {
+                        if (!response.success) {
+                            toastr.error(response.message, 'Error');
+                        } else {
+                            toastr.success(response.message, 'Success');
+                            typeWriterHTML(response.view, "answers-container", 0.003, renderDashboardAnimations);
+                        }
                     }
 
                 }).fail(function(err) {
@@ -585,10 +593,10 @@
         
         dashboards.forEach(dashboard => {
             
-            const score = parseInt(dashboard.getAttribute('data-score'));
+            const score = dashboard.getAttribute('data-score');
             const total = parseInt(dashboard.getAttribute('data-total'));
             
-            const percentage = Math.round((score / total) * 100);
+            const percentage = Math.floor((score / total) * 100).toFixed(2);
             
             
             const emoji = dashboard.querySelector('.emoji-container');
@@ -692,6 +700,7 @@
                 }
             }
 
+            // Handle instant tags (svg, table, etc.)
             if (!inserted && html[i] === "<") {
                 for (let tagName of instantTags) {
                     if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
@@ -713,12 +722,23 @@
                 }
             }
 
+            // 🚀 FIX: instantly render any tag (not just instantTags)
+            if (!inserted && html[i] === "<") {
+                let endIndex = html.indexOf(">", i) + 1;
+                current += html.slice(i, endIndex);
+                element.innerHTML = current;
+                i = endIndex;
+                inserted = true;
+            }
+
+            // Type character-by-character ONLY for text content
             if (!inserted) {
                 current += html[i];
                 element.innerHTML = current;
                 i++;
             }
 
+            // Continue
             if (i < html.length) {
                 setTimeout(typing, inserted ? 0 : speed);
             } else {
@@ -731,16 +751,17 @@
         typing();
     }
 
-
     function renderDashboardAnimations() {
         const dashboards = document.querySelectorAll('.dashboard');
         
         dashboards.forEach(dashboard => {
             
-            const score = parseInt(dashboard.getAttribute('data-score'));
+            const score = dashboard.getAttribute('data-score');
             const total = parseInt(dashboard.getAttribute('data-total'));
             
-            const percentage = Math.round((score / total) * 100);
+            var percentage = (score / total) * 100;
+            percentage = percentage.toFixed(2);
+            console.log({score, total, percentage});
             
             
             const emoji = dashboard.querySelector('.emoji-container');
@@ -793,14 +814,5 @@
             });
         });
     }
-</script>
-
-<script>
-    $(document).ready(function() {
-        
-        
-       
-        
-    });
 </script>
 @endsection

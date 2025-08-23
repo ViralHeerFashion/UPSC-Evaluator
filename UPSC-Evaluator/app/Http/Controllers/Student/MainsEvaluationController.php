@@ -41,6 +41,15 @@ class MainsEvaluationController extends Controller
 
     public function generateTask(Request $request)
     {
+        $current_running_tasks = StudentAnswerSheet::where('is_evaluated', 0)->count();
+        if ($current_running_tasks > 20) {
+            return response()->json([
+                'success' => false,
+                'server_busy' => true,
+                'message' => "Please try again after sometime. Our servers are busy right now."
+            ]);
+        }
+
         $parser = new Parser();
         $pdf = $parser->parseFile($request->file('answer_sheet')->getPathname());
         $total_page_available_in_pdf = count($pdf->getPages());
@@ -58,6 +67,7 @@ class MainsEvaluationController extends Controller
         $student_answer_sheet->pdf = ($request->hasFile('answer_sheet')) ? $request->file('answer_sheet')->store('answer_sheets') : "";
         $student_answer_sheet->file_name = $request->file('answer_sheet')->getClientOriginalName();
         $student_answer_sheet->evaluation_charge = $evaluation_charge;
+        $student_answer_sheet->subject_id = 1;
         $student_answer_sheet->save();
 
         $ch = curl_init();
@@ -143,16 +153,49 @@ class MainsEvaluationController extends Controller
                     'success' => false,
                     'message' => "Something went wrong while processing your answersheet. Please try again later or contact our support team."
                 ]);
-            }           
-
+            }   
+            
             foreach ($response->result->questions as $key => $question) {
                 
                 $model_answer = <<<EOD
                 {$question->model_answer}
                 EOD;
 
-                preg_match('/^(.*?)\n\*\*/s', $model_answer, $intro_match);
-                $model_answer_intro = isset($intro_match[1]) ? trim($intro_match[1]) : null;
+                $model_answer_parts =  [
+                    'model_answer_intro' => '',
+                    'points' => [],
+                    'model_answer_conclution' => ''
+                ];
+
+                $parts = preg_split('/\n*\s*•\s*/u', $model_answer);
+
+                if (!empty($parts[0])) {
+                    $model_answer_parts['model_answer_intro'] = trim($parts[0]) . "\n\n•";
+                }
+
+                for ($i = 1; $i < count($parts); $i++) {
+                    $part = trim($parts[$i]);
+
+                    // If last part doesn't start with ** it's footer
+                    if (strpos($part, '**') !== 0) {
+                        $model_answer_parts['model_answer_conclution'] = $part;
+                        break;
+                    }
+
+                    // Extract title and value
+                    if (preg_match('/^\*\*(.+?)\*\*:\s*(.+)$/s', $part, $matches)) {
+                        $title = trim($matches[1]);
+                        $value = trim($matches[2]) . "\n\n•";
+                        $model_answer_parts['points'][] = [$title => $value];
+                    }
+                }
+
+
+
+
+
+                // preg_match('/^(.*?)\n\*\*/s', $model_answer, $intro_match);
+                // $model_answer_intro = isset($intro_match[1]) ? trim($intro_match[1]) : null;
 
                 $student_answer_evaluation = new StudentAnswerEvaluation;
                 $student_answer_evaluation->student_answersheet_id = $student_answer_sheet->id;
@@ -161,10 +204,21 @@ class MainsEvaluationController extends Controller
                 $student_answer_evaluation->micro_marking_grid_total_marks = $question->micro_marking_grid->total_marks;
                 $student_answer_evaluation->max_marks = $question->max_marks;
                 $student_answer_evaluation->marks_awarded = $question->marks_awarded;
-                $student_answer_evaluation->model_answer_intro = $model_answer_intro;
+                // $student_answer_evaluation->model_answer_intro = $model_answer_intro;
+                $student_answer_evaluation->question_no = $question->question_number;
+                $student_answer_evaluation->model_answer_intro = $model_answer_parts['model_answer_intro'];
+                $student_answer_evaluation->model_answer_conclusion = !empty($model_answer_parts['model_answer_conclution']) ? $model_answer_parts['model_answer_conclution'] : "";
                 $student_answer_evaluation->save();
 
-                preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_OFFSET_CAPTURE);
+                  foreach($model_answer_parts['points'] as $key => $point){
+                    $modelAnswer = new ModelAnswer;
+                    $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                    $modelAnswer->title = $key;
+                    $modelAnswer->description = $point;
+                    $modelAnswer->save();
+                }
+
+                /*preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_OFFSET_CAPTURE);
 
                 foreach ($matches[1] as $i => $titleMatch) {
                     $key   = trim($titleMatch[0]);
@@ -184,7 +238,7 @@ class MainsEvaluationController extends Controller
                 }
 
                 $student_answer_evaluation->model_answer_conclusion = trim(substr($model_answer, $last_match_end));
-                $student_answer_evaluation->save();
+                $student_answer_evaluation->save();*/
 
                 if (isset($question->micro_marking_grid) && isset($question->micro_marking_grid->components)) {
                     foreach ($question->micro_marking_grid->components as $key => $micro_marking_grid) {
@@ -219,6 +273,9 @@ class MainsEvaluationController extends Controller
                     }
                 }
             }
+
+            $student_answer_sheet->is_evaluated = 1;
+            $student_answer_sheet->save();
 
             $student_answer_sheet = StudentAnswerSheet::with([
                 'student_answer_evaluation' => function ($query) {

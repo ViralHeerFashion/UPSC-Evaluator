@@ -1,8 +1,7 @@
-@php($i = 1)
 @foreach($student_answer_sheet->student_answer_evaluation as $question)
 <div class="chat-content">
     <section class="evaluation-section">
-        <p class="question-container">{{ $i }})&nbsp; {{ $question->question }}</p>
+        <p class="question-container">{{ $question->question_no }})&nbsp; {{ $question->question }}</p>
     </section>
 </div>
 <div class="chat-content">
@@ -186,5 +185,4 @@
         </div>
     </section>
 </div>
-@php($i++)
 @endforeach
