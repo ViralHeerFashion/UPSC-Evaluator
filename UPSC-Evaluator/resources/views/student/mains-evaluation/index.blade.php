@@ -372,7 +372,7 @@
 
         <div class="rbt-static-bar" style="display: block;">
             <form class="new-chat-form border-gradient">
-                <button type="button" class="upload-file-btn"><i class="fa-solid fa-upload"></i>&nbsp; Start Evaluatio</button>                
+                <button type="button" class="upload-file-btn"><i class="fa-solid fa-upload"></i>&nbsp; Start Evaluation</button>                
             </form>
             <p class="b3 small-text">AiWave can make mistakes. Consider checking important information.</p>
         </div>
@@ -544,7 +544,7 @@
                         if("server_busy" in response) {
                             toastr.info(response.message, 'Info');
                         } else {
-                            toastr.error("Something went wrong please support our team.", 'Error');
+                            toastr.error(response.message, 'Error');
                         }
                         return $.Deferred().resolve().promise();
                     }

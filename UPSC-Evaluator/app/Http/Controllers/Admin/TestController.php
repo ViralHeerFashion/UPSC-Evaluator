@@ -122,4 +122,80 @@ class TestController extends Controller
         Storage::delete($student_answer_sheet->pdf);
         dd("PDF deleted successfully");
     }
+
+    private function modelAnswer()
+    {
+        $student_answer_sheet = StudentAnswerSheet::where('task_id', '9456ff83-6f7b-4975-b160-6919da494908')->first();
+        $student_answer_sheet = json_decode($student_answer_sheet->api_response);
+
+        $model_answer = $student_answer_sheet->result->questions[0]->model_answer;
+        $model_answer = <<<EOD
+        $model_answer
+        EOD;
+
+    
+        $model_answer_parts =  $this->parseModelAnswer($model_answer);
+
+        dd($model_answer, $model_answer_parts);
+
+        /**
+         * 
+         1) generate a php code for extract before \n\n** string as model_answer_intro
+         2) then extract all the points between ** and \n\n as points array [key => value] here key is point title and value is point description
+         3) then extract after last \n\n as model_answer_conclution
+         */
+
+
+    }
+
+    private function parseModelAnswer($text) 
+    {
+        $model_answer_parts = [
+            'model_answer_intro' => null,
+            'points' => [],
+            'model_answer_conclution' => null
+        ];
+
+        // Extract intro (everything before first **)
+        $introEndPos = strpos($text, '**');
+        if ($introEndPos !== false) {
+            $intro = substr($text, 0, $introEndPos);
+            if (!empty(trim($intro))) {
+                $model_answer_parts['model_answer_intro'] = trim($intro);
+            }
+        }
+
+        // Extract all points between ** and \n\n
+        $pointsPattern = '/\*\*([^*]+?)\*\*([^*]+?)(?=\n\n\*\*|\n\n$|\n\n[^*]|$)/s';
+        preg_match_all($pointsPattern, $text, $pointMatches, PREG_SET_ORDER);
+        
+        foreach ($pointMatches as $match) {
+            $key = trim($match[1]);
+            $value = trim($match[2]);
+            $model_answer_parts['points'][$key] = $value;
+        }
+
+        // Extract conclusion by finding the position after the last **
+        $lastDoubleAsteriskPos = strrpos($text, '**');
+        if ($lastDoubleAsteriskPos !== false) {
+            // Find the position of the next ** after the current one to get the end of the last point
+            $nextAsteriskPos = strpos($text, '**', $lastDoubleAsteriskPos + 2);
+            
+            if ($nextAsteriskPos === false) {
+                // This is the last **, so everything after the content of the last point is conclusion
+                $conclusionStart = strpos($text, "\n\n", $lastDoubleAsteriskPos);
+                if ($conclusionStart !== false) {
+                    $conclusion = substr($text, $conclusionStart + 2);
+                    if (!empty(trim($conclusion))) {
+                        $model_answer_parts['model_answer_conclution'] = trim($conclusion);
+                    }
+                }
+            }
+        }
+
+
+        return $model_answer_parts;
+    }
+
+
 }

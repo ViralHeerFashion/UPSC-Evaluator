@@ -161,41 +161,7 @@ class MainsEvaluationController extends Controller
                 {$question->model_answer}
                 EOD;
 
-                $model_answer_parts =  [
-                    'model_answer_intro' => '',
-                    'points' => [],
-                    'model_answer_conclution' => ''
-                ];
-
-                $parts = preg_split('/\n*\s*•\s*/u', $model_answer);
-
-                if (!empty($parts[0])) {
-                    $model_answer_parts['model_answer_intro'] = trim($parts[0]) . "\n\n•";
-                }
-
-                for ($i = 1; $i < count($parts); $i++) {
-                    $part = trim($parts[$i]);
-
-                    // If last part doesn't start with ** it's footer
-                    if (strpos($part, '**') !== 0) {
-                        $model_answer_parts['model_answer_conclution'] = $part;
-                        break;
-                    }
-
-                    // Extract title and value
-                    if (preg_match('/^\*\*(.+?)\*\*:\s*(.+)$/s', $part, $matches)) {
-                        $title = trim($matches[1]);
-                        $value = trim($matches[2]) . "\n\n•";
-                        $model_answer_parts['points'][] = [$title => $value];
-                    }
-                }
-
-
-
-
-
-                // preg_match('/^(.*?)\n\*\*/s', $model_answer, $intro_match);
-                // $model_answer_intro = isset($intro_match[1]) ? trim($intro_match[1]) : null;
+                $model_answer_parts = $this->parseModelAnswer($model_answer);
 
                 $student_answer_evaluation = new StudentAnswerEvaluation;
                 $student_answer_evaluation->student_answersheet_id = $student_answer_sheet->id;
@@ -204,41 +170,20 @@ class MainsEvaluationController extends Controller
                 $student_answer_evaluation->micro_marking_grid_total_marks = $question->micro_marking_grid->total_marks;
                 $student_answer_evaluation->max_marks = $question->max_marks;
                 $student_answer_evaluation->marks_awarded = $question->marks_awarded;
-                // $student_answer_evaluation->model_answer_intro = $model_answer_intro;
                 $student_answer_evaluation->question_no = $question->question_number;
-                $student_answer_evaluation->model_answer_intro = $model_answer_parts['model_answer_intro'];
-                $student_answer_evaluation->model_answer_conclusion = !empty($model_answer_parts['model_answer_conclution']) ? $model_answer_parts['model_answer_conclution'] : "";
+                $student_answer_evaluation->model_answer_intro = isset($model_answer_parts['model_answer_intro']) && !empty($model_answer_parts['model_answer_intro']) ? $model_answer_parts['model_answer_intro'] : null;
+                $student_answer_evaluation->model_answer_conclusion = isset($model_answer_parts['model_answer_conclution']) && !empty($model_answer_parts['model_answer_conclution']) ? $model_answer_parts['model_answer_conclution'] : null;
                 $student_answer_evaluation->save();
 
-                  foreach($model_answer_parts['points'] as $key => $point){
-                    $modelAnswer = new ModelAnswer;
-                    $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
-                    $modelAnswer->title = $key;
-                    $modelAnswer->description = $point;
-                    $modelAnswer->save();
+                if (isset($model_answer_parts['points']) && count($model_answer_parts['points']) > 0) {
+                    foreach($model_answer_parts['points'] as $key => $point){
+                        $modelAnswer = new ModelAnswer;
+                        $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                        $modelAnswer->title = $key;
+                        $modelAnswer->description = $point;
+                        $modelAnswer->save();
+                    }
                 }
-
-                /*preg_match_all('/\*\*(.+?)\:\*\*\s*(.+?)(?=\n\n|\z)/s', $model_answer, $matches, PREG_OFFSET_CAPTURE);
-
-                foreach ($matches[1] as $i => $titleMatch) {
-                    $key   = trim($titleMatch[0]);
-                    $value = trim($matches[2][$i][0]);
-
-                    $modelAnswer = new ModelAnswer;
-                    $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
-                    $modelAnswer->title = $key;
-                    $modelAnswer->description = $value;
-                    $modelAnswer->save();
-                }
-
-                $last_match_end = 0;
-                if (!empty($matches[0])) {
-                    $last = end($matches[0]);
-                    $last_match_end = $last[1] + strlen($last[0]);
-                }
-
-                $student_answer_evaluation->model_answer_conclusion = trim(substr($model_answer, $last_match_end));
-                $student_answer_evaluation->save();*/
 
                 if (isset($question->micro_marking_grid) && isset($question->micro_marking_grid->components)) {
                     foreach ($question->micro_marking_grid->components as $key => $micro_marking_grid) {
@@ -440,5 +385,56 @@ class MainsEvaluationController extends Controller
     private function getWalleTotal()
     {
         return Wallet::where('user_id', Auth::id())->sum('amount');
+    }
+
+    private function parseModelAnswer($text) 
+    {
+        $model_answer_parts = [
+            'model_answer_intro' => null,
+            'points' => [],
+            'model_answer_conclution' => null
+        ];
+
+        // Extract intro (everything before first **)
+        $introEndPos = strpos($text, '**');
+        if ($introEndPos !== false) {
+            $intro = substr($text, 0, $introEndPos);
+            if (!empty(trim($intro))) {
+                $model_answer_parts['model_answer_intro'] = trim($intro);
+            }
+        }
+
+        // Extract all points between ** and \n\n
+        $pointsPattern = '/\*\*([^*]+?)\*\*([^*]+?)(?=\n\n\*\*|\n\n$|\n\n[^*]|$)/s';
+        preg_match_all($pointsPattern, $text, $pointMatches, PREG_SET_ORDER);
+        
+        foreach ($pointMatches as $match) {
+            $key = trim($match[1]);
+            $value = trim($match[2]);
+            $model_answer_parts['points'][$key] = $value;
+        }
+
+        // Extract conclusion by finding the position after the last **
+        $lastDoubleAsteriskPos = strrpos($text, '**');
+        if ($lastDoubleAsteriskPos !== false) {
+            // Find the position of the next ** after the current one to get the end of the last point
+            $nextAsteriskPos = strpos($text, '**', $lastDoubleAsteriskPos + 2);
+            
+            if ($nextAsteriskPos === false) {
+                // This is the last **, so everything after the content of the last point is conclusion
+                $conclusionStart = strpos($text, "\n\n", $lastDoubleAsteriskPos);
+                if ($conclusionStart !== false) {
+                    $conclusion = substr($text, $conclusionStart + 2);
+                    if (!empty(trim($conclusion))) {
+                        $model_answer_parts['model_answer_conclution'] = trim($conclusion);
+                    }
+                }
+            }
+        }
+
+        error_log(json_encode($model_answer_parts), 0);
+
+
+        return $model_answer_parts;
     }
 }
