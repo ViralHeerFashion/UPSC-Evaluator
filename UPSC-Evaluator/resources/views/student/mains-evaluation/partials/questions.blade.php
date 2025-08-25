@@ -148,7 +148,7 @@
         </div>
     </section>
 </div>
-<div class="chat-content custom-margin-bottom">
+<div class="chat-content {{ !$loop->last ? 'custom-margin-bottom' : '' }}">
     <section class="evaluation-section">
         <div class="section-header">
             <div>
@@ -186,3 +186,17 @@
     </section>
 </div>
 @endforeach
+<div class="chat-content">
+
+<div class="reaction-section">
+        <div class="btn-grp">
+            <div class="left-side-btn dropup">
+            </div>
+            <div class="right-side-btn">
+                <a href="{{ route('student.mains-evaluation.download-evaluation', ['task_id' => $student_answer_sheet->task_id]) }}" class="react-btn btn-default btn-small btn-border">
+                    <i class="fa-solid fa-download"></i><span>Download PDF</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

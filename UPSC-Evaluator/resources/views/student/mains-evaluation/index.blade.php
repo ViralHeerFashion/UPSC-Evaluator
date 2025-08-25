@@ -95,7 +95,7 @@
     .question-container{background-color: #17151f;padding: 15px;border-radius: 10px;}
     .mark-container{background: #805af5;border-radius: 25px;padding: 5px;border: 1px dashed #0e0c15;color: #fff;}
     .text-right{text-align: right;margin-top: 15px!important;}
-    .upload-file-btn{width: 100%;height: 55px;background-color: #805af5;border: 2px solid #805af5;color: var(--text-primary);line-height: 22px;padding: 16px 130px 16px 60px;font-size: 20px;}
+    .upload-file-btn, .refresh-btn{width: 100%;height: 55px;background-color: #805af5;border: 2px solid #805af5;color: var(--text-primary);line-height: 22px;padding: 16px 130px 16px 60px;font-size: 20px;}
     .premium-upload-container {width: 100%;box-sizing: border-box;font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;}
     .premium-upload-input {display: none;}
     .premium-upload-label {width: 100%;min-height: 160px;display: flex;flex-direction: column;align-items: center;justify-content: center;gap: 12px;padding: 24px;border: 2px dashed var(--border-color);border-radius: 12px;background-color: var(--card-color);cursor: pointer;transition: all 0.3s ease;box-sizing: border-box;}
@@ -351,6 +351,12 @@
                             <img class="w-100" src="{{ asset('images/user-profile.jpg') }}" alt="Author">
                         </div>
                         <div class="chat-content user-size-pdf-container">
+                            @if(!is_null($student_answer_sheet))
+                            <h6 class="title">You</h6>
+                            <p class="mt-5px">
+                                <i class="fa-solid fa-file-pdf"></i> <span class="pdf-name">{{ $student_answer_sheet->file_name }}</span>
+                            </p>
+                            @endif
                             <!-- <h6 class="title">You</h6>
                             <p class="mt-5px">
                                 <i class="fa-solid fa-file-pdf"></i> <span class="pdf-name">answer.pdf</span>
@@ -362,9 +368,9 @@
             <div class="chat-box ai-speech">
                 <div class="inner">
                     <div class="answers-container" id="answers-container">
-                        {{-- 
+                        @if(!is_null($student_answer_sheet))
                         @include('student.mains-evaluation.partials.questions')
-                        --}}
+                        @endif
                     </div>
                 </div>
             </div> 
@@ -372,7 +378,11 @@
 
         <div class="rbt-static-bar" style="display: block;">
             <form class="new-chat-form border-gradient">
-                <button type="button" class="upload-file-btn"><i class="fa-solid fa-upload"></i>&nbsp; Start Evaluation</button>                
+                @if(!is_null($student_answer_sheet))
+                <button type="button" class="refresh-btn"><i class="fa-solid fa-arrows-rotate"></i>&nbsp; New Evaluation</button>
+                @else
+                <button type="button" class="upload-file-btn"><i class="fa-solid fa-upload"></i>&nbsp; Start Evaluation</button>
+                @endif
             </form>
             <p class="b3 small-text">AiWave can make mistakes. Consider checking important information.</p>
         </div>
@@ -382,8 +392,79 @@
 @endsection
 @section('script')
 <script>
+    function renderDashboardAnimations() {
+        const dashboards = document.querySelectorAll('.dashboard');
+        
+        dashboards.forEach(dashboard => {
+            
+            const score = dashboard.getAttribute('data-score');
+            const total = parseInt(dashboard.getAttribute('data-total'));
+            
+            var percentage = (score / total) * 100;
+            percentage = percentage.toFixed(2);
+            console.log({score, total, percentage});
+            
+            
+            const emoji = dashboard.querySelector('.emoji-container');
+            const scoreValue = dashboard.querySelector('.score-value');
+            const progressFill = dashboard.querySelector('.progress-fill');
+            const positionIndicator = dashboard.querySelector('.position-indicator');
+            const markersContainer = dashboard.querySelector('.markers');
+            const messageTitle = dashboard.querySelector('.message-title');
+            const messageContent = dashboard.querySelector('.message-content');
+            
+            scoreValue.innerHTML = `${score}<span>/${total}</span>`;
+            
+            progressFill.style.setProperty('--progress-percent', `${percentage}%`);
+            positionIndicator.style.setProperty('--progress-percent', `${percentage}%`);
+            positionIndicator.textContent = `${score}`;
+            
+            const markerCount = Math.min(4, total);
+            const markerStep = total / (markerCount - 1);
+            
+            for (let i = 0; i < markerCount; i++) {
+                const markerValue = Math.round(i * markerStep);
+                const marker = document.createElement('div');
+                marker.className = `marker ${markerValue === score ? 'active' : ''}`;
+                marker.innerHTML = `
+                    <div class="marker-point"></div>
+                    <div class="marker-label">${markerValue}</div>
+                `;
+                markersContainer.appendChild(marker);
+            }
+            
+            if (percentage >= 80) {
+                emoji.textContent = '🎉';
+                messageTitle.textContent = 'Excellent Work!';
+                messageContent.textContent = 'You\'re mastering this subject!';
+            } else if (percentage >= 50) {
+                emoji.textContent = '🎯';
+                messageTitle.textContent = 'Good Progress!';
+                messageContent.textContent = 'Keep up the good work!';
+            } else {
+                emoji.textContent = '💪';
+                messageTitle.textContent = 'Keep Practicing!';
+                messageContent.textContent = 'You\'ll improve with more study!';
+            }
+            
+            const markerPoints = dashboard.querySelectorAll('.marker-point');
+            markerPoints.forEach((point, index) => {
+                setTimeout(() => {
+                    point.style.animation = `pulse 1.5s ease ${index * 0.2}s`;
+                }, 500);
+            });
+        });
+    }
     var audio = new Audio('{{ asset("audio/loading-sound.mp3") }}');
     $(document).ready(function(){
+        
+        @if(!is_null($student_answer_sheet))
+        renderDashboardAnimations();
+        $(".refresh-btn").on('click', function(){
+            let refresh_page = "{{ route('student.mains-evaluation') }}";
+            window.location.href = refresh_page;
+        });
+        @endif
 
         let progress = 0;
         let loadTime = 120;
@@ -588,68 +669,6 @@
 
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dashboards = document.querySelectorAll('.dashboard');
-        
-        dashboards.forEach(dashboard => {
-            
-            const score = dashboard.getAttribute('data-score');
-            const total = parseInt(dashboard.getAttribute('data-total'));
-            
-            const percentage = Math.floor((score / total) * 100).toFixed(2);
-            
-            
-            const emoji = dashboard.querySelector('.emoji-container');
-            const scoreValue = dashboard.querySelector('.score-value');
-            const progressFill = dashboard.querySelector('.progress-fill');
-            const positionIndicator = dashboard.querySelector('.position-indicator');
-            const markersContainer = dashboard.querySelector('.markers');
-            const messageTitle = dashboard.querySelector('.message-title');
-            const messageContent = dashboard.querySelector('.message-content');
-            
-            scoreValue.innerHTML = `${score}<span>/${total}</span>`;
-            
-            progressFill.style.setProperty('--progress-percent', `${percentage}%`);
-            positionIndicator.style.setProperty('--progress-percent', `${percentage}%`);
-            positionIndicator.textContent = `${score}`;
-            
-            const markerCount = Math.min(4, total);
-            const markerStep = total / (markerCount - 1);
-            
-            for (let i = 0; i < markerCount; i++) {
-                const markerValue = Math.round(i * markerStep);
-                const marker = document.createElement('div');
-                marker.className = `marker ${markerValue === score ? 'active' : ''}`;
-                marker.innerHTML = `
-                    <div class="marker-point"></div>
-                    <div class="marker-label">${markerValue}</div>
-                `;
-                markersContainer.appendChild(marker);
-            }
-            
-            if (percentage >= 80) {
-                emoji.textContent = '🎉';
-                messageTitle.textContent = 'Excellent Work!';
-                messageContent.textContent = 'You\'re mastering this subject!';
-            } else if (percentage >= 50) {
-                emoji.textContent = '🎯';
-                messageTitle.textContent = 'Good Progress!';
-                messageContent.textContent = 'Keep up the good work!';
-            } else {
-                emoji.textContent = '💪';
-                messageTitle.textContent = 'Keep Practicing!';
-                messageContent.textContent = 'You\'ll improve with more study!';
-            }
-            
-            const markerPoints = dashboard.querySelectorAll('.marker-point');
-            markerPoints.forEach((point, index) => {
-                setTimeout(() => {
-                    point.style.animation = `pulse 1.5s ease ${index * 0.2}s`;
-                }, 500);
-            });
-        });
-    });
-
     function typeWriterHTML(html, elementId, speed = 50, callback = null) {
         const element = document.getElementById(elementId);
         element.innerHTML = "";
@@ -749,70 +768,6 @@
         }
 
         typing();
-    }
-
-    function renderDashboardAnimations() {
-        const dashboards = document.querySelectorAll('.dashboard');
-        
-        dashboards.forEach(dashboard => {
-            
-            const score = dashboard.getAttribute('data-score');
-            const total = parseInt(dashboard.getAttribute('data-total'));
-            
-            var percentage = (score / total) * 100;
-            percentage = percentage.toFixed(2);
-            console.log({score, total, percentage});
-            
-            
-            const emoji = dashboard.querySelector('.emoji-container');
-            const scoreValue = dashboard.querySelector('.score-value');
-            const progressFill = dashboard.querySelector('.progress-fill');
-            const positionIndicator = dashboard.querySelector('.position-indicator');
-            const markersContainer = dashboard.querySelector('.markers');
-            const messageTitle = dashboard.querySelector('.message-title');
-            const messageContent = dashboard.querySelector('.message-content');
-            
-            scoreValue.innerHTML = `${score}<span>/${total}</span>`;
-            
-            progressFill.style.setProperty('--progress-percent', `${percentage}%`);
-            positionIndicator.style.setProperty('--progress-percent', `${percentage}%`);
-            positionIndicator.textContent = `${score}`;
-            
-            const markerCount = Math.min(4, total);
-            const markerStep = total / (markerCount - 1);
-            
-            for (let i = 0; i < markerCount; i++) {
-                const markerValue = Math.round(i * markerStep);
-                const marker = document.createElement('div');
-                marker.className = `marker ${markerValue === score ? 'active' : ''}`;
-                marker.innerHTML = `
-                    <div class="marker-point"></div>
-                    <div class="marker-label">${markerValue}</div>
-                `;
-                markersContainer.appendChild(marker);
-            }
-            
-            if (percentage >= 80) {
-                emoji.textContent = '🎉';
-                messageTitle.textContent = 'Excellent Work!';
-                messageContent.textContent = 'You\'re mastering this subject!';
-            } else if (percentage >= 50) {
-                emoji.textContent = '🎯';
-                messageTitle.textContent = 'Good Progress!';
-                messageContent.textContent = 'Keep up the good work!';
-            } else {
-                emoji.textContent = '💪';
-                messageTitle.textContent = 'Keep Practicing!';
-                messageContent.textContent = 'You\'ll improve with more study!';
-            }
-            
-            const markerPoints = dashboard.querySelectorAll('.marker-point');
-            markerPoints.forEach((point, index) => {
-                setTimeout(() => {
-                    point.style.animation = `pulse 1.5s ease ${index * 0.2}s`;
-                }, 500);
-            });
-        });
     }
 </script>
 @endsection

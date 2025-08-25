@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Smalot\PdfParser\Parser;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\{
     StudentAnswerSheet,
     StudentAnswerEvaluation,
@@ -21,22 +22,42 @@ class MainsEvaluationController extends Controller
 {
     private $per_page_evaluation_charge = 5;
     private $api_base_url = "https://upsc-ai-evaluator.onrender.com";
-    public function index()
+    public function index(string $process_id = null)
     {
-        $student_answer_sheet = StudentAnswerSheet::with([
-            'student_answer_evaluation' => function ($query) {
-                $query->with([
-                    'micro_marking_grid',
-                    'strength_snapshot',
-                    'gap_analysis_priority_fix',
-                    'model_answer'
-                ]);
-            }
-        ])->find(1);
+        $student_answer_sheet = null;
+        if (!is_null($process_id)) {
+            $student_answer_sheet = StudentAnswerSheet::with([
+                'student_answer_evaluation' => function ($query) {
+                    $query->with([
+                        'micro_marking_grid',
+                        'strength_snapshot',
+                        'gap_analysis_priority_fix',
+                        'model_answer'
+                    ]);
+                }
+            ])
+            ->where('task_id', $process_id)
+            ->first();
 
-        // return response()->json($student_answer_sheet);
+            if (is_null($student_answer_sheet)) {
+                abort(404);
+            }
+        }
 
         return view('student.mains-evaluation.index', compact('student_answer_sheet'));
+    }
+
+    public function list()
+    {
+        $student_answer_sheets = StudentAnswerSheet::where('user_id', Auth::id())
+                                    ->where('is_evaluated', 1)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get()
+                                    ->groupBy(function($item) {
+                                        return $item->created_at->format('d-m-Y');
+                                    });
+
+        return view('student.mains-evaluation.list', compact('student_answer_sheets'));
     }
 
     public function generateTask(Request $request)
@@ -380,6 +401,32 @@ class MainsEvaluationController extends Controller
             ))->render(),
             'student_answer_sheet_id' => $student_answer_sheet->id
         ]);
+    }
+
+    public function downloadEvaluation(string $process_id)
+    {  
+        $student_answer_sheet = StudentAnswerSheet::with([
+            'student_answer_evaluation' => function ($query) {
+                $query->with([
+                    'micro_marking_grid',
+                    'strength_snapshot',
+                    'gap_analysis_priority_fix',
+                    'model_answer'
+                ]);
+            }
+        ])
+        ->where('task_id', $process_id)
+        ->first(); 
+
+        $pdf = Pdf::loadView('student.mains-evaluation.pdf', compact(
+            'student_answer_sheet'
+        ));
+        return $pdf->download('Evaluation-'.$student_answer_sheet->file_name);
+
+        // return view('student.mains-evaluation.pdf', compact(
+        //     'student_answer_sheet'
+        // ));
+
     }
 
     private function getWalleTotal()

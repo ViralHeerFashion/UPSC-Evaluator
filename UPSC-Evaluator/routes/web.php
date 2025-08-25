@@ -63,13 +63,15 @@ Route::middleware('auth')->group(function(){
 
             Route::prefix('mains-evaluation')->group(function(){
                 Route::controller(MainsEvaluationController::class)->group(function(){
-                    Route::get('', 'index')->name('mains-evaluation');
+                    Route::get('/start/{process_id?}', 'index')->name('mains-evaluation');
+                    Route::get('list', 'list')->name('mains-evaluation.list');
                     // Route::view('', 'student.mains-evaluation.index')->name('mains-evaluation');
                     Route::any('/make-evaluate', 'makeEvaluate')->name('mains-evaluation.make-evaluate');
 
                     // Viral
                     Route::post('/generate-task', 'generateTask')->name('mains-evaluation.generate-task');
                     Route::post('/{task_id}/process-task', 'processTask')->name('mains-evaluation.process-task');
+                    Route::get('/{task_id}/download-evaluation', 'downloadEvaluation')->name('mains-evaluation.download-evaluation');
                 });
             });
 
