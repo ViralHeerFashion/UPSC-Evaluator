@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/', 'pages.home');
+
 Route::post('/recharge/payment-status', [RechargeController::class, 'paymentStatus']);
 
 Route::middleware('guest')->group(function () {

@@ -23078,5 +23078,9 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
   pointer-events: none;
   opacity: 0.5;
 }
-
+@media only screen and (max-width: 425px) {
+  .cd-headline.rotate-1 b.is-visible{
+    text-align: center;
+  }
+}
 /*# sourceMappingURL=style.css.map */

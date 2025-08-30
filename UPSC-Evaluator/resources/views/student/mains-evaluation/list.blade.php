@@ -28,7 +28,7 @@
             <div class="col-md-3 col-sm-6 col-6">
                 <a href="{{ route('student.mains-evaluation', ['process_id' => $sheet->task_id]) }}">
                     <div class="fixed-amount-card mb-10px p10 text-center">
-                        <img src="{{ asset('images/pdf.svg') }}" class="img-fluid">
+                        <img src="{{ asset('public/images/pdf.svg') }}" class="img-fluid">
                         <span class="pdf-name">{{ $sheet->file_name }}</span>
                     </div>
                 </a>

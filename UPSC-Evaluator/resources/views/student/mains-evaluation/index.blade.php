@@ -22,7 +22,7 @@
     .tool-title:before {content: "";position: absolute;left: 0;top: 0;height: 100%;width: 4px;background: linear-gradient(to bottom, var(--primary-accent), var(--secondary-accent));border-radius: 2px;}
     .evaluation-summary {display: flex;align-items: center;gap: 1.5rem;}
     .total-score {background: rgba(25, 25, 35, 0.6);border-radius: 8px;padding: 0.75rem 1.25rem;border: 1px dashed var(--primary-accent);text-align: center;min-width: 100px;}
-    .score-value {font-size: 1.5rem;font-weight: 700;margin-bottom: 0.25rem;background: linear-gradient(to right, var(--primary-accent), var(--secondary-accent));-webkit-background-clip: text;-webkit-text-fill-color: transparent;}
+    .score-value {font-size: 1.5rem;font-weight: 700;margin-bottom: 0.25rem;background: linear-gradient(356deg, #a89d9d, var(--secondary-accent));-webkit-background-clip: text;-webkit-text-fill-color: transparent;}
     .score-label {font-size: 0.75rem;color: var(--text-secondary);font-weight: 500;text-transform: uppercase;letter-spacing: 0.5px;}
     .evaluation-section {margin-bottom: 2.5rem;position: relative;}
     .section-header {display: flex;align-items: center;margin-bottom: 1.5rem;}
@@ -126,7 +126,7 @@
     .score-section {display: flex;align-items: center;gap: 15px;}
     .emoji-container {font-size: 40px;animation: bounce 1.5s ease infinite alternate;min-width: 50px;}
     .score-display {display: flex;flex-direction: column;}
-    .score-value {font-size: 36px;font-weight: 800;background: linear-gradient(239deg, var(--primary-accent), var(--secondary-accent));-webkit-background-clip: text;-webkit-text-fill-color: transparent;background-clip: text;line-height: 1;}
+    .score-value {font-size: 36px;font-weight: 800;background: linear-gradient(356deg, #a89d9d, var(--secondary-accent));-webkit-background-clip: text;-webkit-text-fill-color: transparent;background-clip: text;line-height: 1;}
     .score-label {font-size: 14px;color: var(--text-secondary);margin-top: 4px;}
     .progress-section {flex: 1;position: relative;padding: 15px 0;}
     .position-indicator {position: absolute;top: 0;left: var(--progress-percent);transform: translateX(-50%);background: rgba(128, 90, 245, 0.2);padding: 5px 15px;border-radius: 20px;font-weight: 600;color: var(--secondary-accent);border: 1px solid var(--primary-accent);font-size: 14px;box-shadow: 0 4px 10px rgba(128, 90, 245, 0.3);animation: fadeIn 1s ease-out;white-space: nowrap;}
@@ -175,11 +175,6 @@
     .w35{width: 35px!important;}
     .w20{width: 20px!important;}
     .chat-loader-container{display: none;}
-
-
-
-
-
     .loader-container {width: 100%;background-color: var(--card-color);border-radius: 20px;padding: 30px;box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);border: 1px solid var(--border-color);}
     .loader-container h1 {text-align: center;margin-bottom: 20px;color: var(--text-primary);font-weight: 600;background: linear-gradient(90deg, var(--secondary-accent), #8A63D2);-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-size: 20px;}
     .loader {width: 100%;height: 22px;background: var(--bg-color);border-radius: 15px;overflow: hidden;position: relative;border: 1px solid var(--border-color);box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);margin: 10px 0;}
@@ -194,122 +189,31 @@
     .decoration {position: absolute;width: 200px;height: 200px;background: radial-gradient(circle, var(--highlight-color) 0%, transparent 70%);border-radius: 50%;z-index: -1;}
     .decoration-1 {top: -100px;right: -100px;}
     .decoration-2 {bottom: -100px;left: -100px;}
-
-
-
     .place-item-center{place-items: center;}
-    .font-20px{font-size: 20px!important;}
-    /* From Uiverse.io by dexter-st */ 
-.first-loader-container .loader-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  font-family: "Inter", sans-serif;
-  font-size: 1.2em;
-  font-weight: 300;
-  color: white;
-  border-radius: 50%;
-  background-color: transparent;
-  user-select: none;
-}
-
-.first-loader-container .first-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  background-color: transparent;
-  animation: loader-rotate 2s linear infinite;
-  z-index: 0;
-}
-
-@keyframes loader-rotate {
-  0% {
-    transform: rotate(90deg);
-    box-shadow:
-      0 10px 20px 0 #fff inset,
-      0 20px 30px 0 #ad5fff inset,
-      0 60px 60px 0 #471eec inset;
-  }
-  50% {
-    transform: rotate(270deg);
-    box-shadow:
-      0 10px 20px 0 #fff inset,
-      0 20px 10px 0 #d60a47 inset,
-      0 40px 60px 0 #311e80 inset;
-  }
-  100% {
-    transform: rotate(450deg);
-    box-shadow:
-      0 10px 20px 0 #fff inset,
-      0 20px 30px 0 #ad5fff inset,
-      0 60px 60px 0 #471eec inset;
-  }
-}
-
-.first-loader-container .loader-letter {
-  display: inline-block;
-  opacity: 0.4;
-  transform: translateY(0);
-  animation: loader-letter-anim 2s infinite;
-  z-index: 1;
-  border-radius: 50ch;
-  border: none;
-}
-
-.first-loader-container .loader-letter:nth-child(1) {
-  animation-delay: 0s;
-}
-.first-loader-container .loader-letter:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.first-loader-container .loader-letter:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.first-loader-container .loader-letter:nth-child(4) {
-  animation-delay: 0.3s;
-}
-.first-loader-container .loader-letter:nth-child(5) {
-  animation-delay: 0.4s;
-}
-.first-loader-container .loader-letter:nth-child(6) {
-  animation-delay: 0.5s;
-}
-.first-loader-container .loader-letter:nth-child(7) {
-  animation-delay: 0.6s;
-}
-.first-loader-container .loader-letter:nth-child(8) {
-  animation-delay: 0.7s;
-}
-.first-loader-container .loader-letter:nth-child(9) {
-  animation-delay: 0.8s;
-}
-.first-loader-container .loader-letter:nth-child(10) {
-  animation-delay: 0.9s;
-}
-
-@keyframes loader-letter-anim {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: translateY(0);
-  }
-  20% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
-  40% {
-    opacity: 0.7;
-    transform: translateY(0);
-  }
-}
-
-
+    .font-20px{font-size: 20px!important;}    
+    .first-loader-container .loader-wrapper {position: relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;font-family: "Inter", sans-serif;font-size: 1.2em;font-weight: 300;color: white;border-radius: 50%;background-color: transparent;user-select: none;}
+    .first-loader-container .first-loader {position: absolute;top: 0;left: 0;width: 100%;aspect-ratio: 1 / 1;border-radius: 50%;background-color: transparent;animation: loader-rotate 2s linear infinite;z-index: 0;}
+    @keyframes loader-rotate {
+        0% {transform: rotate(90deg);box-shadow: 0 10px 20px 0 #fff inset, 0 20px 30px 0 #ad5fff inset, 0 60px 60px 0 #471eec inset;}
+        50% {transform: rotate(270deg);box-shadow: 0 10px 20px 0 #fff inset, 0 20px 10px 0 #d60a47 inset, 0 40px 60px 0 #311e80 inset;}
+        100% {transform: rotate(450deg);box-shadow: 0 10px 20px 0 #fff inset, 0 20px 30px 0 #ad5fff inset, 0 60px 60px 0 #471eec inset;}
+    }
+    .first-loader-container .loader-letter {display: inline-block;opacity: 0.4;transform: translateY(0);animation: loader-letter-anim 2s infinite;z-index: 1;border-radius: 50ch;border: none;}
+    .first-loader-container .loader-letter:nth-child(1) {animation-delay: 0s;}
+    .first-loader-container .loader-letter:nth-child(2) {animation-delay: 0.1s;}
+    .first-loader-container .loader-letter:nth-child(3) {animation-delay: 0.2s;}
+    .first-loader-container .loader-letter:nth-child(4) {animation-delay: 0.3s;}
+    .first-loader-container .loader-letter:nth-child(5) {animation-delay: 0.4s;}
+    .first-loader-container .loader-letter:nth-child(6) {animation-delay: 0.5s;}
+    .first-loader-container .loader-letter:nth-child(7) {animation-delay: 0.6s;}
+    .first-loader-container .loader-letter:nth-child(8) {animation-delay: 0.7s;}
+    .first-loader-container .loader-letter:nth-child(9) {animation-delay: 0.8s;}
+    .first-loader-container .loader-letter:nth-child(10) {animation-delay: 0.9s;}
+    @keyframes loader-letter-anim {
+        0%, 100% {opacity: 0.4;transform: translateY(0);}
+        20% {opacity: 1;transform: scale(1.15);}
+        40% {opacity: 0.7;transform: translateY(0);}
+    }
 </style>
 @endsection
 @section('tab-name')
@@ -348,7 +252,7 @@
                 <div class="inner">
                     <div class="chat-section">
                         <div class="author">
-                            <img class="w-100" src="{{ asset('images/user-profile.jpg') }}" alt="Author">
+                            <img class="w-100" src="{{ asset('public/images/user-profile.jpg') }}" alt="Author">
                         </div>
                         <div class="chat-content user-size-pdf-container">
                             @if(!is_null($student_answer_sheet))
@@ -401,9 +305,7 @@
             const total = parseInt(dashboard.getAttribute('data-total'));
             
             var percentage = (score / total) * 100;
-            percentage = percentage.toFixed(2);
-            console.log({score, total, percentage});
-            
+            percentage = percentage.toFixed(2);            
             
             const emoji = dashboard.querySelector('.emoji-container');
             const scoreValue = dashboard.querySelector('.score-value');

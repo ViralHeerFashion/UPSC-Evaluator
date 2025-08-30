@@ -4,10 +4,10 @@
     <meta name="theme-style-mode" content="1">
     <title>Sign In</title>
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
-    <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/fontawesome-all.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/feature.css')}}">
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="stylesheet" href="{{asset('public/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/css/fontawesome-all.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/css/feature.css')}}">
+    <link rel="stylesheet" href="{{asset('public/css/style.css')}}">
     <style>
         .three-body {position: relative;display: inline-block;height: 35px;width: 35px;animation: spin78236 2s infinite linear;}
         .three-body__dot {position: absolute;height: 100%;width: 30%;}
@@ -45,7 +45,7 @@
                     <div class="col-lg-6 bg-color-blackest left-wrapper">
                         <div class="sign-up-box">
                             <div class="signup-box-top">
-                                <img src="images/logo.png" alt="sign-up logo">
+                                <img src="{{ asset('public/images/logo.png') }}" alt="sign-up logo">
                             </div>
                             <div class="signup-box-bottom">
                                 <div class="signup-box-content">
@@ -87,7 +87,7 @@
                                 <div class="inner">
                                     <div class="meta-img-section">
                                         <a class="image" href="#">
-                                            <img src="images/team-02sm.jpg" alt="">
+                                            <img src="{{ asset('public/images/team-02sm.jpg') }}" alt="">
                                         </a>
                                     </div>
                                     <div class="rating">
@@ -114,7 +114,7 @@
                                                 <h4 class="title-text mb--0">Guy Hawkins</h4>
                                                 <p class="desc mb--20">Nursing Assistant</p>
                                                 <div class="desc-img">
-                                                    <img src="images/brand-t.png" alt="Brand Image">
+                                                    <img src="{{ asset('public/images/brand-t.png') }}" alt="Brand Image">
                                                 </div>
                                             </div>
                                         </div>
@@ -137,24 +137,24 @@
         </svg>
     </div>
     <!-- <script src="{{asset('js/modernizr.min.js')}}"></script> -->
-    <script src="{{asset('js/jquery.min.js')}}"></script>
-    <script src="{{asset('js/bootstrap.min.js')}}"></script>
-    <script src="{{asset('js/waypoint.min.js')}}"></script>
-    <script src="{{asset('js/wow.min.js')}}"></script>
-    <script src="{{asset('js/counterup.min.js')}}"></script>
-    <script src="{{asset('js/sal.min.js')}}"></script>
-    <script src="{{asset('js/slick.min.js')}}"></script>
-    <script src="{{asset('js/text-type.js')}}"></script>
-    <script src="{{asset('js/prism.js')}}"></script>
-    <script src="{{asset('js/jquery.style.swicher.js')}}"></script>
-    <script src="{{asset('js/bootstrap-select.min.js')}}"></script>
-    <script src="{{asset('js/backto-top.js')}}"></script>
+    <script src="{{asset('public/js/jquery.min.js')}}"></script>
+    <script src="{{asset('public/js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('public/js/waypoint.min.js')}}"></script>
+    <script src="{{asset('public/js/wow.min.js')}}"></script>
+    <script src="{{asset('public/js/counterup.min.js')}}"></script>
+    <script src="{{asset('public/js/sal.min.js')}}"></script>
+    <script src="{{asset('public/js/slick.min.js')}}"></script>
+    <script src="{{asset('public/js/text-type.js')}}"></script>
+    <script src="{{asset('public/js/prism.js')}}"></script>
+    <script src="{{asset('public/js/jquery.style.swicher.js')}}"></script>
+    <script src="{{asset('public/js/bootstrap-select.min.js')}}"></script>
+    <script src="{{asset('public/js/backto-top.js')}}"></script>
 
-    <script src="{{asset('js/js.cookie.js')}}"></script>
-    <script src="{{asset('js/jquery-one-page-nav.js')}}"></script>
+    <script src="{{asset('public/js/js.cookie.js')}}"></script>
+    <script src="{{asset('public/js/jquery-one-page-nav.js')}}"></script>
     <!-- Main JS -->
-    <script src="{{asset('js/main.js')}}"></script>
-    <script src="{{asset('js/plugins/validate/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('public/js/main.js')}}"></script>
+    <script src="{{asset('public/js/plugins/validate/jquery.validate.min.js')}}"></script>
     <script>
         $(document).ready(function(){
             $.validator.addMethod("emailOrPhone", function(value, element) {

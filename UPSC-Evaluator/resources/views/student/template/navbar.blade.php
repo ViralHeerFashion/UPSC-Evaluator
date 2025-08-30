@@ -8,7 +8,7 @@
                     </div>
                     <div class="logo">
                         <a href="javascript:void(0);">
-                            <img class="logo-light" src="/images/logo.png" alt="ChatBot Logo">
+                            <img class="logo-light" src="{{ asset('public/images/logo.png') }}" alt="ChatBot Logo">
                         </a>
                     </div>
                 </div>
@@ -248,7 +248,7 @@
 
                                         <div class="col-lg-3 single-mega-item">
                                             <div class="header-menu-img">
-                                                <img src="images/menu-img-2.png" alt="Menu Split Image">
+                                                <img src="{{ asset('public/images/menu-img-2.png') }}" alt="Menu Split Image">
                                             </div>
                                         </div>
                                     </div>
@@ -287,7 +287,7 @@
                             <a class="d-flex align-items-center" href="#">
                                 <div class="inner d-flex align-items-center">
                                     <div class="img-box">
-                                        <img src="{{ asset('images/user-profile.jpg') }}" alt="Admin">
+                                        <img src="{{ asset('public/images/user-profile.jpg') }}" alt="Admin">
                                     </div>
                                     <div class="content">
                                         <span class="title ">{{ auth()->user()->name }}</span>
@@ -303,7 +303,7 @@
                             <div class="inner">
                                 <div class="rbt-admin-profile">
                                     <div class="admin-thumbnail">
-                                        <img src="{{ asset('images/user-profile.jpg') }}" alt="User Images">
+                                        <img src="{{ asset('public/images/user-profile.jpg') }}" alt="User Images">
                                     </div>
                                     <div class="admin-info">
                                         <span class="name">{{ auth()->user()->name }}</span>
