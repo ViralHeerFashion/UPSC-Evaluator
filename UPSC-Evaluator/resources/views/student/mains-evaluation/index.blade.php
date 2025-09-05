@@ -214,6 +214,16 @@
         20% {opacity: 1;transform: scale(1.15);}
         40% {opacity: 0.7;transform: translateY(0);}
     }
+    @media (max-width: 640px) {
+        .content-page{width: 100%!important;max-width: 100%!important;}
+        .rbt-static-bar{width: 86%!important;}
+        .refresh-btn{height: auto!important;}
+        .upload-file-btn{padding: 20px!important;}
+        .gap-items-container{padding: 0!important;}
+        .chat-content {
+            max-width: calc(100% - 10px)!important;
+        }
+    }
 </style>
 @endsection
 @section('tab-name')

@@ -10038,7 +10038,7 @@ xclip
   align-items: center;
 }
 .header-default .logo a img {
-  max-height: 35px;
+  max-height: 45px;
 }
 .header-default .header-right {
   display: flex;

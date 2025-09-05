@@ -25,7 +25,9 @@
 
         @yield('content')
 
+        {{-- 
         @include('pages.partials.app-promotion')
+        --}}
         @include('pages.theme.footer')
     </main>
     @include('pages.theme.scripts')

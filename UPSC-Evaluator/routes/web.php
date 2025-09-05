@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ContactUsController;
 use App\Http\Controllers\Student\{
     AuthController,
     DashboardController,
@@ -15,7 +16,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::view('/', 'pages.home');
+Route::view('/', 'pages.home')->name('home');
+Route::view('/about-us', 'pages.about-us')->name('about-us');
+Route::view('/contact-us', 'pages.contact-us')->name('contact-us');
+Route::post('/contact-us/create', [ContactUsController::class, 'create'])->name('contact-us.create');
+Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy-policy');
+Route::view('/faq', 'pages.faq')->name('faq');
+Route::view('/disclaimer', 'pages.disclaimer')->name('disclaimer');
 
 Route::post('/recharge/payment-status', [RechargeController::class, 'paymentStatus']);
 

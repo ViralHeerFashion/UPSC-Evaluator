@@ -38,6 +38,22 @@ class AuthController extends Controller
             $user->otp = $otp;
             $user->save();
 
+            $request_id = $this->sendOTPMSG91($user->phone);
+            if ($request_id) {
+                $user->msg91_request_id = $request_id;
+                $user->save();
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'elements' => [
+                        'hide_element' => 'otp-container',
+                        'show_element' => 'phone-container'
+                    ],
+                    'otp_not_send' => 'We are unable to send OTP please contact our team',
+                    'button_message' => "Send OTP"
+                ]);
+            }
+
             $request->session()->put('otp_send', $user->id);
 
             return response()->json([
@@ -52,9 +68,36 @@ class AuthController extends Controller
 
         if ($request->filled('otp') && $request->session()->has('otp_send')) {
             $user = User::find($request->session()->get('otp_send'));
-            if ($user->otp == $request->otp) {
+            /*if ($user->otp == $request->otp) {
                 $user->is_registered = 1;
                 $user->otp = null;
+                $user->save();
+                $request->session()->put('otp_verified', $user->id);
+                $request->session()->forget('otp_send');
+                return response()->json([
+                    'success' => false,
+                    'elements' => [
+                        'hide_element' => 'otp-container',
+                        'show_element' => 'basic-info-container'
+                    ],
+                    'button_message' => "Submit"
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'elements' => [
+                        'hide_element' => 'phone-container',
+                        'show_element' => 'otp-container'
+                    ],
+                    'button_message' => "Verify OTP",
+                    'otp_invalid' => true
+                ]);
+            }*/
+
+            if ($this->verifyOTPMSG91($user->msg91_request_id, $request->otp)) {
+                $user->is_registered = 1;
+                $user->otp = null;
+                $user->msg91_request_id = null;
                 $user->save();
                 $request->session()->put('otp_verified', $user->id);
                 $request->session()->forget('otp_send');
@@ -112,19 +155,38 @@ class AuthController extends Controller
                     ]);
                 }
 
-                $user->otp = rand(111111, 999999);
-                $user->save();
-                $request->session()->put('otp_send', $user->id);
+                // $user->otp = rand(111111, 999999);
+                // $user->save();
 
+                $request_id = $this->sendOTPMSG91($user->phone);
+
+                if ($request_id) {
+
+                    $user->msg91_request_id = $request_id;
+                    $user->save();
+
+                    $request->session()->put('otp_send', $user->id);
+
+                    return response()->json([
+                        'success' => false,
+                        'elements' => [
+                            'hide_element' => 'phone-container',
+                            'show_element' => 'otp-container'
+                        ],
+                        'button_message' => "Verify OTP",
+                        'success_message' => "OTP send successfully on your phone."
+                    ]);
+                }
                 return response()->json([
                     'success' => false,
                     'elements' => [
-                        'hide_element' => 'phone-container',
-                        'show_element' => 'otp-container'
+                        'hide_element' => 'otp-container',
+                        'show_element' => 'phone-container'
                     ],
-                    'button_message' => "Verify OTP",
-                    'success_message' => "OTP send successfully on your phone."
+                    'button_message' => "Send OTP",
+                    'error_message' => "We are not unable to send OTP Please contact our support team."
                 ]);
+                
             }
             return response()->json([
                 'success' => false,
@@ -140,7 +202,7 @@ class AuthController extends Controller
 
         if ($request->filled('otp') && $request->session()->has('otp_send')) {
             $user = User::find($request->session()->get('otp_send'));
-            if ($user->otp == $request->otp) {
+            /*if ($user->otp == $request->otp) {
 
                 $request->session()->put('otp_verified', $user->id);
                 $request->session()->forget('otp_send');
@@ -163,7 +225,34 @@ class AuthController extends Controller
                     'button_message' => "Verify OTP",
                     'error_message' => "Invalid OTP"
                 ]);
+            }*/
+
+            if ($this->verifyOTPMSG91($user->msg91_request_id, $request->otp)) {
+                $request->session()->put('otp_verified', $user->id);
+                $request->session()->forget('otp_send');
+
+                $user->msg91_request_id = null;
+                $user->save();
+
+                return response()->json([
+                    'success' => false,
+                    'elements' => [
+                        'hide_element' => 'otp-container',
+                        'show_element' => 'forgot-passowrd-container'
+                    ],
+                    'button_message' => "Submit"
+                ]);
             }
+
+            return response()->json([
+                'success' => false,
+                'elements' => [
+                    'hide_element' => 'phone-container',
+                    'show_element' => 'otp-container'
+                ],
+                'button_message' => "Verify OTP",
+                'error_message' => "Invalid OTP"
+            ]);
         }
 
         if ($request->filled('password') && $request->session()->has('otp_verified')) {
@@ -186,7 +275,7 @@ class AuthController extends Controller
             'password' => $request->password
         );
         if (Auth::attempt($credentials, 1)) {
-            return redirect()->route('student.dashboard');
+            return redirect()->route('student.mains-evaluation');
         }
         return back()
                 ->withErrors(['error' => 'The provided credentials do not match our records.'])
@@ -221,8 +310,27 @@ class AuthController extends Controller
                 ]);
             }
 
-            $user->otp = rand(111111, 999999);
-            $user->save();
+            
+            // $user->otp = rand(111111, 999999);
+            // $user->save();
+
+            $request_id = $this->sendOTPMSG91($user->phone);
+
+            if ($request_id) {
+
+                $user->msg91_request_id = $request_id;
+                $user->save();
+                
+                return response()->json([
+                    'success' => false,
+                    'elements' => [
+                        'hide_element' => 'phone-container',
+                        'show_element' => 'otp-container'
+                    ],
+                    'button_message' => "Verify OTP",
+                    'success_message' => "OTP Resend successfully on your phone."
+                ]);
+            }
 
             return response()->json([
                 'success' => false,
@@ -230,9 +338,10 @@ class AuthController extends Controller
                     'hide_element' => 'phone-container',
                     'show_element' => 'otp-container'
                 ],
-                'button_message' => "Verify OTP",
-                'success_message' => "OTP Resend successfully on your phone."
+                'button_message' => "Send OTP",
+                'error_message' => "We are not able to resend otp please contact our support team."
             ]);
+
         }
         return response()->json([
             'success' => false,
@@ -258,5 +367,82 @@ class AuthController extends Controller
                 !User::where('email', $request->email)->exists()
             );
         }
+    }
+
+    private function sendOTPMSG91(string $phone)
+    {
+        $payload = array(
+			'widgetId' => '3569646a5a61313635393134',
+			'identifier' => '91'.$phone
+		);
+		
+		$curl = curl_init();
+
+		curl_setopt_array($curl, [
+			CURLOPT_URL => "https://api.msg91.com/api/v5/widget/sendOtp",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 30,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "POST",
+			CURLOPT_POSTFIELDS => json_encode($payload),
+			CURLOPT_HTTPHEADER => [
+				"authkey: 467592AR5ETBnB1pj68bab71aP1",
+				"content-type: application/json"
+			],
+		]);
+
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+
+		$response = json_decode(curl_exec($curl));
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+        if (isset($response->message) && $response->message != "") {
+            return $response->message;
+        }
+        return false;
+    }
+
+    private function verifyOTPMSG91(string $request_id, string $otp)
+    {
+        $payload = array(
+			"widgetId" => '3569646a5a61313635393134',
+			'reqId' => $request_id,
+			'otp' => $otp
+		);
+		$curl = curl_init();
+
+		curl_setopt_array($curl, [
+			CURLOPT_URL => "https://api.msg91.com/api/v5/widget/verifyOtp",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 30,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "POST",
+			CURLOPT_POSTFIELDS => json_encode($payload),
+			CURLOPT_HTTPHEADER => [
+				"authkey: 467592AR5ETBnB1pj68bab71aP1",
+				"content-type: application/json"
+			],
+		]);
+
+		
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+
+		$response = json_decode(curl_exec($curl));
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+        if (isset($response->type) && $response->type == "success") {
+            return true;
+        }
+        return false;
     }
 }

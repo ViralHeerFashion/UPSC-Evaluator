@@ -34,56 +34,26 @@
                                 <div class="collapse" id="collapseExample">
                                     <ul class="submenu rbt-default-sidebar-list">
                                         <li>
-                                            <a href="profile-details.html">
+                                            <a href="{{ route('student.profile') }}">
                                                 <i class="fa-sharp fa-regular fa-user"></i>
                                                 <span>Profile Details</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="notification.html">
+                                            <a href="{{ route('student.profile.security') }}">
                                                 <i class="fa-sharp fa-regular fa-shopping-bag"></i>
-                                                <span>Notification</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="chat-export.html">
-                                                <i class="fa-sharp fa-regular fa-users"></i>
-                                                <span>Chat Export</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="appearance.html">
-                                                <i class="fa-sharp fa-regular fa-home"></i>
-                                                <span>Apperance</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="plans-billing.html">
-                                                <i class="fa-sharp fa-regular fa-briefcase"></i>
-                                                <span>Plans and Billing</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="sessions.html">
-                                                <i class="fa-sharp fa-regular fa-users"></i>
-                                                <span>Sessions</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="application.html">
-                                                <i class="fa-sharp fa-regular fa-list"></i>
-                                                <span>Application</span>
+                                                <span>Security</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
-                            <li><a href="#"><i class="fa-sharp fa-regular fa-award"></i><span>Help & FAQ</span></a></li>
+                            <li><a href="{{ route('faq') }}"><i class="fa-sharp fa-regular fa-award"></i><span>FAQ</span></a></li>
                         </ul>
                         <div class="rbt-sm-separator"></div>
                         <ul class="dashboard-mainmenu rbt-default-sidebar-list">
-                            <li><a href="release-notes.html"><i class="fa-sharp fa-regular fa-bell"></i><span>Release notes</span></a></li>
-                            <li><a href="terms-policy.html"><i class="fa-sharp fa-regular fa-briefcase"></i><span>Terms & Policy</span></a></li>
+                            <li><a href="{{ route('disclaimer') }}"><i class="fa-sharp fa-regular fa-bell"></i><span>Disclaimer</span></a></li>
+                            <li><a href="{{ route('privacy-policy') }}"><i class="fa-sharp fa-regular fa-briefcase"></i><span>Terms & Condition</span></a></li>
                         </ul>
                     </nav>
                 </div>

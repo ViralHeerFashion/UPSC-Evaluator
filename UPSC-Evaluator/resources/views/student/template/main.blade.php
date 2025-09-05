@@ -38,7 +38,7 @@
             progressBar: true,
             showMethod: 'slideDown',
             positionClass: 'toast-top-right',
-            timeOut: 2000
+            timeOut: 5000
         };
     });
 </script>

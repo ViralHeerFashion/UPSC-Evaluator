@@ -72,7 +72,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
                                     <div class="alert alert-success alert-dismissible fade show otp-expire-container" role="alert" @if(!is_null($user) && !$user->is_registered) style="display: block;" @endif>
-                                        This OTP will expire in <span class="second">30</span> seconds.
+                                        Resend OTP in <span class="second">30</span> seconds.
                                     </div>
                                     <form action="{{route('student.register.store')}}" method="POST" id="register-form">
                                         @csrf
@@ -265,6 +265,9 @@
                             if (response.success) {
                                 window.location.href = response.redirect_url;
                             } else {
+                                if('otp_not_send' in response) {
+                                    alert(response.otp_not_send);
+                                }
                                 $(".form-loader").removeClass("show-inline");
                                 $(".submit-btn").removeClass('disable-button');
                                 $("."+response.elements.hide_element).hide();

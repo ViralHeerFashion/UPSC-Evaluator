@@ -28,9 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         })
         ->redirectUsersTo(function(Request $request): string {
             if (Auth::guard('admin')->check()) {
-                return $request->is('admin/*') ? '/admin/dashboard' : '/dashboard';
+                return $request->is('admin/*') ? '/admin/dashboard' : '/mains-evaluation/start';
             } elseif (Auth::check()) {
-                return '/dashboard';
+                return '/mains-evaluation/start';
             }
             return '/login';
         })

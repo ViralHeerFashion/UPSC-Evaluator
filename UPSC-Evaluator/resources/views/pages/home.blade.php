@@ -1,5 +1,10 @@
 @extends('pages.theme.main')
 @section('title', 'Home page')
+@section('styles')
+<style>
+    .rainbow-pricing, .pricing-table-inner{width: 100%!important;}
+</style>
+@endsection
 @section('content')
 <div class="slider-area slider-style-1 variation-default slider-bg-image bg-banner1 slider-bg-shape" data-black-overlay="1">
     <div class="container">
@@ -32,7 +37,7 @@
             </div>
             <div class="col-lg-11 col-xl-11 justify-content-center">
                 <div class="slider-frame">
-                    <img class="slider-image-effect" src="{{ asset('public/images/slider-main-image.png') }}" alt="Banner Images">
+                    <img class="slider-image-effect" src="{{ asset('public/images/answer-evaluation.png') }}" alt="Banner Images">
                 </div>
             </div>
         </div>
@@ -85,7 +90,7 @@
                                         <div class="export-img">
                                             <div class="inner-without-padding">
                                                 <div class="export-img img-bg-shape">
-                                                    <img src="{{ asset('public/images/chat-export-vedio.png') }}" alt="Chat example Image">
+                                                    <img src="{{ asset('public/images/second-slider.png') }}" alt="Chat example Image">
                                                     <div class="image-shape"></div>
                                                 </div>
                                             </div>
@@ -317,6 +322,180 @@
 
 
 
+<div class="aiwave-pricing-area wrapper rainbow-section-gap-big" id="pricing">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title text-center sal-animate" data-sal="slide-up" data-sal-duration="400" data-sal-delay="150">
+                    <h4 class="subtitle">
+                        <span class="theme-gradient">Pricing</span>
+                    </h4>
+                    <h2 class="title w-600 mb--40">
+                        Pricing plans for everyone
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content p-0 bg-transparent border-0 border bg-light" id="nav-tabContent">
+            <div class="tab-pane fade active show" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="row row--15 mt_dec--40">
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-12 mt--40">
+                        <div class="rainbow-pricing style-aiwave">
+                            <div class="pricing-table-inner">
+                                <div class="pricing-top">
+                                    <div class="pricing-header">
+                                        <div class="icon">
+                                            <i class="fa-regular fa-circle-radiation"></i>
+                                        </div>
+                                        <h4 class="title color-var-one">Starter</h4>
+                                        <p class="subtitle">Experience the full platform</p>
+                                        <div class="pricing">
+                                            <span class="price-text">Free</span>
+                                        </div>
+                                    </div>
+                                    <div class="pricing-body">
+                                        <div class="features-section">
+                                            <h6>Includes</h6>
+                                            <ul class="list-style--1">
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> ₹15 Free Wallet Balance
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to 12 pages
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Full access to all features
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pricing-footer">
+                                    <a class="btn-default btn-border" href="#">Get Started</a>
+                                    <p class="bottom-text">Limited Offer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-12 mt--40">
+                        <div class="rainbow-pricing style-aiwave active">
+                            <div class="pricing-table-inner">
+                                <div class="pricing-top">
+                                    <div class="pricing-header">
+                                        <div class="icon">
+                                            <i class="fa-sharp fa-regular fa-flower"></i>
+                                        </div>
+                                        <h4 class="title color-var-two">🚀 Booster Pack</h4>
+                                        <p class="subtitle">For consistent weekly practice</p>
+                                        <div class="pricing">
+                                            <span class="price-text">349</span>
+                                        </div>
+                                    </div>
+                                    <div class="pricing-body">
+                                        <div class="features-section has-show-more">
+                                            <h6>Includes</h6>
+                                            <ul class="list-style--1 has-show-more-inner-content">
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹349, Get ₹405 Value
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> +16% Bonus
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to 337 pages
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pricing-footer">
+                                    <a class="btn-default color-blacked" href="#">Get Started</a>
+                                    <p class="bottom-text">Limited Offer</p>
+                                </div>
+                            </div>
+                            <div class="feature-badge">Best Offer</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-12 mt--40">
+                        <div class="rainbow-pricing style-aiwave">
+                            <div class="pricing-table-inner">
+                                <div class="pricing-top">
+                                    <div class="pricing-header">
+                                        <div class="icon">
+                                            <i class="fa-sharp fa-regular fa-waveform-lines"></i>
+                                        </div>
+                                        <h4 class="title color-var-three">🏆 Mains Cracker</h4>
+                                        <p class="subtitle">For rigorous test series preparation</p>
+                                        <div class="pricing">
+                                            <span class="price-text">799</span>
+                                        </div>
+                                    </div>
+                                    <div class="pricing-body">
+                                        <div class="features-section has-show-more">
+                                            <h6>Includes</h6>
+                                            <ul class="list-style--1 has-show-more-inner-content">
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹799, Get ₹1125 Value
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> +40% Bonus
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to 937 pages
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pricing-footer">
+                                    <a class="btn-default btn-border" href="#">Get Started</a>
+                                    <p class="bottom-text">Limited Offer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-12 mt--40">
+                        <div class="rainbow-pricing style-aiwave">
+                            <div class="pricing-table-inner">
+                                <div class="pricing-top">
+                                    <div class="pricing-header">
+                                        <div class="icon">
+                                            <i class="fa-sharp fa-regular fa-waveform-lines"></i>
+                                        </div>
+                                        <h4 class="title color-var-three">Rank Booster</h4>
+                                        <p class="subtitle">For the entire Mains season</p>
+                                        <div class="pricing">
+                                            <span class="price-text">1299</span>
+                                        </div>
+                                    </div>
+                                    <div class="pricing-body">
+                                        <div class="features-section has-show-more">
+                                            <h6>Includes</h6>
+                                            <ul class="list-style--1 has-show-more-inner-content">
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹1299, Get ₹2025 Value
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> +55% Bonus
+                                                </li>
+                                                <li>
+                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to    1687 pages
+                                                </li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pricing-footer">
+                                    <a class="btn-default btn-border" href="#">Get Started</a>
+                                    <p class="bottom-text">Limited Offer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

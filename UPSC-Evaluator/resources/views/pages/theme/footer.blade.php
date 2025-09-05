@@ -22,14 +22,14 @@
                 <div class="col-lg-2 col-md-6 col-sm-6 col-12">
                     <div class="rainbow-footer-widget">
                         <div class="widget-menu-bottom">
-                            <h4 class="title">Quick Links</h4>
+                            <h4 class="title">Important Links</h4>
                             <div class="inner">
                                 <ul class="footer-link link-hover">
-                                    <li><a href="#">Pages</a></li>
-                                    <li><a href="blog.html">Blog</a></li>
-                                    <li><a href="contact,html">Contact</a></li>
-                                    <li><a href="utilize.html">How to use</a></li>
-                                    <li><a href="roadmap.html">Roadmap</a></li>
+                                    <li><a href="javascript:void(0);">Pages</a></li>
+                                    <li><a href="{{ route('home') }}">Home</a></li>
+                                    <li><a href="{{ route('about-us') }}">About Us</a></li>
+                                    <li><a href="{{ route('contact-us') }}">Contact us</a></li>
+                                    <li><a href="{{ route('home') }}#pricing">Pricing</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -38,14 +38,13 @@
                 <div class="col-lg-2 col-md-6 col-sm-6 col-12">
                     <div class="rainbow-footer-widget">
                         <div class="widget-menu-top">
-                            <h4 class="title">Services</h4>
+                            <h4 class="title">Help</h4>
                             <div class="inner">
                                 <ul class="footer-link link-hover">
-                                    <li><a href="image-generator.html">Image Generator</a></li>
-                                    <li><a href="vedio-generator.html">Video Generator</a></li>
-                                    <li><a href="text-generator.html">Text Generator</a></li>
-                                    <li><a href="code-generator.html">Code Generator</a></li>
-                                    <li><a href="#">Education Feedback</a></li>
+                                    <li><a href="{{ route('faq') }}">FAQ</a></li>
+                                    <li><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li>
+                                    <li><a href="{{ route('disclaimer') }}">Disclaimer</a></li>
+                                    <li><a href="{{ route('privacy-policy') }}">Terms & Condition</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -72,25 +71,8 @@
 <div class="copyright-area copyright-style-one">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6 col-md-8 col-sm-12 col-12">
-                <div class="copyright-left">
-                    <ul class="ft-menu link-hover">
-                        <li>
-                            <a href="privacy-policy.html">Privacy Policy</a>
-                        </li>
-                        <li>
-                            <a href="terms-policy.html">Terms And Condition</a>
-                        </li>
-                        <li>
-                            <a href="contact.html">Contact Us</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-4 col-sm-12 col-12">
-                <div class="copyright-right text-center text-lg-end">
-                    <p class="copyright-text">Copyright © <script>document.write(new Date().getFullYear());</script> <a href="https://themeforest.net/user/pixcelsthemes" class="btn-read-more"><span>Pixcels-Themes.</span></a></p>
-                </div>
+            <div class="col-12">
+                <p>@ 2025 Aspire Scan, a product of Potenzials Education. or Aspire Scan is owned and operated by Potenzials Education.</p>
             </div>
         </div>
     </div>
