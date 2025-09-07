@@ -8,7 +8,8 @@ use App\Http\Controllers\Student\{
     ScreeningQuestionController,
     RechargeController,
     ProfileController,
-    MainsEvaluationController
+    MainsEvaluationController,
+    WalletController
 };
 
 
@@ -81,6 +82,12 @@ Route::middleware('auth')->group(function(){
                     Route::post('/generate-task', 'generateTask')->name('mains-evaluation.generate-task');
                     Route::post('/{task_id}/process-task', 'processTask')->name('mains-evaluation.process-task');
                     Route::get('/{task_id}/download-evaluation', 'downloadEvaluation')->name('mains-evaluation.download-evaluation');
+                });
+            });
+
+            Route::prefix('wallet')->group(function(){
+                Route::controller(WalletController::class)->group(function(){
+                    Route::get('', 'index')->name('wallet');
                 });
             });
 

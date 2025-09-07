@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Smalot\PdfParser\Parser;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Options;
+use Dompdf\Dompdf;
+use Dompdf\FontMetrics;
 use App\Models\{
     StudentAnswerSheet,
     StudentAnswerEvaluation,
@@ -418,10 +421,26 @@ class MainsEvaluationController extends Controller
         ->where('task_id', $process_id)
         ->first(); 
 
-        $pdf = Pdf::loadView('student.mains-evaluation.pdf', compact(
-            'student_answer_sheet'
-        ));
-        return $pdf->download('Evaluation-'.$student_answer_sheet->file_name);
+
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        $options->setChroot(public_path());
+
+        $dompdf = new Dompdf($options);
+
+        $fontPath = public_path('NotoSans/NotoSansDevanagari-Regular.ttf');
+
+        $html = view('student.mains-evaluation.pdf', compact(
+            'student_answer_sheet',
+            'fontPath'
+        ))->render();
+
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $dompdf->stream('Evaluation-'.$student_answer_sheet->file_name);
 
         // return view('student.mains-evaluation.pdf', compact(
         //     'student_answer_sheet'
@@ -478,8 +497,6 @@ class MainsEvaluationController extends Controller
                 }
             }
         }
-
-        error_log(json_encode($model_answer_parts), 0);
 
 
         return $model_answer_parts;

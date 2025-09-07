@@ -367,7 +367,7 @@
             });
         });
     }
-    var audio = new Audio('{{ asset("audio/loading-sound.mp3") }}');
+    var audio = new Audio('{{ asset("public/audio/loading-sound.mp3") }}');
     $(document).ready(function(){
         
         @if(!is_null($student_answer_sheet))

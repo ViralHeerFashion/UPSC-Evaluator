@@ -47,7 +47,7 @@
         <div class="signup-area">
             <div class="wrapper">
                 <div class="row">
-                    <div class="col-lg-6 bg-color-blackest left-wrapper">
+                    <div class="col-lg-12 bg-color-blackest left-wrapper">
                         <div class="sign-up-box">
                             <div class="signup-box-top">
                                 <img src="{{ asset('public/images/logo.png') }}" alt="sign-up logo">
@@ -106,49 +106,7 @@
                                 </div>
                                 <div class="signup-box-footer">
                                     <div class="bottom-text">
-                                        Do you have an account? <a class="btn-read-more ml--5" href="signin.html"><span>Sign In</span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 right-wrapper">
-                        <div class="client-feedback-area">
-                            <div class="single-feedback">
-                                <div class="inner">
-                                    <div class="meta-img-section">
-                                        <a class="image" href="#">
-                                            <img src="{{ asset('public/images/team-02sm.jpg') }}" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="rating">
-                                        <a href="#rating">
-                                            <i class="fa-sharp fa-solid fa-star"></i>
-                                        </a>
-                                        <a href="#rating">
-                                            <i class="fa-sharp fa-solid fa-star"></i>
-                                        </a>
-                                        <a href="#rating">
-                                            <i class="fa-sharp fa-solid fa-star"></i>
-                                        </a>
-                                        <a href="#rating">
-                                            <i class="fa-sharp fa-solid fa-star"></i>
-                                        </a>
-                                        <a href="#rating">
-                                            <i class="fa-sharp fa-solid fa-star"></i>
-                                        </a>
-                                    </div>
-                                    <div class="content">
-                                        <p class="description">Pixcels-Themes is now a crucial component of our work! We made it simple to collaborate across departments by grouping our work</p>
-                                        <div class="bottom-content">
-                                            <div class="meta-info-section">
-                                                <h4 class="title-text mb--0">Guy Hawkins</h4>
-                                                <p class="desc mb--20">Nursing Assistant</p>
-                                                <div class="desc-img">
-                                                    <img src="{{ asset('public/images/brand-t.png') }}" alt="Brand Image">
-                                                </div>
-                                            </div>
-                                        </div>
+                                        Do you have an account? <a class="btn-read-more ml--5" href="{{ route('student.login') }}"><span>Sign In</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            <a class="close-button" href="">
+            <a class="close-button" href="href="{{ route('home') }}">
                 <i class="fa-sharp fa-regular fa-x"></i>
             </a>
         </div>

@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Beautifying Template</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'NotoDeva';
+            src: url('{{ $fontPath }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         /* Base styling */
         body {
-            font-family: verdana;
+            font-family: 'NotoDeva', sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
@@ -211,10 +219,11 @@
             <h2 class="section-title">Gap Analysis & Priority Fixes</h2>
             @foreach($question->gap_analysis_priority_fix as $gap)
             <div class="section" style="border: 1px solid black;padding: 0 20px 0 20px;">
-                <h3 style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;">{{ $gap->gap }}</h3>
+                <p style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;font-size: 20px;">{{ $gap->gap }}</p>
                 <p class="">
                     <h4 style="margin: 5px 0 0 0;padding: 0;">Impact Analysis</h4>
-                    {{ $gap->impact }}
+                    {{ $gap->impact }} <br>
+                    {{ $gap->gap }}
                 </p>
                 <p class="">
                     <h4 style="margin: 5px 0 0 0;padding: 0;">Optimal Solution</h4>
@@ -231,7 +240,7 @@
                 <p>{{ $question->model_answer_intro }}</p>
                 @endif
                 @foreach($question->model_answer as $model_answer)
-                <h3 style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;">{{ $model_answer->title }}</h3>
+                <p style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;">{{ $model_answer->title }}</p>
                 <p>{{$model_answer->description}}</p>
                 @endforeach
                 @if(!empty($question->model_answer_conclusion))

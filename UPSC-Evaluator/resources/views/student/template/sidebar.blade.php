@@ -11,6 +11,7 @@
                             <li><a href="{{ route('student.mains-evaluation') }}" class="answer-evaluation"><img src="{{ asset('public/images/photo.png') }}" alt="Question paper evaluation"><span>Answer Evaluation</span></a></li>
                             <li><a href="{{ route('student.recharge') }}" class="wallet-recharge"><img src="{{ asset('public/images/wallet-recharge.png') }}" alt="Wallet Recharge"><span>Recharge</span></a></li>
                             <li><a href="{{ route('student.mains-evaluation.list') }}" class="past-evaluation"><img src="{{ asset('public/images/past-evaluations.png') }}" alt="Past Evaluation"><span>Past Evaluation</span></a></li>
+                            <li><a href="{{ route('student.wallet') }}" class="wallet"><img src="{{ asset('public/images/website-design.png') }}" alt="Wallet"><span>Wallet</span></a></li>
                             {{-- 
                             <li><a href="javascript:void(0);"><img src="/images/photo.png" alt="AI Generator"><span>Image Generator</span>
                                     <div class="rainbow-badge-card badge-sm ml--10">NEW</div>

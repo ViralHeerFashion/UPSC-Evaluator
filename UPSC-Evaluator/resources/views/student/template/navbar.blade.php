@@ -149,10 +149,11 @@
                 </button>
             </div>
         </div>
-
+                    
         <div class="content">
             <ul class="mainmenu">
                 <li><a href="{{ route('home') }}">Home</a></li>
+                {{-- 
                 <li class="has-dropdown has-menu-child-item position-relative"><a href="#">Tools <i class="fa-regular fa-chevron-down"></i></a>
                     <ul class="submenu">
                         <li>
@@ -392,7 +393,9 @@
                 </li>
                 <li><a href="roadmap.html">Roadmap</a></li>
                 <li><a href="utilize.html">How to use</a></li>
+                --}}
             </ul>
+            {{-- 
             <div class="rbt-sm-separator"></div>
             <div class="rbt-default-sidebar-wrapper">
                 <nav class="mainmenu-nav">
@@ -475,6 +478,7 @@
                     </ul>
                 </nav>
             </div>
+            --}}
         </div>
 
         <!-- Start Header Btn  -->
