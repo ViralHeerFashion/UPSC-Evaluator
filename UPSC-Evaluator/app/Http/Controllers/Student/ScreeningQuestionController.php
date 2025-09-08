@@ -24,6 +24,6 @@ class ScreeningQuestionController extends Controller
             $user->save();
         }
 
-        return redirect()->route('student.dashboard');
+        return redirect()->route('student.mains-evaluation');
     }
 }

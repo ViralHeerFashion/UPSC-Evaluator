@@ -87,27 +87,9 @@
                                         </div>
                                         <div class="inner">
                                             <h4 class="title">Location</h4>
-                                            <p class="b2">100 avenue of the moon, 12 new <br> York, ny 1001B US.</p>
-                                        </div>
-                                    </div>
-                                    <div class="rainbow-address">
-                                        <div class="icon">
-                                            <i class="fa-sharp fa-solid fa-headphones"></i>
-                                        </div>
-                                        <div class="inner">
-                                            <h4 class="title">Contact Number</h4>
-                                            <p class="b2"><a href="#">+444 555 666 777</a></p>
-                                            <p class="b2"><a href="#">+222 222 222 333</a></p>
-                                        </div>
-                                    </div>
-                                    <div class="rainbow-address">
-                                        <div class="icon">
-                                            <i class="fa-sharp fa-regular fa-envelope"></i>
-                                        </div>
-                                        <div class="inner">
-                                            <h4 class="title">Our Email Address</h4>
-                                            <p class="b2"><a href="mailto:admin@gmail.com">admin@gmail.com</a></p>
-                                            <p class="b2"><a href="mailto:example@gmail.com">example@gmail.com</a></p>
+                                            <p class="b2">B3, Avon Vista, Balewadi, Pune - 411045</p>
+                                            <p class="b2"><a href="javascript:void(0);">+91 89839 57781</a></p>
+                                            <p class="b2">support@aspirescan.com</p>
                                         </div>
                                     </div>
                                 </div>

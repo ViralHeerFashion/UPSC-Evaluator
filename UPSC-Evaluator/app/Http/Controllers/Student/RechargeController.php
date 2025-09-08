@@ -85,7 +85,7 @@ class RechargeController extends Controller
 
     public function paymentStatus(Request $request)
     {
-        $webhook_secret = "!!Iwon@2020!@!secret++";
+        $webhook_secret = "!!++AspireScan@2025";
         $api = new Api(config('razorpay.api_key'), config('razorpay.api_secret'));
         $data = $api->utility->verifyWebhookSignature($request->getContent(), $request->header('X-Razorpay-Signature'), $webhook_secret);
         $payment_detail = json_decode($request->getContent());
@@ -101,10 +101,19 @@ class RechargeController extends Controller
                 $recharge->payment_status = 1;
                 $recharge->save();
 
+                $recharge_amount = $recharge->amount;
+                if ($recharge_amount == 349) {
+                    $recharge_amount = 405;
+                } elseif($recharge_amount == 799) {
+                    $recharge_amount = 1125;
+                } elseif($recharge_amount == 1299) {
+                    $recharge_amount = 2025;
+                }
+
                 $wallet = new Wallet;
                 $wallet->user_id = $recharge->user_id;
                 $wallet->recharge_id = $recharge->id;
-                $wallet->amount = $recharge->amount;
+                $wallet->amount = $recharge_amount;
                 $wallet->save();
                 
             } else {

@@ -35,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             return '/login';
         })
         ->validateCsrfTokens(except: [
-            '/recharge/verify-payment'
+            '/webhook/recharge/verify-payment'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

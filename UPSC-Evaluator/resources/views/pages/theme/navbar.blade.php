@@ -25,7 +25,7 @@
 
                     <!-- Start Header Btn  -->
                     <div class="header-btn">
-                        <a class="rainbow-gradient-btn" target="_blank" href="{{ route('student.login') }}"><span>Get Start</span></a>
+                        <a class="rainbow-gradient-btn" target="_blank" href="{{ route('student.login') }}"><span>Get Started</span></a>
                     </div>
                     <!-- End Header Btn  -->
 

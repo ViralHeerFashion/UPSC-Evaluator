@@ -7,6 +7,7 @@
     .p10{padding: 25px;}
     .pdf-name{display: block;width: 100%;word-wrap: break-word;margin-top: 10px;font-size: 12px;}
     .current-date{margin: 10px;}
+    .download-btn{width: 100%!important;padding: 0 15px!important;}
 </style>
 @endsection
 @section('tab-name')
@@ -32,6 +33,7 @@
                         <span class="pdf-name">{{ $sheet->file_name }}</span>
                     </div>
                 </a>
+                <a href="{{ route('student.mains-evaluation.download-evaluation', ['task_id' => $sheet->task_id]) }}" class="btn btn-default download-btn"><i class="fa fa-download" aria-hidden="true"></i> <span>Download</span></a>
             </div>
             @endforeach
         </div>

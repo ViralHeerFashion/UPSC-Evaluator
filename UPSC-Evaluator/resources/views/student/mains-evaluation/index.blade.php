@@ -243,6 +243,7 @@
                 </div> -->
                 <h6 class="title">Welcome {{ auth()->user()->name }}</h6>
             </div>
+            {{-- 
             <div class="dropdown history-box-dropdown">
                 <button type="button" class="more-info-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
                     <i class="fa-regular fa-ellipsis"></i>
@@ -255,6 +256,7 @@
                     <li><a class="dropdown-item delete-item" href="#"><i class="fa-solid fa-trash-can"></i> Delete Chat</a></li>
                 </ul>
             </div>
+            --}}
         </div>
 
         <div class="chat-box-list pt--30" id="chatContainer">
@@ -283,7 +285,9 @@
                 <div class="inner">
                     <div class="answers-container" id="answers-container">
                         @if(!is_null($student_answer_sheet))
-                        @include('student.mains-evaluation.partials.questions')
+                            @include('student.mains-evaluation.partials.questions')
+                        @else
+                            <img src="{{ asset('public\images\chat-img.png') }}" alt="Upload your PDF to get instant, detailed feedback.">
                         @endif
                     </div>
                 </div>
@@ -298,7 +302,7 @@
                 <button type="button" class="upload-file-btn"><i class="fa-solid fa-upload"></i>&nbsp; Start Evaluation</button>
                 @endif
             </form>
-            <p class="b3 small-text">AiWave can make mistakes. Consider checking important information.</p>
+            <p class="b3 small-text">Upload your PDF to get instant, detailed feedback.</p>
         </div>
     </div>
 </div>

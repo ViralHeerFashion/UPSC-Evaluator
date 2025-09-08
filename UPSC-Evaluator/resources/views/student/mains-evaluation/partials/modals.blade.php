@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="bottom-btn mt--20 text-right">
-                    <button type="submit" class="btn-default btn-small round">Make Evaluate</button>
+                    <button type="submit" class="btn-default btn-small round">Start Evaluation</button>
                 </div>
                 <button type="button" class="close-button" data-bs-dismiss="modal">
                     <i class="fa-sharp fa-regular fa-x"></i>

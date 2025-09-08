@@ -32,6 +32,12 @@
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="form-group">
+                <label for="phone">Phone (It's not editable)</label>
+                <input type="number" name="phone" id="phone" value="{{ auth()->user()->phone }}" readonly>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="form-group">
                 <label for="email">Email</label>
                 <input type="text" name="email" id="email" placeholder="Enter your Email" value="{{ auth()->user()->email }}">
             </div>

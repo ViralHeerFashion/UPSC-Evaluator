@@ -81,7 +81,7 @@
                                             <b>Potenzials Education</b>
                                             <p style="margin-bottom: 0!important;">B3, Avon Vista, Balewadi, Pune - 411045</p>
                                             <b>Email:</b> support@aspirescan.com / support@thepotenzials.com <br>
-                                            <b>Phone:</b> +91-8850721652
+                                            <b>Phone:</b> +91-8983957781
                                         </div>
                                     </div>
                                 </div>

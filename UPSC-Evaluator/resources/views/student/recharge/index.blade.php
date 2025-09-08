@@ -4,7 +4,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>1
 <style>
     .contact-details-box .tab-button-style-2{gap: 8px;}
-    .fixed-amount-card{padding: 25px 50px;font-size: var(--font-size-b2);color: var(--color-heading);background: var(--color-dark);border-radius: var(--radius-small);}
+    .fixed-amount-card{padding: 25px 45px;font-size: var(--font-size-b2);color: var(--color-heading);background: var(--color-dark);border-radius: var(--radius-small);}
     .active .fixed-amount-card{background-color: #805AF5!important;}
     .mb-10px{margin-bottom: 10px;}
     .error{color: #cb2c2c;}
@@ -16,6 +16,8 @@
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+    .text-bold{font-weight: bold;}
+    /* .you-will-get-container{display: none;} */
 </style>
 @endsection
 @section('tab-name')
@@ -39,8 +41,8 @@
             @csrf
             <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" name="amount" id="amount" placeholder="Enter your Amount" value="20">
+                    <label for="amount">Amount <span class="text-success text-bold you-will-get-container">(Amount to be credited: ₹49)</span></label>
+                    <input type="number" name="amount" id="amount" placeholder="Enter your Amount" value="49">
                 </div>
             </div>
             <div class="col-12">
@@ -51,38 +53,39 @@
         </form>
         <div class="row">
             <div class="col-md-3 col-sm-6 col-6 mb-10px">
-                <a href="javascript:void(0);" data-amount="20" class="set-recharge-amount active">
+                <a href="javascript:void(0);" data-amount="49" class="set-recharge-amount active">
                     <div class="fixed-amount-card text-center">
-                        <h4 class="mb-0">20</h4>
+                        <h4 class="mb-0">49</h4>
                         <span>Amount</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-6 mb-10px">
-                <a href="javascript:void(0);" data-amount="50" class="set-recharge-amount">
+                <a href="javascript:void(0);" data-amount="349" class="set-recharge-amount">
                     <div class="fixed-amount-card text-center">
-                        <h4 class="mb-0">50</h4>
+                        <h4 class="mb-0">349</h4>
                         <span>Amount</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-6 mb-10px">
-                <a href="javascript:void(0);" data-amount="100" class="set-recharge-amount">
+                <a href="javascript:void(0);" data-amount="799" class="set-recharge-amount">
                     <div class="fixed-amount-card text-center">
-                        <h4 class="mb-0">100</h4>
+                        <h4 class="mb-0">799</h4>
                         <span>Amount</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6 col-6 mb-10px">
-                <a href="javascript:void(0);" data-amount="200" class="set-recharge-amount">
+                <a href="javascript:void(0);" data-amount="1299" class="set-recharge-amount">
                     <div class="fixed-amount-card text-center">
-                        <h4 class="mb-0">200</h4>
+                        <h4 class="mb-0">1299</h4>
                         <span>Amount</span>
                     </div>
                 </a>
             </div>
         </div>
+        <p>For more details on recharge and bonuses <a href="{{ route('home') }}#pricing" style="color: #805AF5;">click here</a></p>
     </div>
 </div>
 @endsection
@@ -92,16 +95,53 @@
         $(".wallet-recharge").addClass('active');
         $(".set-recharge-amount").on('click', function(){
             let amount = $(this).data('amount');
+            var sentence = null; 
+            if (amount == 49) {
+                sentence = "(Amount to be credited: ₹50)";                
+            } else if(amount == 349) {
+                sentence = "(Amount to be credited: ₹405)";
+            } else if(amount == 799) {
+                sentence = "(Amount to be credited: ₹1125)";
+            } else if(amount == 1299) {
+                sentence = "(Amount to be credited: ₹2025)";
+            }           
+
+            if (sentence != null) {
+                $(".you-will-get-container").text(sentence);
+                $(".you-will-get-container").show();
+            } else {
+                $(".you-will-get-container").hide();
+            }
+
             $(".set-recharge-amount").removeClass('active');
             $(this).addClass('active');
             $("#amount").val(amount);
         });
         $("#amount").on('blur', function(){
             let amount = parseInt($(this).val());
-            let fixed_amounts = [20, 40, 100, 200];
+            let fixed_amounts = [49, 349, 799, 1299];
             $(".set-recharge-amount").removeClass('active');
             if (fixed_amounts.includes(amount)) {
                 $('.set-recharge-amount[data-amount="'+amount+'"]').addClass('active');
+                var sentence = null; 
+                if (amount == 49) {
+                    sentence = "(Amount to be credited: ₹50)";                
+                } else if(amount == 349) {
+                    sentence = "(Amount to be credited: ₹405)";
+                } else if(amount == 799) {
+                    sentence = "(Amount to be credited: ₹1125)";
+                } else if(amount == 1299) {
+                    sentence = "(Amount to be credited: ₹2025)";
+                }           
+                
+                if (sentence != null) {
+                    $(".you-will-get-container").text(sentence);
+                    $(".you-will-get-container").show();
+                } else {
+                    $(".you-will-get-container").hide();
+                }
+            } else {
+                $(".you-will-get-container").hide();
             }
         });
         $("#recharge-form").validate({
@@ -137,9 +177,9 @@
                             key: "{{ config('razorpay.api_key') }}",
                             amount: response.amount, 
                             currency: "INR",
-                            name: "PDF Processor",
+                            name: "Aspire Scan",
                             description: response.order_id,
-                            image: "https://cdn.razorpay.com/logos/GhRQcyean79PqE_medium.png",
+                            image: "https://aspirescan.com/public/images/icon.png",
                             order_id: response.razorpay_order_id,
                             prefill: {
                                 name: "{{ auth()->user()->name }}",

@@ -11,7 +11,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-12">
                 <div class="inner text-center mt--140">
-                    <h1 class="title display-one">Unlock Your UPSC Potential:
+                    <h1 class="title display-one">Unlock Your UPSC Potential
                         <br> <span class="header-caption">
                             <span class="cd-headline rotate-1">
                                 <span class="cd-words-wrapper" style="width: 221px;">
@@ -83,7 +83,7 @@
                                                     <li><i class="fa-regular fa-circle-check"></i>Available in English & Hindi both</li>
                                                 </ul>
                                             </div>
-                                            <div class="read-more"><a class="btn-default color-blacked" href="#">Start Exploring Now <i class="fa-sharp fa-solid fa-arrow-right"></i></a></div>
+                                            <div class="read-more"><a class="btn-default color-blacked" href="{{ auth()->check() ? route('student.mains-evaluation') : route('home').'#pricing' }}">Start Exploring Now <i class="fa-sharp fa-solid fa-arrow-right"></i></a></div>
                                         </div>
                                     </div>
                                     <div class="col-xl-6 mt_md--30 mt_sm--30">
@@ -121,13 +121,13 @@
                                     <div class="row g-0 radius-10 align-items-center">
                                         <div class="col-lg-12 col-xl-5 col-12">
                                             <div class="thumbnail">
-                                                <img class="radius" src="{{ asset('public/images/split-1.png') }}" alt="split Images">
+                                                <img class="radius" src="{{ asset('public/images/step-one.png') }}" alt="split Images">
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-xl-7 col-12">
                                             <div class="split-inner">
                                                 <div class="subtitle">
-                                                    <span class="theme-gradient">How it work</span>
+                                                    <span class="theme-gradient">How it works</span>
                                                 </div>
                                                 <h2 class="title sal-animate" data-sal="slide-up" data-sal-duration="400" data-sal-delay="200">
                                                     Upload Your Answer Sheet
@@ -158,7 +158,7 @@
                                     <div class="row g-0 radius-10 align-items-center">
                                         <div class="col-lg-12 col-xl-5 col-12">
                                             <div class="thumbnail">
-                                                <img class="radius" src="{{ asset('public/images/split-4.png') }}" alt="split Images">
+                                                <img class="radius" src="{{ asset('public/images/step-two.png') }}" alt="split Images">
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-xl-7 col-12">
@@ -195,7 +195,7 @@
                                     <div class="row g-0 radius-10 align-items-center">
                                         <div class="col-lg-12 col-xl-5 col-12">
                                             <div class="thumbnail">
-                                                <img class="radius" src="{{ asset('public/images/split-3.png') }}" alt="split Images">
+                                                <img class="radius" src="{{ asset('public/images/step-three.png') }}" alt="split Images">
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-xl-7 col-12">
@@ -234,7 +234,7 @@
                                     <div class="row g-0 radius-10 align-items-center">
                                         <div class="col-lg-12 col-xl-5 col-12">
                                             <div class="thumbnail">
-                                                <img class="radius" src="{{ asset('public/images/split-5.png') }}" alt="split Images">
+                                                <img class="radius" src="{{ asset('public/images/step-four.png') }}" alt="split Images">
                                             </div>
                                         </div>
                                         <div class="col-lg-12 col-xl-7 col-12">
@@ -336,6 +336,7 @@
                 </div>
             </div>
         </div>
+        @php($redirect_link = auth()->check() ? route('student.recharge') : route('student.login'))
         <div class="tab-content p-0 bg-transparent border-0 border bg-light" id="nav-tabContent">
             <div class="tab-pane fade active show" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <div class="row row--15 mt_dec--40">
@@ -371,7 +372,7 @@
                                     </div>
                                 </div>
                                 <div class="pricing-footer">
-                                    <a class="btn-default btn-border" href="#">Get Started</a>
+                                    <a class="btn-default btn-border" href="{{ $redirect_link }}">Get Started</a>
                                     <p class="bottom-text">Limited Offer</p>
                                 </div>
                             </div>
@@ -409,7 +410,7 @@
                                     </div>
                                 </div>
                                 <div class="pricing-footer">
-                                    <a class="btn-default color-blacked" href="#">Get Started</a>
+                                    <a class="btn-default color-blacked" href="{{ $redirect_link }}">Get Started</a>
                                     <p class="bottom-text">Limited Offer</p>
                                 </div>
                             </div>
@@ -448,7 +449,7 @@
                                     </div>
                                 </div>
                                 <div class="pricing-footer">
-                                    <a class="btn-default btn-border" href="#">Get Started</a>
+                                    <a class="btn-default btn-border" href="{{ $redirect_link }}">Get Started</a>
                                     <p class="bottom-text">Limited Offer</p>
                                 </div>
                             </div>
@@ -485,7 +486,7 @@
                                     </div>
                                 </div>
                                 <div class="pricing-footer">
-                                    <a class="btn-default btn-border" href="#">Get Started</a>
+                                    <a class="btn-default btn-border" href="{{ $redirect_link }}">Get Started</a>
                                     <p class="bottom-text">Limited Offer</p>
                                 </div>
                             </div>

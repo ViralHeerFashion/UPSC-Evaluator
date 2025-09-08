@@ -9,14 +9,7 @@
                                 <img class="logo-light" src="{{ asset('public/images/logo.png') }}" alt="ChatBot Logo">
                             </a>
                         </div>
-                        <p class="b1 desc-text">It has long been known that a reader's <br> attention will be diverted from </p>
-                        <h6 class="subtitle">Join a Newsletter</h6>
-                        <form class="newsletter-form" action="#">
-                            <div class="form-group">
-                                <input type="email" placeholder="Enter Your Email Here">
-                                <button class="btn-default bg-solid-primary" type="submit"><i class="fa-sharp fa-regular fa-arrow-right"></i></button>
-                            </div>
-                        </form>
+                        <p class="b1 desc-text">Aspire Scan is an AI-powered evaluation platform designed to help UPSC aspirants master the art of answer writing. We provide instant, data-driven feedback to turn your hard work into high scores. A proud initiative by Potenzials Education.</p>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-6 col-12">
@@ -25,7 +18,6 @@
                             <h4 class="title">Important Links</h4>
                             <div class="inner">
                                 <ul class="footer-link link-hover">
-                                    <li><a href="javascript:void(0);">Pages</a></li>
                                     <li><a href="{{ route('home') }}">Home</a></li>
                                     <li><a href="{{ route('about-us') }}">About Us</a></li>
                                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
@@ -56,9 +48,9 @@
                             <h4 class="title">Contact</h4>
                             <div class="inner">
                                 <ul class="footer-link contact-link">
-                                    <li><i class="contact-icon fa-regular fa-location-dot"></i><a href="#">8819 Ohio St. South Gate, North America, USA</a></li>
-                                    <li><i class="contact-icon fa-sharp fa-regular fa-envelope"></i><a href="#">example@domain.com</a></li>
-                                    <li><i class="contact-icon fa-regular fa-phone"></i><a href="#">+1 386-688-3295</a></li>
+                                    <li><i class="contact-icon fa-regular fa-location-dot"></i><a href="javascript:void(0);">B3, Avon Vista, Balewadi, Pune - 411045</a></li>
+                                    <li><i class="contact-icon fa-sharp fa-regular fa-envelope"></i><a href="javascript:void(0);">support@aspirescan.com</a></li>
+                                    <li><i class="contact-icon fa-regular fa-phone"></i><a href="javascript:void(0);">+91 89839 57781</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -72,7 +64,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12">
-                <p>@ 2025 Aspire Scan, a product of Potenzials Education. or Aspire Scan is owned and operated by Potenzials Education.</p>
+                <p>Aspire Scan is owned and operated by Potenzials Education.</p>
             </div>
         </div>
     </div>

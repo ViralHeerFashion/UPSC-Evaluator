@@ -25,7 +25,7 @@ Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy-policy');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/disclaimer', 'pages.disclaimer')->name('disclaimer');
 
-Route::post('/recharge/payment-status', [RechargeController::class, 'paymentStatus']);
+Route::post('/webhook/recharge/payment-status', [RechargeController::class, 'paymentStatus']);
 
 Route::middleware('guest')->group(function () {
     Route::controller(AuthController::class)->group(function () {
