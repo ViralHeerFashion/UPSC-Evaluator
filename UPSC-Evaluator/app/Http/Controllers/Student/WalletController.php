@@ -14,7 +14,7 @@ class WalletController extends Controller
     public function index()
     {
         $balance = Wallet::where('user_id', Auth::id())->sum('amount');
-        $transactions = Wallet::orderBy('id')->get();
+        $transactions = Wallet::where('user_id', Auth::id())->orderBy('id')->get();
 
         return view('student.wallet.index', compact(
             'balance',

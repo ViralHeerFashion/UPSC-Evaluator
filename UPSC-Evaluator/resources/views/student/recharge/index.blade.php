@@ -35,7 +35,11 @@
     </div>
 </div>
 <div class="contact-details-box">
-    <h3 class="title">Recharge your wallet</h3>
+    <!-- <h3 class="title">Recharge your wallet</h3> -->
+    <h3 class="text-center">
+        ₹{{number_format($current_balance, 2)}}
+        <p>Current Balance</p>
+    </h3>
     <div class="profile-details-tab">
         <form action="{{ route('student.recharge.createOrder') }}" method="post" id="recharge-form" class="rbt-profile-row rbt-default-form row row--15">
             @csrf
@@ -97,7 +101,7 @@
             let amount = $(this).data('amount');
             var sentence = null; 
             if (amount == 49) {
-                sentence = "(Amount to be credited: ₹50)";                
+                sentence = "(Amount to be credited: ₹49)";                
             } else if(amount == 349) {
                 sentence = "(Amount to be credited: ₹405)";
             } else if(amount == 799) {
@@ -125,7 +129,7 @@
                 $('.set-recharge-amount[data-amount="'+amount+'"]').addClass('active');
                 var sentence = null; 
                 if (amount == 49) {
-                    sentence = "(Amount to be credited: ₹50)";                
+                    sentence = "(Amount to be credited: ₹49)";                
                 } else if(amount == 349) {
                     sentence = "(Amount to be credited: ₹405)";
                 } else if(amount == 799) {
@@ -148,12 +152,12 @@
             rules: {
                 amount: {
                     required: true,
-                    min: 20
+                    min: 49
                 }
             },
             messages: {
                 amount: {
-                    min: "Minimum 20 recharge mandatory"
+                    min: "Minimum 49 recharge mandatory"
                 }
             },
             submitHandler: function(form){

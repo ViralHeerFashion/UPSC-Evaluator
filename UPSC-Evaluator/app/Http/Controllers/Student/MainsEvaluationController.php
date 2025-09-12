@@ -23,7 +23,7 @@ use App\Models\{
 
 class MainsEvaluationController extends Controller
 {
-    private $per_page_evaluation_charge = 5;
+    private $per_page_evaluation_charge = 1.2;
     private $api_base_url = "https://upsc-ai-evaluator.onrender.com";
     public function index(string $process_id = null)
     {

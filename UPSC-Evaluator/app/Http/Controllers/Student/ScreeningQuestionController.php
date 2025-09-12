@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\UserAttemptQuestion;
+use App\Models\{
+    UserAttemptQuestion,
+    Recharge,
+    Wallet
+};
 
 class ScreeningQuestionController extends Controller
 {
@@ -22,6 +26,19 @@ class ScreeningQuestionController extends Controller
             $user = Auth::user();
             $user->question_attempted = 1;
             $user->save();
+
+            $recharge = new Recharge;
+            $recharge->user_id = Auth::id();
+            $recharge->amount = 15;
+            $recharge->order_id = date("Ymd")."R";
+            $recharge->razorpay_order_id = "Welcome bonus";
+            $recharge->save();
+
+            $wallet = new Wallet;
+            $wallet->user_id = $recharge->user_id;
+            $wallet->recharge_id = $recharge->id;
+            $wallet->amount = 15;
+            $wallet->save();
         }
 
         return redirect()->route('student.mains-evaluation');

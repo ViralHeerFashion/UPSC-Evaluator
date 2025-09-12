@@ -16,7 +16,10 @@ class RechargeController extends Controller
 {
     public function index()
     {
-        return view('student.recharge.index');
+        $current_balance = Wallet::where('user_id', Auth::id())->sum('amount');
+        return view('student.recharge.index', compact(
+            'current_balance'
+        ));
     }
 
     public function createOrder(Request $request)
@@ -27,6 +30,7 @@ class RechargeController extends Controller
             'receipt' => $order_id, 
             'amount' => $request->amount * 100, 
             'currency' => 'INR', 
+            'payment_capture' => true,
             'notes'=> [
                 'website' => $request->getHost()
             ]
@@ -65,7 +69,27 @@ class RechargeController extends Controller
 
             $recharge->razorpay_payment_id = $request->razorpay_payment_id;
             $recharge->razorpay_signature = $request->razorpay_signature;
+            $recharge->payment_status = 1;
             $recharge->save();
+            
+            $wallet_count = Wallet::where('recharge_id', $recharge->id)->count();
+            
+            if($wallet_count <= 0) {
+                $recharge_amount = $recharge->amount;
+                if ($recharge_amount == 349) {
+                    $recharge_amount = 405;
+                } elseif($recharge_amount == 799) {
+                    $recharge_amount = 1125;
+                } elseif($recharge_amount == 1299) {
+                    $recharge_amount = 2025;
+                }
+    
+                $wallet = new Wallet;
+                $wallet->user_id = $recharge->user_id;
+                $wallet->recharge_id = $recharge->id;
+                $wallet->amount = $recharge_amount;
+                $wallet->save();
+            }
 
         } catch (SignatureVerificationError $e) {
 
@@ -85,13 +109,19 @@ class RechargeController extends Controller
 
     public function paymentStatus(Request $request)
     {
+        $error = new Error;
+        $error->message = "Webhook Content";
+        $error->error = $request->getContent();
+        $error->file_name = __FILE__;
+        $error->line_number = __LINE__;
+        $error->save();
         $webhook_secret = "!!++AspireScan@2025";
         $api = new Api(config('razorpay.api_key'), config('razorpay.api_secret'));
         $data = $api->utility->verifyWebhookSignature($request->getContent(), $request->header('X-Razorpay-Signature'), $webhook_secret);
         $payment_detail = json_decode($request->getContent());
         $razorpay_order_id = $payment_detail->payload->payment->entity->order_id;
         $recharge = Recharge::where('razorpay_payment_id', $order_id)->first();
-        if (!is_null($recharge)) {
+        if (0 && !is_null($recharge)) {
             if(
                 $payment_detail->event == "payment.captured" && 
                 $payment_detail->payload->payment->entity->currency == 'INR' && 

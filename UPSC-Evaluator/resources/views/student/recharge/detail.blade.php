@@ -359,7 +359,7 @@
             </div>
         </div>
         
-        <a href="javascript:void(0);" class="action-btn">Go to Wallet</a>
+        <a href="{{ route('student.wallet') }}" class="action-btn">Go to Wallet</a>
     </div>
 
     <script>

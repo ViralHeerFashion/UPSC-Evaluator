@@ -18,7 +18,7 @@
     <div class="contact-details-box">
         <div class="balance text-center">
             <h3 class="mb-5px">
-                ₹{{ number_format($balance) }}
+                ₹{{ number_format($balance, 2) }}
             </h3>
             <p>Balance</p>
         </div>
@@ -39,9 +39,9 @@
                     <td>{{ date("d-m-Y", strtotime($t->created_at)) }}</td>
                     <td>
                         @if($t->amount > 0)
-                        <span class="text-success">₹{{ number_format($t->amount) }}</span>
+                        <span class="text-success">₹{{ number_format($t->amount, 2) }}</span>
                         @else
-                        <span class="text-danger">₹{{ number_format($t->amount) }}</span>
+                        <span class="text-danger">₹{{ number_format($t->amount, 2) }}</span>
                         @endif
                     </td>
                     <td>

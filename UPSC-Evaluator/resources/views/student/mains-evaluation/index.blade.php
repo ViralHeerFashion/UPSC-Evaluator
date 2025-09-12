@@ -144,6 +144,9 @@
     .message-content {font-size: 14px;color: var(--text-secondary);white-space: nowrap;}
     .action-button {background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));color: white;border: none;padding: 10px 20px;border-radius: 50px;font-size: 14px;font-weight: 600;cursor: pointer;transition: all 0.3s ease;box-shadow: 0 4px 12px rgba(128, 90, 245, 0.4);margin-top: 10px;display: flex;align-items: center;gap: 8px;white-space: nowrap;}
     .action-button:hover {transform: translateY(-3px);box-shadow: 0 6px 18px rgba(128, 90, 245, 0.6);}
+    .user-size-pdf-container{display: none;}
+    .i-love-pdf{margin-top: 10px;text-align: right;}
+    .i-love-pdf a{color: #805af5;}
     @keyframes fillProgress {
         to {width: var(--progress-percent);}
     }
@@ -260,13 +263,13 @@
         </div>
 
         <div class="chat-box-list pt--30" id="chatContainer">
-            <div class="chat-box author-speech">
+            <div class="chat-box author-speech user-size-pdf-container" @if(!is_null($student_answer_sheet)) style="display: block;" @endif>
                 <div class="inner">
                     <div class="chat-section">
                         <div class="author">
                             <img class="w-100" src="{{ asset('public/images/user-profile.jpg') }}" alt="Author">
                         </div>
-                        <div class="chat-content user-size-pdf-container">
+                        <div class="chat-content user-content">
                             @if(!is_null($student_answer_sheet))
                             <h6 class="title">You</h6>
                             <p class="mt-5px">
@@ -401,13 +404,33 @@
             
             return (fileName.endsWith('.pdf') && (fileType === 'application/pdf' || fileType === 'application/x-pdf'));
         }, "Please upload a valid PDF file");
+        $.validator.addMethod('filesizeMB', function(value, element, maxMB) {
+            if (element.files.length === 0) {
+                return true;
+            }
+
+            if (!window.File || !window.FileList || !window.FileReader) {
+                return true;
+            }
+
+            var maxBytes = parseFloat(maxMB) * 1024 * 1024; // convert MB to bytes
+            for (var i = 0; i < element.files.length; i++) {
+                if (element.files[i].size > maxBytes) {
+                    return false;
+                }
+            }
+            return true;
+        }, function(params, element) {
+            return 'File must be ' + params + ' MB or smaller.';
+        });
 
         $("#evaluate-form").validate({
             ignore: ":hidden:not(#answer_sheet)",
             rules: {
                 answer_sheet: {
                     required: true,
-                    pdfValidation: true
+                    pdfValidation: true,
+                    filesizeMB: 10
                 }
             },
             messages: {
@@ -436,9 +459,10 @@
                     processData: false,
                     contentType: false,
                     beforeSend: function(){
-                        $(".user-size-pdf-container .pdf-name").text(file.name);
+                        $(".user-content .pdf-name").text(file.name);
                         $("#answersheet-upload-modal").modal('hide');
-                        $(".user-size-pdf-container").html('<h6 class="title">You</h6><p class="mt-5px"><i class="fa-solid fa-file-pdf"></i> <span class="pdf-name">'+file.name+'</span></p>');
+                        $(".user-content").html('<h6 class="title">You</h6><p class="mt-5px"><i class="fa-solid fa-file-pdf"></i> <span class="pdf-name">'+file.name+'</span></p>');
+                        $(".user-size-pdf-container").show();
                         $("#answers-container").html(`
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">

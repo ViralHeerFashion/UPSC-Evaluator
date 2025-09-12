@@ -144,7 +144,7 @@
                                                     </li>
                                                 </ul>
                                                 <div class="view-more-button mt--35 sal-animate" data-sal="slide-up" data-sal-duration="400" data-sal-delay="400">
-                                                    <a class="btn-default color-blacked" href="contact.html">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
+                                                    <a class="btn-default color-blacked" href="{{ route('student.login') }}">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -181,7 +181,7 @@
                                                     </li>
                                                 </ul>
                                                 <div class="view-more-button mt--35 sal-animate" data-sal="slide-up" data-sal-duration="400" data-sal-delay="400">
-                                                    <a class="btn-default color-blacked" href="contact.html">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
+                                                    <a class="btn-default color-blacked" href="{{ route('student.login') }}">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,7 +220,7 @@
                                                     </li>
                                                 </ul>
                                                 <div class="view-more-button mt--35 sal-animate" data-sal="slide-up" data-sal-duration="400" data-sal-delay="400">
-                                                    <a class="btn-default color-blacked" href="contact.html">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
+                                                    <a class="btn-default color-blacked" href="{{ route('student.login') }}">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -253,7 +253,7 @@
                                                     </li>
                                                 </ul>
                                                 <div class="view-more-button mt--35 sal-animate" data-sal="slide-up" data-sal-duration="400" data-sal-delay="400">
-                                                    <a class="btn-default color-blacked" href="contact.html">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
+                                                    <a class="btn-default color-blacked" href="{{ route('student.login') }}">Try It Now <i class="fa-sharp fa-light fa-arrow-right ml--5"></i></a>
                                                 </div>
                                             </div>
                                         </div>

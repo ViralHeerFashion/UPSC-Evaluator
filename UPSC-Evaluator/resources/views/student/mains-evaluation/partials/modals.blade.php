@@ -2,6 +2,7 @@
     <form action="{{ route('student.mains-evaluation.make-evaluate') }}" method="post" id="evaluate-form">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content wrapper">
+                <h6 class="theme-gradient">General Studies</h6>
                 <div class="chat-form">
                     <div class="premium-upload-container">
                         <input type="file" id="answer_sheet" class="premium-upload-input" name="answer_sheet" accept=".pdf">
@@ -26,6 +27,9 @@
                         </label>
                     </div>
                 </div>
+                <p class="i-love-pdf">
+                    You can compress your pdf: <a href="https://www.ilovepdf.com/compress_pdf" target="_blank">Click Here</a>
+                </p>
                 <div class="bottom-btn mt--20 text-right">
                     <button type="submit" class="btn-default btn-small round">Start Evaluation</button>
                 </div>
