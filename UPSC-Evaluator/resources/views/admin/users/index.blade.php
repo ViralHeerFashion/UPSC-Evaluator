@@ -1,7 +1,7 @@
 @extends('admin.layout.main')
 @section('title', 'Admin - Users')
 @section('styles')
-<link href="{{asset('admin/assets/plugins/daterange-picker/css/daterangepicker-bs3.css')}}" rel="stylesheet">
+<link href="{{asset('public/admin/assets/plugins/daterange-picker/css/daterangepicker-bs3.css')}}" rel="stylesheet">
 <style type="text/css">
 	#reportrange{border: 1px solid grey;padding: 3px;width: fit-content;cursor: pointer;}
 	#reportrange .fa-chevron-down{margin: 0 3px 0 3px;}
@@ -120,8 +120,8 @@
 </div>
 @endsection
 @section('scripts')
-<script src="{{asset('admin/assets/plugins/daterange-picker/js/moment.min.js')}}"></script>
-<script src="{{asset('admin/assets/plugins/daterange-picker/js/daterangepicker.js')}}"></script>
+<script src="{{asset('public/admin/assets/plugins/daterange-picker/js/moment.min.js')}}"></script>
+<script src="{{asset('public/admin/assets/plugins/daterange-picker/js/daterangepicker.js')}}"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".users-link").addClass('active');

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>UPSE Evaluator | Log in</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="{{asset('admin/assets/plugins/fontawesome-free/css/all.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin/assets/dist/css/adminlte.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/admin/assets/plugins/fontawesome-free/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/admin/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/admin/assets/dist/css/adminlte.min.css')}}">
     <style>
         .error-msg{color: red;}
         .cursor-pointer{cursor: pointer;}
@@ -17,7 +17,7 @@
     <div class="login-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href="javascript:void(0);" class="h1"><b>UPSE </b>Evaluator</a>
+                <a href="javascript:void(0);" class="h1"><b>Aspire </b>Scan</a>
             </div>
             <div class="card-body">
                 @error('error_message')
@@ -66,9 +66,9 @@
         </div>
     </div>
 
-    <script src="{{asset('admin/assets/plugins/jquery/jquery.min.js')}}"></script>
-    <script src="{{asset('admin/assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{asset('admin/assets/dist/js/adminlte.min.js')}}"></script>
+    <script src="{{asset('public/admin/assets/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('public/admin/assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('public/admin/assets/dist/js/adminlte.min.js')}}"></script>
     <script>
         $(document).ready(function(){
             $(".password-handle").on('click', function(){

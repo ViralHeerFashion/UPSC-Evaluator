@@ -180,12 +180,6 @@ class MainsEvaluationController extends Controller
             }   
             
             foreach ($response->result->questions as $key => $question) {
-                
-                $model_answer = <<<EOD
-                {$question->model_answer}
-                EOD;
-
-                $model_answer_parts = $this->parseModelAnswer($model_answer);
 
                 $student_answer_evaluation = new StudentAnswerEvaluation;
                 $student_answer_evaluation->student_answersheet_id = $student_answer_sheet->id;
@@ -195,16 +189,27 @@ class MainsEvaluationController extends Controller
                 $student_answer_evaluation->max_marks = $question->max_marks;
                 $student_answer_evaluation->marks_awarded = $question->marks_awarded;
                 $student_answer_evaluation->question_no = $question->question_number;
-                $student_answer_evaluation->model_answer_intro = isset($model_answer_parts['model_answer_intro']) && !empty($model_answer_parts['model_answer_intro']) ? $model_answer_parts['model_answer_intro'] : null;
-                $student_answer_evaluation->model_answer_conclusion = isset($model_answer_parts['model_answer_conclution']) && !empty($model_answer_parts['model_answer_conclution']) ? $model_answer_parts['model_answer_conclution'] : null;
+                $student_answer_evaluation->model_answer_intro = $question->model_answer->introduction;
+                $student_answer_evaluation->model_answer_conclusion = $question->model_answer->conclusion;
+                $student_answer_evaluation->model_answer_evaluation = isset($question->model_answer->evaluation) && !empty($question->model_answer->evaluation) ? $question->model_answer->evaluation : null;
                 $student_answer_evaluation->save();
 
-                if (isset($model_answer_parts['points']) && count($model_answer_parts['points']) > 0) {
-                    foreach($model_answer_parts['points'] as $key => $point){
+                if (isset($question->model_answer->sections)) {
+                    foreach ($question->model_answer->sections as $key => $section) {
+                        foreach ($section as $title => $description) {
+                            $modelAnswer = new ModelAnswer;
+                            $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                            $modelAnswer->title = $title;
+                            $modelAnswer->description = $description;
+                            $modelAnswer->save();
+                        }
+                    }
+                } else {
+                    foreach ($question->model_answer->body as $title => $description) {
                         $modelAnswer = new ModelAnswer;
                         $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
-                        $modelAnswer->title = $key;
-                        $modelAnswer->description = $point;
+                        $modelAnswer->title = $title;
+                        $modelAnswer->description = $description;
                         $modelAnswer->save();
                     }
                 }

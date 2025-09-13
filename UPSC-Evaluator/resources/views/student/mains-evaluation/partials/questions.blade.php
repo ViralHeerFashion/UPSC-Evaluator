@@ -141,6 +141,9 @@
                 </div>
                 <p class="model-description">{{ $model_answer->description }}</p>
                 @endforeach
+                @if(!empty($question->model_answer_evaluation))
+                <p class="p-3 m-auto mb-3">{{ $question->model_answer_evaluation }}</p>
+                @endif
                 @if(!empty($question->model_answer_conclusion))
                 <p class="p-3 m-auto mb-3">{{ $question->model_answer_conclusion }}</p>
                 @endif
