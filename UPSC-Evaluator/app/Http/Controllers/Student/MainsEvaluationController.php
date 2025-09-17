@@ -461,6 +461,7 @@ class MainsEvaluationController extends Controller
             'fontPath'
         ))->render();
 
+
         $mpdf->WriteHTML($html);
 
         return response($mpdf->Output('Evaluation-'.$student_answer_sheet->file_name, 'S'))

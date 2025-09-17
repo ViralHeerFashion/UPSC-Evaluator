@@ -47,7 +47,7 @@
                     </td>
                     <td>
                         @if($t->amount < 0)
-                        {{ number_format($t->amount / 1.2, 2) }}
+                        {{ number_format(abs($t->amount / 1.2)) }}
                         @endif
                     </td>
                     <td>

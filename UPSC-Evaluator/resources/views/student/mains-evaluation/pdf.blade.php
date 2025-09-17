@@ -203,7 +203,6 @@
                 </tr>
             </table>
         </div>
-        
         @php($i = 1)
         @foreach($student_answer_sheet->student_answer_evaluation as $question)
         <p class="text-bold">{{ $i }}) {{ $question->question }}</p>
@@ -248,17 +247,17 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">Gap Analysis & Priority Fixes</h2>
+            <h2 class="section-title" style="">Gap Analysis & Priority Fixes</h2>
             @foreach($question->gap_analysis_priority_fix as $gap)
             <div class="section" style="border: 1px solid black;padding: 0 20px 0 20px;">
                 <p style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;font-size: 20px;">{{ $gap->gap }}</p>
                 <p class="">
-                    <h4 style="margin: 5px 0 0 0;padding: 0;">Impact Analysis</h4>
+                    <h4 style="margin: 0px 0 0 0;padding: 0;">Impact Analysis</h4>
                     {{ $gap->impact }} <br>
                     {{ $gap->gap }}
-                </p>
-                <p class="">
-                    <h4 style="margin: 5px 0 0 0;padding: 0;">Optimal Solution</h4>
+                <!-- </p> -->
+                <!-- <p class=""> -->
+                    <h4 style="margin: 5px 0 0 0;padding: 0;margin-top: 20px;padding-bottom: 20px!important;">Optimal Solution</h4>
                     {{ $gap->correct_action }}
                 </p>
             </div>
@@ -288,7 +287,6 @@
             <h2 class="section-title">Marks Breakdown</h2>
             <div class="model-answer-container" style="border: 1px solid black;padding: 0 20px 0 20px;">
                 <h3>{{$question->marks_awarded}} / {{$question->max_marks}} Marks</h3>
-
             </div>
         </div>
         @php($i++)
