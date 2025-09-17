@@ -27,9 +27,16 @@
                         </label>
                     </div>
                 </div>
-                <p class="i-love-pdf">
-                    You can compress your pdf: <a href="https://www.ilovepdf.com/compress_pdf" target="_blank">Click Here</a>
-                </p>
+                <div class="row">
+                    <div class="col-md-6 col-6">
+                        <a href="{{ asset('public/samples/Sample_GS_Answer_Sheet.pdf') }}" class="btn btn-default download-sample-btn" download="Sample_GS_Answer_Sheet.pdf">Download sample</a>
+                    </div>
+                    <div class="col-md-6 col-6">
+                        <p class="i-love-pdf">
+                            You can compress your pdf: <a href="https://www.ilovepdf.com/compress_pdf" target="_blank">Click Here</a>
+                        </p>  
+                    </div>
+                </div>
                 <div class="bottom-btn mt--20 text-right">
                     <button type="submit" class="btn-default btn-small round">Start Evaluation</button>
                 </div>

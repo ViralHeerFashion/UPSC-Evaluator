@@ -6,11 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Smalot\PdfParser\Parser;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Dompdf\Options;
-use Dompdf\Dompdf;
-use Dompdf\FontMetrics;
+use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 use App\Models\{
     StudentAnswerSheet,
     StudentAnswerEvaluation,
@@ -426,30 +424,52 @@ class MainsEvaluationController extends Controller
         ->where('task_id', $process_id)
         ->first(); 
 
+        $fontPath = public_path('MuktaVaani/MuktaVaani-Regular.ttf');
 
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true);
-        $options->setChroot(public_path());
+        $fontDir = public_path('MuktaVaani');
 
-        $dompdf = new Dompdf($options);
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
 
-        $fontPath = public_path('NotoSans/NotoSansDevanagari-Regular.ttf');
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $mpdf = new Mpdf([
+            'fontDir' => array_merge($fontDirs, [public_path('fonts')]),
+            'fontdata' => $fontData + [
+                'muktavaani' => [
+                    'R' => 'MuktaVaani-Regular.ttf'
+                ],
+            ],
+            'default_font' => 'muktavaani',
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true,
+        ]);
+
+        $mpdf->SetHTMLHeader('
+            <div style="position:absolute; top:30%; left:40%; ">
+                <img src="'.public_path('images/logo.png').'" style="width:200px;opacity:0.3; filter: alpha(opacity=20);transform: rotate(-30deg)">
+            </div>
+            <div style="position:absolute; top:65%; left:40%; opacity:0.5;">
+                <img src="'.public_path('images/logo.png').'" style="width:200px;opacity:0.3; filter: alpha(opacity=20);transform: rotate(-30deg)">
+            </div>
+        ');
 
         $html = view('student.mains-evaluation.pdf', compact(
             'student_answer_sheet',
             'fontPath'
         ))->render();
 
-        $dompdf->loadHtml($html, 'UTF-8');
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
+        $mpdf->WriteHTML($html);
 
-        $dompdf->stream('Evaluation-'.$student_answer_sheet->file_name);
+        return response($mpdf->Output('Evaluation-'.$student_answer_sheet->file_name, 'S'))
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="'.'Evaluation-'.$student_answer_sheet->file_name.'"');
 
-        // return view('student.mains-evaluation.pdf', compact(
-        //     'student_answer_sheet'
-        // ));
+        return view('student.mains-evaluation.pdf', compact(
+            'student_answer_sheet',
+            'fontPath'
+        ));
 
     }
 

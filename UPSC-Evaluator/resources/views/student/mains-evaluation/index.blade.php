@@ -220,13 +220,14 @@
     @media (max-width: 640px) {
         .content-page{width: 100%!important;max-width: 100%!important;}
         .rbt-static-bar{width: 86%!important;}
-        .refresh-btn{height: auto!important;}
+        .refresh-btn{height: auto!important;padding: 10px!important;}
         .upload-file-btn{padding: 20px!important;}
         .gap-items-container{padding: 0!important;}
         .chat-content {
             max-width: calc(100% - 10px)!important;
         }
     }
+    .download-sample-btn{padding: 11px!important;height: 25px!important;margin-top: 10px!important;font-size: 12px!important;line-height: 3px!important;}
 </style>
 @endsection
 @section('tab-name')
@@ -430,7 +431,7 @@
                 answer_sheet: {
                     required: true,
                     pdfValidation: true,
-                    filesizeMB: 10
+                    filesizeMB: 15
                 }
             },
             messages: {
@@ -609,7 +610,7 @@
 
 </script>
 <script>
-    function typeWriterHTML(html, elementId, speed = 50, callback = null) {
+    /*function typeWriterHTML(html, elementId, speed = 50, callback = null) {
         const element = document.getElementById(elementId);
         element.innerHTML = "";
 
@@ -704,6 +705,107 @@
                 if (typeof callback === "function") {
                     callback();
                 }
+            }
+        }
+
+        typing();
+    }*/
+    function typeWriterHTML(html, elementId, speed = 50, callback = null) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = "";
+
+        let i = 0;
+        let current = "";
+
+        const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
+        const instantBlocks = [
+            '<div class="chat-content custom-margin-bottom">',
+            '<div class="dashboard'
+        ];
+
+        function typing() {
+            if (i >= html.length) {
+                if (typeof callback === "function") callback();
+                return;
+            }
+
+            let inserted = false;
+
+            // Handle instant blocks
+            for (let block of instantBlocks) {
+                if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
+                    let depth = 0;
+                    let j = i;
+                    while (j < html.length) {
+                        if (html.slice(j, j + 5).toLowerCase() === "<div") {
+                            depth++;
+                        } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
+                            depth--;
+                            if (depth === 0) {
+                                j += 6;
+                                break;
+                            }
+                        }
+                        j++;
+                    }
+
+                    current += html.slice(i, j);
+                    element.innerHTML = current;
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
+                    i = j;
+                    inserted = true;
+                    break;
+                }
+            }
+
+            // Handle instant tags
+            if (!inserted && html[i] === "<") {
+                for (let tagName of instantTags) {
+                    if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
+                        let endTag = "</" + tagName + ">";
+                        let endIndex = html.toLowerCase().indexOf(endTag, i);
+
+                        if (endIndex !== -1) {
+                            endIndex += endTag.length;
+                        } else {
+                            endIndex = html.indexOf(">", i) + 1;
+                        }
+
+                        current += html.slice(i, endIndex);
+                        element.innerHTML = current;
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
+                        i = endIndex;
+                        inserted = true;
+                        break;
+                    }
+                }
+            }
+
+            // Instantly render unknown tags
+            if (!inserted && html[i] === "<") {
+                let endIndex = html.indexOf(">", i) + 1;
+                current += html.slice(i, endIndex);
+                element.innerHTML = current;
+                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
+                i = endIndex;
+                inserted = true;
+            }
+
+            // Word-by-word typing
+            if (!inserted) {
+                let nextSpace = html.indexOf(" ", i);
+                if (nextSpace === -1) nextSpace = html.length;
+                current += html.slice(i, nextSpace + 1);
+                element.innerHTML = current;
+                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
+                i = nextSpace + 1;
+            }
+
+            // Continue typing
+            if (i < html.length) {
+                setTimeout(typing, speed);
+            } else {
+                if (typeof callback === "function") callback();
             }
         }
 

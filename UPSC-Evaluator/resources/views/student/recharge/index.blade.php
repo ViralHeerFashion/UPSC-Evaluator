@@ -174,9 +174,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="card-footer">
+<!--                         <div class="card-footer">
                             <button class="btn-default btn-border">Get Started</button>
-                        </div>
+                        </div> -->
                     </div>
                 </a>
             </div>
@@ -212,9 +212,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="card-footer">
+<!--                         <div class="card-footer">
                             <button class="btn-default">Get Started</button>
-                        </div>
+                        </div> -->
                     </div>
                 </a>
             </div>
@@ -249,9 +249,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="card-footer">
+<!--                         <div class="card-footer">
                             <button class="btn-default btn-border">Get Started</button>
-                        </div>
+                        </div> -->
                     </div>
                 </a>
             </div>
@@ -286,9 +286,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="card-footer">
+<!--                         <div class="card-footer">
                             <button class="btn-default btn-border">Get Started</button>
-                        </div>
+                        </div> -->
                     </div>
                 </a>
             </div>
@@ -368,7 +368,7 @@
             let amount = $(this).data('amount');
             let get_amount = parseFloat($(this).data('get-amount'));
             let after_total_wallet = current_balance + get_amount;
-            $(".you-will-get-container").text("(After successfull transaction your wallet total is "+after_total_wallet.toFixed(2)+")");
+            $(".you-will-get-container").text("(After successfull transaction your wallet total will be "+after_total_wallet.toFixed(2)+")");
             $("#amount").val(amount);
             document.getElementsByClassName("recharge-element")[0].scrollIntoView({
                 block: "center"
@@ -393,7 +393,7 @@
                 
                 if (get_amount > 0) {
                     let after_total_wallet = current_balance + get_amount;
-                    $(".you-will-get-container").text("(After successfull transaction your wallet total is "+after_total_wallet.toFixed(2)+")");
+                    $(".you-will-get-container").text("(After successfull transaction your wallet total will be "+after_total_wallet.toFixed(2)+")");
                     $(".you-will-get-container").show();
                 } else {
                     $(".you-will-get-container").hide();

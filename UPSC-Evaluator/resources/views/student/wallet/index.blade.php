@@ -28,6 +28,7 @@
                     <th>#</th>
                     <th>Date</th>
                     <th>Amount</th>
+                    <th>Pages</th>
                     <th>Credit/debit</th>
                 </tr>
             </thead>
@@ -42,6 +43,11 @@
                         <span class="text-success">₹{{ number_format($t->amount, 2) }}</span>
                         @else
                         <span class="text-danger">₹{{ number_format($t->amount, 2) }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($t->amount < 0)
+                        {{ number_format($t->amount / 1.2, 2) }}
                         @endif
                     </td>
                     <td>

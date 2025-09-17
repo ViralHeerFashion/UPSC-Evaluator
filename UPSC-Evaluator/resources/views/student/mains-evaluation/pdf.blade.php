@@ -5,38 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Beautifying Template</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
     <style>
         @font-face {
-            font-family: 'NotoDeva';
+            font-family: 'muktavaani', sans-serif;
             src: url('{{ $fontPath }}') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
         /* Base styling */
         body {
-            font-family: 'NotoDeva', sans-serif;
+            /* font-family: 'NotoDeva', sans-serif; */
+            /* font-family: 'notosansdevanagari', sans-serif; */
+            font-family: 'muktavaani', sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
-            padding: 0;
+            padding: 0!important;
             /* background-color: #f9f9f9; */
         }
-        
+        .watermark {
+            position: fixed;
+            top: 30%;
+            left: 40%;
+            width: 100%;
+            opacity: 0.3;
+            font-size: 100px;
+            color: #000;
+            transform: rotate(-30deg);
+            /*z-index: -1000;*/
+        }
+        .watermark1 {
+            position: fixed;
+            top: 65%;
+            left: 40%;
+            width: 100%;
+            opacity: 0.3;
+            font-size: 100px;
+            color: #000;
+            transform: rotate(-30deg);
+            /*z-index: -1000;*/
+        }
         /* Container for content */
         .container {
             width: 100%;
             margin: 0 auto;
+            padding: 0;
             /* padding: 10px; */
             background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
         }
         
         /* Header section */
         .header {
             text-align: center;
             margin-bottom: 10px;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #805AF5;
             /* padding-bottom: 20px; */
         }
         
@@ -57,7 +80,7 @@
         }
         
         .section-title {
-            color: #3498db;
+            color: #805AF5;
             border-bottom: 1px solid #ecf0f1;
             padding-bottom: 10px;
             margin-bottom: 15px;
@@ -100,7 +123,7 @@
         }
         
         table th {
-            background-color: #3498db;
+            background-color: #805AF5;
             color: white;
         }
         
@@ -154,6 +177,14 @@
     </style>
 </head>
 <body>
+    {{--
+    <div class="watermark">
+        <img src="{{ asset('public/images/logo.png') }}">
+    </div>
+    <div class="watermark1">
+        <img src="{{ asset('public/images/logo.png') }}">
+    </div>
+    --}}
     <div class="container">
         <!-- Header Section -->
         <div class="header">
@@ -161,20 +192,21 @@
                 <tr>
                     <td>
                         <div>
-                            <h1>GS Evaluation</h1>
-                            <p>Generated on: {{ date("M d, Y", strtotime($student_answer_sheet->created_at)) }}</p>
+                            <img src="{{ asset('public/images/qrcode.png') }}" style="width: 50px;display: inline-block;">
+                            <!-- <p>Generated on: {{ date("M d, Y", strtotime($student_answer_sheet->created_at)) }}</p> -->
                         </div>
                     </td>
                     <td style="text-align: right;">
+                        <h1>GS Evaluation</h1>
                         <div>{{ $student_answer_sheet->file_name }}</div>  
                     </td>
                 </tr>
             </table>
-            
         </div>
         
+        @php($i = 1)
         @foreach($student_answer_sheet->student_answer_evaluation as $question)
-        <p class="text-bold">{{ $question->question_no }}) {{ $question->question }}</p>
+        <p class="text-bold">{{ $i }}) {{ $question->question }}</p>
         <div class="section">
             <h2 class="section-title">Question Deconstruction</h2>
             <p class="paragraph">{{ $question->deconstruction }}</p>
@@ -196,7 +228,7 @@
                     @foreach($question->micro_marking_grid as $grid)
                     <tr>
                         <td>{{ $grid->component }}</td>
-                        <td>{{ $grid->weight }}</td>
+                        <td>{{ $grid->weight }}%</td>
                         <td>{{ $grid->max_marks }}</td>
                         <td>{{ $grid->marks_awarded }}</td>
                         <td>{{ $grid->justifications }}</td>
@@ -243,6 +275,9 @@
                 <p style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;">{{ $model_answer->title }}</p>
                 <p>{{$model_answer->description}}</p>
                 @endforeach
+                @if(!empty($question->model_answer_evaluation))
+                <p>{{ $question->model_answer_evaluation }}</p>
+                @endif
                 @if(!empty($question->model_answer_conclusion))
                 <p>{{ $question->model_answer_conclusion }}</p>
                 @endif
@@ -256,6 +291,7 @@
 
             </div>
         </div>
+        @php($i++)
         @endforeach
     </div>
 </body>

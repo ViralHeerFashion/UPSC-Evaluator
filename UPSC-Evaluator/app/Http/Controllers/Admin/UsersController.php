@@ -51,6 +51,7 @@ class UsersController extends Controller
     															$query->select('id', 'question');
     														}
     													])
+    													->where('user_id', $id)
     													->get();
 
     	return view('admin.users.attempt-question', compact(
