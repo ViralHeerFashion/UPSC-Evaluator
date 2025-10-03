@@ -126,10 +126,11 @@
             <div>
                 <img src="{{ asset('public/images/icons/ma.svg') }}" class="w35">
             </div>
-            <h6 class="title">Model Answer</h6>
+            <h6 class="title">Model Answer Architectural Points</h6>
         </div>
         <div class="section-content model-answer-container">
             <div class="model-answer-card">
+                <p class="p-3 m-auto text-note">Model answer architectural points are intentionally detailed and often exceed word limits. You should use it to understand the structure and add value to your answer.</p>
                 @if(!empty($question->model_answer_intro))
                 <p class="p-3 m-auto mb-3">{{ $question->model_answer_intro }}</p>
                 @endif

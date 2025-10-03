@@ -20,7 +20,7 @@
                             </div>
                             <button type="button" class="btn btn-default change-answersheet-btn">Change</button>
                             <div class="upload-details">
-                                <span class="detail-item">Max 10MB</span>
+                                <span class="detail-item">Max 15MB</span>
                                 <span class="detail-separator">•</span>
                                 <span class="detail-item">Only PDF allowed</span>
                             </div>

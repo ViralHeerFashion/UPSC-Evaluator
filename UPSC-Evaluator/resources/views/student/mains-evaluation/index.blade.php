@@ -228,6 +228,7 @@
         }
     }
     .download-sample-btn{padding: 11px!important;height: 25px!important;margin-top: 10px!important;font-size: 12px!important;line-height: 3px!important;}
+    .text-note{background: linear-gradient(90deg, #805AF5 0%, #CE99FF 100%);text-transform: capitalize;-webkit-background-clip: text;background-clip: text;-webkit-text-fill-color: transparent;}
 </style>
 @endsection
 @section('tab-name')
@@ -291,7 +292,7 @@
                         @if(!is_null($student_answer_sheet))
                             @include('student.mains-evaluation.partials.questions')
                         @else
-                            <img src="{{ asset('public\images\chat-img.png') }}" alt="Upload your PDF to get instant, detailed feedback.">
+                            <img src="{{ asset('public\images\chat-img.png') }}?v=1" alt="Upload your PDF to get instant, detailed feedback.">
                         @endif
                     </div>
                 </div>
@@ -558,7 +559,8 @@
                             type: "POST",
                             data: { _token: '{{ csrf_token() }}' },
                             processData: false,
-                            contentType: false
+                            contentType: false,
+                            timeout: 1200000
                         });
                     } else {
                         audio.pause();

@@ -265,8 +265,9 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">Model Answer</h2>
+            <h2 class="section-title">Model Answer Architectural Points</h2>
             <div class="model-answer-container" style="border: 1px solid black;padding: 0 20px 0 20px;">
+                <p>Model answer architectural points are intentionally detailed and often exceed word limits. You should use it to understand the structure and add value to your answer.</p>
                 @if(!empty($question->model_answer_intro))
                 <p>{{ $question->model_answer_intro }}</p>
                 @endif
