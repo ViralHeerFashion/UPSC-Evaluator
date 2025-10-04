@@ -149,7 +149,45 @@ class MainsEvaluationController extends Controller
 
             $ch = curl_init();
 
-            do {
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER => [
+                    "X-API-KEY: 1_Vm83n4ZJrVTMJGgVPqmXZGWKx-d0MlvEk3i6frwEE"
+                ],
+                CURLOPT_TIMEOUT => 1200,
+                CURLOPT_CONNECTTIMEOUT => 60,
+                CURLOPT_TIMEOUT_MS => 1200000
+            ]);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+            $response = json_decode(curl_exec($ch));
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $api_status = isset($response->result) && !empty($response->result) ? "SUCCESS" : $response->status;
+            if($api_status == "SUCCESS") {
+                $student_answer_sheet->api_response = json_encode($response);
+                $student_answer_sheet->save();
+
+                return $this->storeEvaluation($student_answer_sheet, $response);
+            }
+
+            if($api_status == "FAILURE") {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Something went wrong while processing your answersheet. Please try again later or contact our support team."
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'process_task' => true,
+                'message' => "Your file is being process"
+            ]);
+
+            /*do {
                 curl_setopt_array($ch, [
                     CURLOPT_URL => $url,
                     CURLOPT_RETURNTRANSFER => true,
@@ -160,6 +198,8 @@ class MainsEvaluationController extends Controller
                     CURLOPT_CONNECTTIMEOUT => 60,
                     CURLOPT_TIMEOUT_MS => 1200000
                 ]);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
                 $response = json_decode(curl_exec($ch));
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -172,75 +212,36 @@ class MainsEvaluationController extends Controller
                 } else {
                     sleep(10);   
                 }
-            } while (!in_array($api_status, ["SUCCESS", "FAILURE"]));
-            
-            /*$api_status = "PENDING";
+            } while (!in_array($api_status, ["SUCCESS", "FAILURE"]));*/
+        }
 
-            do {
-                $ch = curl_init();
-                curl_setopt_array($ch, [
-                    CURLOPT_URL => $url,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_HTTPHEADER => [
-                        "X-API-KEY: 1_Vm83n4ZJrVTMJGgVPqmXZGWKx-d0MlvEk3i6frwEE"
-                    ],
-                    CURLOPT_TIMEOUT => 30
-                ]);
-            
-                $response = json_decode(curl_exec($ch));
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
-            
-                if (isset($response->result) && !empty($response->result)) {
-                    $api_status = "SUCCESS";
-                    $student_answer_sheet->api_response = json_encode($response);
-                    $student_answer_sheet->save();
-                } elseif (isset($response->status)) {
-                    $api_status = strtoupper($response->status);
-                } else {
-                    $api_status = "FAILURE";
-                }
-            
-                if ($api_status !== "SUCCESS" && $api_status !== "FAILURE") {
-                    sleep(5);
-                }
-            } while ($api_status !== "SUCCESS" && $api_status !== "FAILURE");*/
+        return response()->json([
+            'success' => false,
+            'message' => "Task ID not found"
+        ]);
+    }
 
-            if($api_status == "FAILURE") {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Something went wrong while processing your answersheet. Please try again later or contact our support team."
-                ]);
-            }
-            
-            foreach ($response->result->questions as $key => $question) {
+    public function storeEvaluation($student_answer_sheet, $response)
+    {
+        foreach ($response->result->questions as $key => $question) {
                 
-                if (isset($question->question_text)) {
-                    $student_answer_evaluation = new StudentAnswerEvaluation;
-                    $student_answer_evaluation->student_answersheet_id = $student_answer_sheet->id;
-                    $student_answer_evaluation->question = $question->question_text;
-                    $student_answer_evaluation->deconstruction = $question->question_deconstruction;
-                    $student_answer_evaluation->micro_marking_grid_total_marks = $question->micro_marking_grid->total_marks;
-                    $student_answer_evaluation->max_marks = $question->max_marks;
-                    $student_answer_evaluation->marks_awarded = $question->marks_awarded;
-                    $student_answer_evaluation->question_no = $question->question_number;
-                    $student_answer_evaluation->model_answer_intro = $question->model_answer->introduction;
-                    $student_answer_evaluation->model_answer_conclusion = $question->model_answer->conclusion;
-                    $student_answer_evaluation->model_answer_evaluation = isset($question->model_answer->evaluation) && !empty($question->model_answer->evaluation) ? $question->model_answer->evaluation : null;
-                    $student_answer_evaluation->save();
-                    
-                    if (isset($question->model_answer->sections)) {
-                        foreach ($question->model_answer->sections as $key => $section) {
-                            foreach ($section as $title => $description) {
-                                $modelAnswer = new ModelAnswer;
-                                $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
-                                $modelAnswer->title = $title;
-                                $modelAnswer->description = $description;
-                                $modelAnswer->save();
-                            }
-                        }
-                    } else {
-                        foreach ($question->model_answer->body as $title => $description) {
+            if (isset($question->question_text)) {
+                $student_answer_evaluation = new StudentAnswerEvaluation;
+                $student_answer_evaluation->student_answersheet_id = $student_answer_sheet->id;
+                $student_answer_evaluation->question = $question->question_text;
+                $student_answer_evaluation->deconstruction = $question->question_deconstruction;
+                $student_answer_evaluation->micro_marking_grid_total_marks = $question->micro_marking_grid->total_marks;
+                $student_answer_evaluation->max_marks = $question->max_marks;
+                $student_answer_evaluation->marks_awarded = $question->marks_awarded;
+                $student_answer_evaluation->question_no = $question->question_number;
+                $student_answer_evaluation->model_answer_intro = $question->model_answer->introduction;
+                $student_answer_evaluation->model_answer_conclusion = $question->model_answer->conclusion;
+                $student_answer_evaluation->model_answer_evaluation = isset($question->model_answer->evaluation) && !empty($question->model_answer->evaluation) ? $question->model_answer->evaluation : null;
+                $student_answer_evaluation->save();
+                
+                if (isset($question->model_answer->sections)) {
+                    foreach ($question->model_answer->sections as $key => $section) {
+                        foreach ($section as $title => $description) {
                             $modelAnswer = new ModelAnswer;
                             $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
                             $modelAnswer->title = $title;
@@ -248,75 +249,78 @@ class MainsEvaluationController extends Controller
                             $modelAnswer->save();
                         }
                     }
-    
-                    if (isset($question->micro_marking_grid) && isset($question->micro_marking_grid->components)) {
-                        foreach ($question->micro_marking_grid->components as $key => $micro_marking_grid) {
-                            $question_micro_markng_grid = new QuestionMicroMarkingGrid;
-                            $question_micro_markng_grid->student_answer_evaluation_id = $student_answer_evaluation->id;
-                            $question_micro_markng_grid->component = $micro_marking_grid->name;
-                            $question_micro_markng_grid->weight = $micro_marking_grid->weight_percentage;
-                            $question_micro_markng_grid->max_marks = $micro_marking_grid->max_marks;
-                            $question_micro_markng_grid->marks_awarded = $micro_marking_grid->given_marks;
-                            $question_micro_markng_grid->justifications = $micro_marking_grid->justification;
-                            $question_micro_markng_grid->save();
-                        }
+                } else {
+                    foreach ($question->model_answer->body as $title => $description) {
+                        $modelAnswer = new ModelAnswer;
+                        $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                        $modelAnswer->title = $title;
+                        $modelAnswer->description = $description;
+                        $modelAnswer->save();
                     }
-    
-                    if (isset($question->strengths)) {
-                        foreach ($question->strengths as $key => $strength) {
-                            $strength_snapshot = new StrengthSnapShot;
-                            $strength_snapshot->student_answer_evaluation_id = $student_answer_evaluation->id;
-                            $strength_snapshot->snapshot = $strength;
-                            $strength_snapshot->save();
-                        }
+                }
+
+                if (isset($question->micro_marking_grid) && isset($question->micro_marking_grid->components)) {
+                    foreach ($question->micro_marking_grid->components as $key => $micro_marking_grid) {
+                        $question_micro_markng_grid = new QuestionMicroMarkingGrid;
+                        $question_micro_markng_grid->student_answer_evaluation_id = $student_answer_evaluation->id;
+                        $question_micro_markng_grid->component = $micro_marking_grid->name;
+                        $question_micro_markng_grid->weight = $micro_marking_grid->weight_percentage;
+                        $question_micro_markng_grid->max_marks = $micro_marking_grid->max_marks;
+                        $question_micro_markng_grid->marks_awarded = $micro_marking_grid->given_marks;
+                        $question_micro_markng_grid->justifications = $micro_marking_grid->justification;
+                        $question_micro_markng_grid->save();
                     }
-    
-                    if (isset($question->gaps)) {
-                        foreach ($question->gaps as $key => $gap) {
-                            $gap_analysis_priority_fix = new GapAnalysisPriorityFixes;
-                            $gap_analysis_priority_fix->student_answer_evaluation_id = $student_answer_evaluation->id;
-                            $gap_analysis_priority_fix->gap = $gap->gap;
-                            $gap_analysis_priority_fix->impact = $gap->impact;
-                            $gap_analysis_priority_fix->correct_action = $gap->corrective_action;
-                            $gap_analysis_priority_fix->save();
-                        }
+                }
+
+                if (isset($question->strengths)) {
+                    foreach ($question->strengths as $key => $strength) {
+                        $strength_snapshot = new StrengthSnapShot;
+                        $strength_snapshot->student_answer_evaluation_id = $student_answer_evaluation->id;
+                        $strength_snapshot->snapshot = $strength;
+                        $strength_snapshot->save();
+                    }
+                }
+
+                if (isset($question->gaps)) {
+                    foreach ($question->gaps as $key => $gap) {
+                        $gap_analysis_priority_fix = new GapAnalysisPriorityFixes;
+                        $gap_analysis_priority_fix->student_answer_evaluation_id = $student_answer_evaluation->id;
+                        $gap_analysis_priority_fix->gap = $gap->gap;
+                        $gap_analysis_priority_fix->impact = $gap->impact;
+                        $gap_analysis_priority_fix->correct_action = $gap->corrective_action;
+                        $gap_analysis_priority_fix->save();
                     }
                 }
             }
-
-            $student_answer_sheet->is_evaluated = 1;
-            $student_answer_sheet->save();
-
-            $student_answer_sheet = StudentAnswerSheet::with([
-                'student_answer_evaluation' => function ($query) {
-                    $query->with([
-                        'micro_marking_grid',
-                        'strength_snapshot',
-                        'gap_analysis_priority_fix',
-                        'model_answer'
-                    ]);
-                }
-            ])->findOrFail($student_answer_sheet->id);
-
-            $wallet = new Wallet;
-            $wallet->user_id = Auth::id();
-            $wallet->student_answersheet_id = $student_answer_sheet->id;
-            $wallet->amount = -$student_answer_sheet->evaluation_charge;
-            $wallet->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => "PDF proccess successfully...",
-                'view' => view('student.mains-evaluation.partials.questions', compact(
-                    'student_answer_sheet'
-                ))->render(),
-                'student_answer_sheet_id' => $student_answer_sheet->id
-            ]);
         }
 
+        $student_answer_sheet->is_evaluated = 1;
+        $student_answer_sheet->save();
+
+        $student_answer_sheet = StudentAnswerSheet::with([
+            'student_answer_evaluation' => function ($query) {
+                $query->with([
+                    'micro_marking_grid',
+                    'strength_snapshot',
+                    'gap_analysis_priority_fix',
+                    'model_answer'
+                ]);
+            }
+        ])->findOrFail($student_answer_sheet->id);
+
+        $wallet = new Wallet;
+        $wallet->user_id = Auth::id();
+        $wallet->student_answersheet_id = $student_answer_sheet->id;
+        $wallet->amount = -$student_answer_sheet->evaluation_charge;
+        $wallet->save();
+
         return response()->json([
-            'success' => false,
-            'message' => "Task ID not found"
+            'success' => true,
+            'message' => "PDF proccess successfully...",
+            'view' => view('student.mains-evaluation.partials.questions', compact(
+                'student_answer_sheet'
+            ))->render(),
+            'student_answer_sheet_id' => $student_answer_sheet->id
         ]);
     }
 

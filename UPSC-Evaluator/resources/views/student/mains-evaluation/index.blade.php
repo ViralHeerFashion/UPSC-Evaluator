@@ -453,7 +453,7 @@
                 var formData = new FormData();
                 formData.append('answer_sheet', file);
                 formData.append('_token', '{{ csrf_token() }}');
-                
+
                 $.ajax({
                     url: url,
                     method: "POST",
@@ -497,20 +497,19 @@
                         audio.pause();
                         $("#answers-container").html(`
                         <div class="decoration decoration-1"></div>
-                            <div class="decoration decoration-2"></div>
-                            
-                            <div class="loader-container">                                
-                                <div class="loader-info">
-                                    <span><i class="fas fa-hourglass-start"></i> 0%</span>
-                                    <span id="remainingTime">3.0s remaining</span>
-                                    <span><i class="fas fa-flag-checkered"></i> 100%</span>
-                                </div>
-                                <div class="loader">
-                                    <div class="loader-progress" id="loaderProgress">
-                                        <div class="percentage" id="percentage">0%</div>
-                                    </div>
-                                </div>        
+                        <div class="decoration decoration-2"></div>
+                        
+                        <div class="loader-container">                                
+                            <div class="loader-info">
+                                <span><i class="fas fa-hourglass-start"></i> 0%</span>
+                                <span id="remainingTime">3.0s remaining</span>
+                                <span><i class="fas fa-flag-checkered"></i> 100%</span>
                             </div>
+                            <div class="loader">
+                                <div class="loader-progress" id="loaderProgress">
+                                    <div class="percentage" id="percentage">0%</div>
+                                </div>
+                            </div>        
                         </div>
                         `);
                         
@@ -545,23 +544,45 @@
                                 $('#percentage').text(Math.round(progress) + '%');
                                 
                                 const remaining = (duration * (100 - progress) / 100).toFixed(1);
-                                // const remaining = duration - 1;
-                                $('#remainingTime').text(remaining + ' remaining');
+                                $('#remainingTime').text(remaining + 's remaining');
                             }, 500);
                         }
                         startLoader(response.loader_second);
 
                         let task_id = response.task_id;
-                        let process_url = "{{ route('student.mains-evaluation.process-task', ':task_id') }}".replace(':task_id', task_id);
 
-                        return $.ajax({
-                            url: process_url,
-                            type: "POST",
-                            data: { _token: '{{ csrf_token() }}' },
-                            processData: false,
-                            contentType: false,
-                            timeout: 1200000
-                        });
+                        function processTask(task_id, retries = 0, maxRetries = 50) {
+                            let process_url = "{{ route('student.mains-evaluation.process-task', ':task_id') }}".replace(':task_id', task_id);
+
+                            return $.ajax({
+                                url: process_url,
+                                type: "POST",
+                                data: { _token: '{{ csrf_token() }}' },
+                                processData: false,
+                                contentType: false
+                            }).then(function (response) {
+                                if (response.success) {
+                                    toastr.success(response.message, 'Success');
+                                    typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations);
+                                } else if ('process_task' in response) {
+                                    if (retries < maxRetries) {
+                                        return new Promise((resolve) => {
+                                            setTimeout(() => {
+                                                resolve(processTask(task_id, retries + 1, maxRetries));
+                                            }, 5000);
+                                        });
+                                    } else {
+                                        toastr.error("Max retries reached. Please try again later.", 'Error');
+                                    }
+                                } else {
+                                    toastr.error("Something went wrong, please contact our support team.", 'Error');
+                                }
+                            }).fail(function () {
+                                toastr.error("Something went wrong, please support our team.", 'Error');
+                            });
+                        }
+
+                        processTask(task_id);
                     } else {
                         audio.pause();
                         $("#answers-container").html('');
@@ -571,16 +592,6 @@
                             toastr.error(response.message, 'Error');
                         }
                         return $.Deferred().resolve().promise();
-                    }
-
-                }).then(function(response) {
-                    if(response != undefined) {
-                        if (!response.success) {
-                            toastr.error(response.message, 'Error');
-                        } else {
-                            toastr.success(response.message, 'Success');
-                            typeWriterHTML(response.view, "answers-container", 0.003, renderDashboardAnimations);
-                        }
                     }
 
                 }).fail(function(err) {
@@ -718,100 +729,105 @@
 
         let i = 0;
         let current = "";
-
         const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
         const instantBlocks = [
             '<div class="chat-content custom-margin-bottom">',
             '<div class="dashboard'
         ];
 
-        function typing() {
-            if (i >= html.length) {
-                if (typeof callback === "function") callback();
-                return;
-            }
+        let lastTime = performance.now();
 
-            let inserted = false;
+        function typing(now) {
+            const delta = now - lastTime;
 
-            // Handle instant blocks
-            for (let block of instantBlocks) {
-                if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
-                    let depth = 0;
-                    let j = i;
-                    while (j < html.length) {
-                        if (html.slice(j, j + 5).toLowerCase() === "<div") {
-                            depth++;
-                        } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
-                            depth--;
-                            if (depth === 0) {
-                                j += 6;
-                                break;
-                            }
-                        }
-                        j++;
-                    }
+            if (delta >= speed) {
+                lastTime = now;
 
-                    current += html.slice(i, j);
-                    element.innerHTML = current;
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
-                    i = j;
-                    inserted = true;
-                    break;
+                if (i >= html.length) {
+                    if (typeof callback === "function") callback();
+                    return;
                 }
-            }
 
-            // Handle instant tags
-            if (!inserted && html[i] === "<") {
-                for (let tagName of instantTags) {
-                    if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
-                        let endTag = "</" + tagName + ">";
-                        let endIndex = html.toLowerCase().indexOf(endTag, i);
+                let inserted = false;
 
-                        if (endIndex !== -1) {
-                            endIndex += endTag.length;
-                        } else {
-                            endIndex = html.indexOf(">", i) + 1;
+                // Handle instant blocks
+                for (let block of instantBlocks) {
+                    if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
+                        let depth = 0;
+                        let j = i;
+                        while (j < html.length) {
+                            if (html.slice(j, j + 5).toLowerCase() === "<div") {
+                                depth++;
+                            } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
+                                depth--;
+                                if (depth === 0) {
+                                    j += 6;
+                                    break;
+                                }
+                            }
+                            j++;
                         }
-
-                        current += html.slice(i, endIndex);
+                        current += html.slice(i, j);
                         element.innerHTML = current;
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
-                        i = endIndex;
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                        i = j;
                         inserted = true;
                         break;
                     }
                 }
+
+                // Handle instant tags
+                if (!inserted && html[i] === "<") {
+                    for (let tagName of instantTags) {
+                        if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
+                            let endTag = "</" + tagName + ">";
+                            let endIndex = html.toLowerCase().indexOf(endTag, i);
+
+                            if (endIndex !== -1) {
+                                endIndex += endTag.length;
+                            } else {
+                                endIndex = html.indexOf(">", i) + 1;
+                            }
+
+                            current += html.slice(i, endIndex);
+                            element.innerHTML = current;
+                            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                            i = endIndex;
+                            inserted = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Instantly render unknown tags
+                if (!inserted && html[i] === "<") {
+                    let endIndex = html.indexOf(">", i) + 1;
+                    current += html.slice(i, endIndex);
+                    element.innerHTML = current;
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                    i = endIndex;
+                    inserted = true;
+                }
+
+                // Word-by-word typing
+                if (!inserted) {
+                    let nextSpace = html.indexOf(" ", i);
+                    if (nextSpace === -1) nextSpace = html.length;
+                    current += html.slice(i, nextSpace + 1);
+                    element.innerHTML = current;
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                    i = nextSpace + 1;
+                }
             }
 
-            // Instantly render unknown tags
-            if (!inserted && html[i] === "<") {
-                let endIndex = html.indexOf(">", i) + 1;
-                current += html.slice(i, endIndex);
-                element.innerHTML = current;
-                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
-                i = endIndex;
-                inserted = true;
-            }
-
-            // Word-by-word typing
-            if (!inserted) {
-                let nextSpace = html.indexOf(" ", i);
-                if (nextSpace === -1) nextSpace = html.length;
-                current += html.slice(i, nextSpace + 1);
-                element.innerHTML = current;
-                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); // 🔹 Scroll page
-                i = nextSpace + 1;
-            }
-
-            // Continue typing
             if (i < html.length) {
-                setTimeout(typing, speed);
+                requestAnimationFrame(typing);
             } else {
                 if (typeof callback === "function") callback();
             }
         }
 
-        typing();
+        requestAnimationFrame(typing);
     }
 </script>
 @endsection
