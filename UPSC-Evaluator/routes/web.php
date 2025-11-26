@@ -24,6 +24,7 @@ Route::post('/contact-us/create', [ContactUsController::class, 'create'])->name(
 Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy-policy');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/disclaimer', 'pages.disclaimer')->name('disclaimer');
+Route::view('/terms-and-condition', 'pages.terms-and-condition')->name('terms-and-condition');
 
 Route::post('/webhook/recharge/payment-status', [RechargeController::class, 'paymentStatus']);
 

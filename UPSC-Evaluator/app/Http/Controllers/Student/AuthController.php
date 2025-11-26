@@ -230,7 +230,7 @@ class AuthController extends Controller
             if ($this->verifyOTPMSG91($user->msg91_request_id, $request->otp)) {
                 $request->session()->put('otp_verified', $user->id);
                 $request->session()->forget('otp_send');
-
+                
                 $user->msg91_request_id = null;
                 $user->save();
 
@@ -393,9 +393,6 @@ class AuthController extends Controller
 			],
 		]);
 
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-
 		$response = json_decode(curl_exec($curl));
 		$err = curl_error($curl);
 
@@ -430,10 +427,6 @@ class AuthController extends Controller
 				"content-type: application/json"
 			],
 		]);
-
-		
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 
 		$response = json_decode(curl_exec($curl));
 		$err = curl_error($curl);

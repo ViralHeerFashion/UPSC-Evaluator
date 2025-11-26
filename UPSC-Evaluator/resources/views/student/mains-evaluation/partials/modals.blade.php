@@ -3,6 +3,14 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content wrapper">
                 <h6 class="theme-gradient">General Studies</h6>
+                  <div class="mb-3">
+                    <label for="language" class="form-label">Select Language</label>
+                    <select name="language" id="language" class="form-control">
+                        <option value="1">English</option>
+                        <option value="2">Hindi</option>
+                        <option value="3">Marathi</option>
+                    </select>
+                </div>
                 <div class="chat-form">
                     <div class="premium-upload-container">
                         <input type="file" id="answer_sheet" class="premium-upload-input" name="answer_sheet" accept=".pdf">

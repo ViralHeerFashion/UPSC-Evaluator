@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\{
-    StudentAnswerEvaluation
+    StudentAnswerEvaluation,
+    Language
 };
 
 class StudentAnswerSheet extends Model
@@ -14,5 +15,10 @@ class StudentAnswerSheet extends Model
     public function student_answer_evaluation()
     {
         return $this->hasMany(StudentAnswerEvaluation::class, 'student_answersheet_id', 'id');    
+    }
+
+    public function language()
+    {
+        return $this->hasOne(Language::class, 'id', 'language_id');    
     }
 }

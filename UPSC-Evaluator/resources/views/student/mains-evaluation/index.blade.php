@@ -228,7 +228,11 @@
         }
     }
     .download-sample-btn{padding: 11px!important;height: 25px!important;margin-top: 10px!important;font-size: 12px!important;line-height: 3px!important;}
-    .text-note{background: linear-gradient(90deg, #805AF5 0%, #CE99FF 100%);text-transform: capitalize;-webkit-background-clip: text;background-clip: text;-webkit-text-fill-color: transparent;}
+    /*.text-note{background: linear-gradient(90deg, #805AF5 0%, #CE99FF 100%);text-transform: capitalize;-webkit-background-clip: text;background-clip: text;-webkit-text-fill-color: transparent;}*/
+    .text-note{background-color: var(--highlight-color);padding: 0.2rem 0.4rem;border-radius: 4px;color: var(--secondary-accent);font-weight: 500;margin-bottom: 10px!important;}
+    .bootstrap-select{background-color: #212529!important;border: 1px solid #212529;}
+    .unset-default-css li {font-size: unset;line-height: unset;margin-top: unset;margin-bottom: unset;color: unset;font-weight: unset;}
+    .ml-20px{margin-left: 20px!important;}
 </style>
 @endsection
 @section('tab-name')
@@ -425,6 +429,8 @@
         }, function(params, element) {
             return 'File must be ' + params + ' MB or smaller.';
         });
+        
+        let ajaxInProgress = false;
 
         $("#evaluate-form").validate({
             ignore: ":hidden:not(#answer_sheet)",
@@ -452,8 +458,10 @@
                 
                 var formData = new FormData();
                 formData.append('answer_sheet', file);
+                formData.append('language', $("#language").val());
                 formData.append('_token', '{{ csrf_token() }}');
-
+                ajaxInProgress = true;
+                
                 $.ajax({
                     url: url,
                     method: "POST",
@@ -492,7 +500,7 @@
                         audio.play();
                     }
                 }).then(function(response) {
-                    
+                    ajaxInProgress = true;
                     if (response.success) {
                         audio.pause();
                         $("#answers-container").html(`
@@ -552,6 +560,7 @@
                         let task_id = response.task_id;
 
                         function processTask(task_id, retries = 0, maxRetries = 50) {
+                            ajaxInProgress = true;
                             let process_url = "{{ route('student.mains-evaluation.process-task', ':task_id') }}".replace(':task_id', task_id);
 
                             return $.ajax({
@@ -562,6 +571,7 @@
                                 contentType: false
                             }).then(function (response) {
                                 if (response.success) {
+                                    ajaxInProgress = false;
                                     toastr.success(response.message, 'Success');
                                     typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations);
                                 } else if ('process_task' in response) {
@@ -572,18 +582,22 @@
                                             }, 5000);
                                         });
                                     } else {
+                                        ajaxInProgress = false;
                                         toastr.error("Max retries reached. Please try again later.", 'Error');
                                     }
                                 } else {
+                                    ajaxInProgress = false;
                                     toastr.error("Something went wrong, please contact our support team.", 'Error');
                                 }
                             }).fail(function () {
+                                ajaxInProgress = false;
                                 toastr.error("Something went wrong, please support our team.", 'Error');
                             });
                         }
 
                         processTask(task_id);
                     } else {
+                        ajaxInProgress = false;
                         audio.pause();
                         $("#answers-container").html('');
                         if("server_busy" in response) {
@@ -595,10 +609,17 @@
                     }
 
                 }).fail(function(err) {
+                    ajaxInProgress = false;
                     toastr.error("Something went wrong please support our team.", 'Error');
                 });
 
                 return false;
+            }
+        });
+        window.addEventListener('beforeunload', function (e) {
+            if (ajaxInProgress) {
+                e.preventDefault();
+                e.returnValue = '';
             }
         });
         $(".upload-file-btn").on('click', function(){
@@ -623,106 +644,6 @@
 
 </script>
 <script>
-    /*function typeWriterHTML(html, elementId, speed = 50, callback = null) {
-        const element = document.getElementById(elementId);
-        element.innerHTML = "";
-
-        let i = 0;
-        let current = "";
-
-        const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
-
-        const instantBlocks = [
-            '<div class="chat-content custom-margin-bottom">',
-            '<div class="dashboard'
-        ];
-
-        function typing() {
-            if (i >= html.length) {
-                if (typeof callback === "function") {
-                    callback();
-                }
-                return;
-            }
-
-            let inserted = false;
-
-            for (let block of instantBlocks) {
-                if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
-                    let depth = 0;
-                    let j = i;
-
-                    while (j < html.length) {
-                        if (html.slice(j, j + 5).toLowerCase() === "<div") {
-                            depth++;
-                        } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
-                            depth--;
-                            if (depth === 0) {
-                                j += 6;
-                                break;
-                            }
-                        }
-                        j++;
-                    }
-
-                    current += html.slice(i, j);
-                    element.innerHTML = current;
-                    i = j;
-                    inserted = true;
-                    break;
-                }
-            }
-
-            // Handle instant tags (svg, table, etc.)
-            if (!inserted && html[i] === "<") {
-                for (let tagName of instantTags) {
-                    if (html.slice(i).toLowerCase().startsWith("<" + tagName)) {
-                        let endTag = "</" + tagName + ">";
-                        let endIndex = html.toLowerCase().indexOf(endTag, i);
-
-                        if (endIndex !== -1) {
-                            endIndex += endTag.length;
-                        } else {
-                            endIndex = html.indexOf(">", i) + 1;
-                        }
-
-                        current += html.slice(i, endIndex);
-                        element.innerHTML = current;
-                        i = endIndex;
-                        inserted = true;
-                        break;
-                    }
-                }
-            }
-
-            // 🚀 FIX: instantly render any tag (not just instantTags)
-            if (!inserted && html[i] === "<") {
-                let endIndex = html.indexOf(">", i) + 1;
-                current += html.slice(i, endIndex);
-                element.innerHTML = current;
-                i = endIndex;
-                inserted = true;
-            }
-
-            // Type character-by-character ONLY for text content
-            if (!inserted) {
-                current += html[i];
-                element.innerHTML = current;
-                i++;
-            }
-
-            // Continue
-            if (i < html.length) {
-                setTimeout(typing, inserted ? 0 : speed);
-            } else {
-                if (typeof callback === "function") {
-                    callback();
-                }
-            }
-        }
-
-        typing();
-    }*/
     function typeWriterHTML(html, elementId, speed = 50, callback = null) {
         const element = document.getElementById(elementId);
         element.innerHTML = "";
@@ -732,7 +653,7 @@
         const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
         const instantBlocks = [
             '<div class="chat-content custom-margin-bottom">',
-            '<div class="dashboard'
+            '<div class="gap-items-container'
         ];
 
         let lastTime = performance.now();

@@ -111,7 +111,22 @@
                             </div>
                             <h5>Optimal Solution</h5>
                         </div>
-                        <p class="section-text ml-10px">{{ $gap_analysis_priority_fix->correct_action }}</p>
+                        <p class="section-text ml-10px">
+                            @if(str_contains($gap_analysis_priority_fix->correct_action, "(1)"))
+                                <?php
+                                    $pattern = '/\(\d+\)(.*?)(?=\(\d+\)|$)/s';
+                                    preg_match_all($pattern, $gap_analysis_priority_fix->correct_action, $matches);
+                                    $points = array_map('trim', $matches[1]);
+                                ?>
+                                <ul class="section-text ml-20px unset-default-css">
+                                    @foreach($points as $point)
+                                    <li>{{$point}}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                            {{ $gap_analysis_priority_fix->correct_action }}
+                            @endif
+                        </p>
                     </div>
                 </div>
                 @php($j++)

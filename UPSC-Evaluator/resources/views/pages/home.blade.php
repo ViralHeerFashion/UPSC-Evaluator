@@ -3,6 +3,7 @@
 @section('styles')
 <style>
     .rainbow-pricing, .pricing-table-inner{width: 100%!important;}
+    .bonus-highlight {color: #30d158;font-weight: 600;position: relative;display: inline-block;margin-left: 4px;}
 </style>
 @endsection
 @section('content')
@@ -397,10 +398,10 @@
                                             <h6>Includes</h6>
                                             <ul class="list-style--1 has-show-more-inner-content">
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹349, Get ₹405 Value
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹349, Get <span class="bonus-highlight">₹405 Value</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> +16% Bonus
+                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+16% Bonus</span>
                                                 </li>
                                                 <li>
                                                     <i class="fa-regular fa-circle-check"></i> Evaluates up to 337 pages
@@ -436,10 +437,10 @@
                                             <h6>Includes</h6>
                                             <ul class="list-style--1 has-show-more-inner-content">
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹799, Get ₹1125 Value
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹799, Get <span class="bonus-highlight">₹1125 Value</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> +40% Bonus
+                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+40% Bonus</span>
                                                 </li>
                                                 <li>
                                                     <i class="fa-regular fa-circle-check"></i> Evaluates up to 937 pages
@@ -474,10 +475,10 @@
                                             <h6>Includes</h6>
                                             <ul class="list-style--1 has-show-more-inner-content">
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹1299, Get ₹2025 Value
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹1299, <span class="bonus-highlight" style="display: contents;">Get ₹2025 Value</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> +55% Bonus
+                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+55% Bonus</span>
                                                 </li>
                                                 <li>
                                                     <i class="fa-regular fa-circle-check"></i> Evaluates up to    1687 pages

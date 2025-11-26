@@ -54,7 +54,7 @@
                         <div class="rbt-sm-separator"></div>
                         <ul class="dashboard-mainmenu rbt-default-sidebar-list">
                             <li><a href="{{ route('disclaimer') }}"><i class="fa-sharp fa-regular fa-bell"></i><span>Disclaimer</span></a></li>
-                            <li><a href="{{ route('privacy-policy') }}"><i class="fa-sharp fa-regular fa-briefcase"></i><span>Terms & Condition</span></a></li>
+                            <li><a href="{{ route('terms-and-condition') }}"><i class="fa-sharp fa-regular fa-briefcase"></i><span>Terms & Condition</span></a></li>
                         </ul>
                     </nav>
                 </div>

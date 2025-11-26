@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Student;
 
-ini_set('max_execution_time', 0);
-set_time_limit(0);
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,19 +52,21 @@ class MainsEvaluationController extends Controller
     public function list()
     {
         $student_answer_sheets = StudentAnswerSheet::where('user_id', Auth::id())
-                                    ->where('is_evaluated', 1)
-                                    ->orderBy('created_at', 'desc')
-                                    ->get()
-                                    ->groupBy(function($item) {
-                                        return $item->created_at->format('d-m-Y');
-                                    });
+                                                    ->where('is_evaluated', 1)
+                                                    ->orderBy('created_at', 'desc')
+                                                    ->get()
+                                                    ->groupBy(function($item) {
+                                                        return $item->created_at->format('d-m-Y');
+                                                    });
 
         return view('student.mains-evaluation.list', compact('student_answer_sheets'));
     }
 
     public function generateTask(Request $request)
     {
-        $current_running_tasks = StudentAnswerSheet::where('is_evaluated', 0)->count();
+        $current_running_tasks = StudentAnswerSheet::where('is_evaluated', 0)
+                                                    ->where('created_at', '>=', date("Y-m-d H:i:s", strtotime("-5 minutes")))
+                                                    ->count();
         if ($current_running_tasks > 20) {
             return response()->json([
                 'success' => false,
@@ -84,7 +83,7 @@ class MainsEvaluationController extends Controller
         if ($evaluation_charge > $wallet_amount) {
             return response()->json([
                 'success' => false,
-                'message' => "Do don't have enough balance for this evaluation"
+                'message' => "You don't have enough balance for this evaluation"
             ]);
         }
 
@@ -94,13 +93,15 @@ class MainsEvaluationController extends Controller
         $student_answer_sheet->file_name = $request->file('answer_sheet')->getClientOriginalName();
         $student_answer_sheet->evaluation_charge = $evaluation_charge;
         $student_answer_sheet->subject_id = 1;
+        $student_answer_sheet->language_id = $request->language;
         $student_answer_sheet->save();
 
         $ch = curl_init();
         $filePath = storage_path("app/private/".$student_answer_sheet->pdf);
 
         $payload = [
-            'answer_sheet' => new \CURLFile($filePath, 'application/pdf', $student_answer_sheet->file_name)
+            'answer_sheet' => new \CURLFile($filePath, 'application/pdf', $student_answer_sheet->file_name),
+            'language' => $student_answer_sheet->language->name
         ];
 
         curl_setopt_array($ch, [
@@ -113,8 +114,6 @@ class MainsEvaluationController extends Controller
                 "X-API-KEY: 1_Vm83n4ZJrVTMJGgVPqmXZGWKx-d0MlvEk3i6frwEE"
             ],
         ]);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -159,11 +158,8 @@ class MainsEvaluationController extends Controller
                 CURLOPT_CONNECTTIMEOUT => 60,
                 CURLOPT_TIMEOUT_MS => 1200000
             ]);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
             $response = json_decode(curl_exec($ch));
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
             $api_status = isset($response->result) && !empty($response->result) ? "SUCCESS" : $response->status;
@@ -175,6 +171,11 @@ class MainsEvaluationController extends Controller
             }
 
             if($api_status == "FAILURE") {
+                
+                $student_answer_sheet->api_response = json_encode($response);
+                $student_answer_sheet->is_evaluated = 1;
+                $student_answer_sheet->save();
+                
                 return response()->json([
                     'success' => false,
                     'message' => "Something went wrong while processing your answersheet. Please try again later or contact our support team."
@@ -221,7 +222,7 @@ class MainsEvaluationController extends Controller
         ]);
     }
 
-    public function storeEvaluation($student_answer_sheet, $response)
+    private function storeEvaluation($student_answer_sheet, $response)
     {
         foreach ($response->result->questions as $key => $question) {
                 
