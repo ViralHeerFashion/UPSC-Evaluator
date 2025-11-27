@@ -114,10 +114,17 @@
                         <p class="section-text ml-10px">
                             @if(str_contains($gap_analysis_priority_fix->correct_action, "(1)"))
                                 <?php
+                                    $pos = mb_strpos($gap_analysis_priority_fix->correct_action, '(1)', 0, 'UTF-8');
+                                    if ($pos === false) {
+                                        return false ? '' : $gap_analysis_priority_fix->correct_action;
+                                    }
+                                    $heading = mb_substr($gap_analysis_priority_fix->correct_action, 0, $pos, 'UTF-8');
+
                                     $pattern = '/\(\d+\)(.*?)(?=\(\d+\)|$)/s';
                                     preg_match_all($pattern, $gap_analysis_priority_fix->correct_action, $matches);
                                     $points = array_map('trim', $matches[1]);
                                 ?>
+                                {{$heading}}
                                 <ul class="section-text ml-20px unset-default-css">
                                     @foreach($points as $point)
                                     <li>{{$point}}</li>
