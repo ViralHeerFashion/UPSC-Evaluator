@@ -1,5 +1,5 @@
 @extends('pages.theme.main')
-@section('title', 'Home page')
+@section('title', 'Aspire Scan | AI-Powered UPSC Answer Writing Evaluation & Feedback')
 @section('styles')
 <style>
     .rainbow-pricing, .pricing-table-inner{width: 100%!important;}
@@ -398,13 +398,13 @@
                                             <h6>Includes</h6>
                                             <ul class="list-style--1 has-show-more-inner-content">
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹349, Get <span class="bonus-highlight">₹405 Value</span>
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹349, Get <span class="bonus-highlight">₹384 Value</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+16% Bonus</span>
+                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+10% Bonus</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to 337 pages
+                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">320 pages</span></p>
                                                 </li>
                                             </ul>
                                         </div>
@@ -429,7 +429,7 @@
                                         <h4 class="title color-var-three">🏆 Mains Cracker</h4>
                                         <p class="subtitle">For rigorous test series preparation</p>
                                         <div class="pricing">
-                                            <span class="price-text">799</span>
+                                            <span class="price-text">999</span>
                                         </div>
                                     </div>
                                     <div class="pricing-body">
@@ -437,13 +437,13 @@
                                             <h6>Includes</h6>
                                             <ul class="list-style--1 has-show-more-inner-content">
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹799, Get <span class="bonus-highlight">₹1125 Value</span>
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹999, Get <span class="bonus-highlight">₹1250 Value</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+40% Bonus</span>
+                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+25% Bonus</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to 937 pages
+                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">1042 pages</span></p>
                                                 </li>
                                             </ul>
                                         </div>
@@ -467,7 +467,7 @@
                                         <h4 class="title color-var-three">Rank Booster</h4>
                                         <p class="subtitle">For the entire Mains season</p>
                                         <div class="pricing">
-                                            <span class="price-text">1299</span>
+                                            <span class="price-text">1499</span>
                                         </div>
                                     </div>
                                     <div class="pricing-body">
@@ -475,14 +475,15 @@
                                             <h6>Includes</h6>
                                             <ul class="list-style--1 has-show-more-inner-content">
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹1299, <span class="bonus-highlight" style="display: contents;">Get ₹2025 Value</span>
+                                                    <i class="fa-regular fa-circle-check"></i> Pay ₹1499, <span class="bonus-highlight" style="display: contents;">Get ₹2023 Value</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+55% Bonus</span>
+                                                    <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+35% Bonus</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> Evaluates up to    1687 pages
+                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">1685 pages</span></p>
                                                 </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>

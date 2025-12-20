@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function(){
                     Route::get('/start/{process_id?}', 'index')->name('mains-evaluation');
                     Route::get('list', 'list')->name('mains-evaluation.list');
                     // Route::view('', 'student.mains-evaluation.index')->name('mains-evaluation');
-                    Route::any('/make-evaluate', 'makeEvaluate')->name('mains-evaluation.make-evaluate');
+                    Route::post('/make-evaluate', 'makeEvaluate')->name('mains-evaluation.make-evaluate');
 
                     // Viral
                     Route::post('/generate-task', 'generateTask')->name('mains-evaluation.generate-task');

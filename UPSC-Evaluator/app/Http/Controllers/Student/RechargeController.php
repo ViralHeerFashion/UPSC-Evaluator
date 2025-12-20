@@ -77,11 +77,11 @@ class RechargeController extends Controller
             if($wallet_count <= 0) {
                 $recharge_amount = $recharge->amount;
                 if ($recharge_amount == 349) {
-                    $recharge_amount = 405;
-                } elseif($recharge_amount == 799) {
-                    $recharge_amount = 1125;
-                } elseif($recharge_amount == 1299) {
-                    $recharge_amount = 2025;
+                    $recharge_amount = 384;
+                } elseif($recharge_amount == 999) {
+                    $recharge_amount = 1250;
+                } elseif($recharge_amount == 1499) {
+                    $recharge_amount = 2023;
                 }
     
                 $wallet = new Wallet;
@@ -133,11 +133,11 @@ class RechargeController extends Controller
 
                 $recharge_amount = $recharge->amount;
                 if ($recharge_amount == 349) {
-                    $recharge_amount = 405;
-                } elseif($recharge_amount == 799) {
-                    $recharge_amount = 1125;
-                } elseif($recharge_amount == 1299) {
-                    $recharge_amount = 2025;
+                    $recharge_amount = 384;
+                } elseif($recharge_amount == 999) {
+                    $recharge_amount = 1250;
+                } elseif($recharge_amount == 1499) {
+                    $recharge_amount = 2023;
                 }
 
                 $wallet = new Wallet;

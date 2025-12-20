@@ -181,7 +181,7 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="javascript:void(0);" class="set-recharge" data-amount="349" data-get-amount="405">
+                <a href="javascript:void(0);" class="set-recharge" data-amount="349" data-get-amount="384">
                     <div class="pricing-card booster-card">
                         <div class="card-header">
                             <div class="popular-badge">Best Offer</div>
@@ -200,15 +200,15 @@
                             <ul class="feature-list">
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-rupee-sign"></i></div>
-                                    <span>Pay ₹349, Get <span class="bonus-highlight">₹405 Value</span></span>
+                                    <span>Pay ₹349, Get <span class="bonus-highlight">₹384 Value</span></span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                                    <span><span class="bonus-highlight">+16% Bonus</span></span>
+                                    <span><span class="bonus-highlight">+10% Bonus</span></span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-copy"></i></div>
-                                    <span>Evaluates up to 337 pages</span>
+                                    <span>Evaluates up to <span class="bonus-highlight">320 pages</span></span>
                                 </li>
                             </ul>
                         </div>
@@ -219,13 +219,13 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="javascript:void(0);" class="set-recharge" data-amount="799" data-get-amount="1125">
+                <a href="javascript:void(0);" class="set-recharge" data-amount="999" data-get-amount="1250">
                     <div class="pricing-card mains-card">
                         <div class="card-header">
                             <div class="plan-title">Mains Cracker</div>
                             <div class="plan-subtitle">For rigorous test series preparation</div>
                             <div class="price-container">
-                                <div class="plan-price">₹799</div>
+                                <div class="plan-price">₹999</div>
                                 <div class="price-period">one-time</div>
                             </div>
                         </div>
@@ -237,15 +237,15 @@
                             <ul class="feature-list">
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-rupee-sign"></i></div>
-                                    <span>Pay ₹799, Get <span class="bonus-highlight">₹1125 Value</span></span>
+                                    <span>Pay ₹999, Get <span class="bonus-highlight">₹1250 Value</span></span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                                    <span><span class="bonus-highlight">+40% Bonus</span></span>
+                                    <span><span class="bonus-highlight">+25% Bonus</span></span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-copy"></i></div>
-                                    <span>Evaluates up to 937 pages</span>
+                                    <span>Evaluates up to <span class="bonus-highlight">1042 pages</span></span>
                                 </li>
                             </ul>
                         </div>
@@ -256,13 +256,13 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="javascript:void(0);" class="set-recharge" data-amount="1299" data-get-amount="2025">
+                <a href="javascript:void(0);" class="set-recharge" data-amount="1499" data-get-amount="2023">
                     <div class="pricing-card rank-card">
                         <div class="card-header">
                             <div class="plan-title">Rank Booster</div>
                             <div class="plan-subtitle">For the entire Mains season</div>
                             <div class="price-container">
-                                <div class="plan-price">₹1,299</div>
+                                <div class="plan-price">₹1,499</div>
                                 <div class="price-period">one-time</div>
                             </div>
                         </div>
@@ -274,15 +274,15 @@
                             <ul class="feature-list">
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-rupee-sign"></i></div>
-                                    <span>Pay ₹1,299, Get <span class="bonus-highlight">₹2,025 Value</span></span>
+                                    <span>Pay ₹1,499, Get <span class="bonus-highlight">₹2,023 Value</span></span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                                    <span><span class="bonus-highlight">+55% Bonus</span></span>
+                                    <span><span class="bonus-highlight">+35% Bonus</span></span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-copy"></i></div>
-                                    <span>Evaluates up to 1687 pages</span>
+                                    <span>Evaluates up to <span class="bonus-highlight">1685 pages</span></span>
                                 </li>
                             </ul>
                         </div>
@@ -346,11 +346,11 @@
             if (amount == 49) {
                 sentence = "(Amount to be credited: ₹49)";                
             } else if(amount == 349) {
-                sentence = "(Amount to be credited: ₹405)";
-            } else if(amount == 799) {
-                sentence = "(Amount to be credited: ₹1125)";
-            } else if(amount == 1299) {
-                sentence = "(Amount to be credited: ₹2025)";
+                sentence = "(Amount to be credited: ₹384)";
+            } else if(amount == 999) {
+                sentence = "(Amount to be credited: ₹1250)";
+            } else if(amount == 1499) {
+                sentence = "(Amount to be credited: ₹2023)";
             }           
 
             if (sentence != null) {
@@ -376,7 +376,7 @@
         });
         $("#amount").on('blur', function(){
             let amount = parseInt($(this).val());
-            let fixed_amounts = [49, 349, 799, 1299];
+            let fixed_amounts = [49, 349, 999, 1499];
             $(".set-recharge-amount").removeClass('active');
             if (fixed_amounts.includes(amount)) {
                 $('.set-recharge-amount[data-amount="'+amount+'"]').addClass('active');
@@ -384,11 +384,11 @@
                 if (amount == 49) {
                     get_amount = 49;             
                 } else if(amount == 349) {
-                    get_amount = 405;
-                } else if(amount == 799) {
-                    get_amount = 1125;
-                } else if(amount == 1299) {
-                    get_amount = 2025;
+                    get_amount = 384;
+                } else if(amount == 999) {
+                    get_amount = 1250;
+                } else if(amount == 1499) {
+                    get_amount = 2023;
                 }           
                 
                 if (get_amount > 0) {

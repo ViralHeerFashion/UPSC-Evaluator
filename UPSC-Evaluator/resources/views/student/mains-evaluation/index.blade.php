@@ -522,38 +522,39 @@
                         `);
                         
                         $("#answers-container").show();
+                        
                         function startLoader(duration) {
                             $('#completionMessage').css('opacity', '0');
-                            
-                            progress = 0;
+                        
+                            let progress = 0;
+                            let remaining = duration;
+                        
                             $('#loaderProgress').css('width', '0%');
                             $('#percentage').text('0%');
-                            $('#remainingTime').text(duration.toFixed(1) + 's remaining');
-                            
-                            if (interval) {
-                                clearInterval(interval);
-                            }
-                            
-                            const intervalTime = 100 / (duration * 10);
-                            let elapsedTime = 0;
-                            
-                            interval = setInterval(function() {
-                                progress += intervalTime;
-                                elapsedTime += 0.1;
-                                
-                                if (progress >= 100) {
+                            $('#remainingTime').text(remaining + 's remaining');
+                        
+                            if (interval) clearInterval(interval);
+                        
+                            const progressPerSecond = 100 / duration;
+                        
+                            interval = setInterval(function () {
+                        
+                                progress += progressPerSecond;
+                                remaining -= 1;
+                        
+                                if (progress >= 100 || remaining <= 0) {
                                     progress = 100;
+                                    remaining = 0;
+                        
                                     clearInterval(interval);
-                                    
                                     $('#completionMessage').css('opacity', '1');
                                 }
-                                
+                        
                                 $('#loaderProgress').css('width', progress + '%');
                                 $('#percentage').text(Math.round(progress) + '%');
-                                
-                                const remaining = (duration * (100 - progress) / 100).toFixed(1);
                                 $('#remainingTime').text(remaining + 's remaining');
-                            }, 500);
+                        
+                            }, 1000);
                         }
                         startLoader(response.loader_second);
 

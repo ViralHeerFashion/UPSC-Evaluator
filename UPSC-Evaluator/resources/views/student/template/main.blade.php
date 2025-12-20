@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="https://aspirescan.com/public/images/icon.png">
+    <link rel="apple-touch-icon" href="https://aspirescan.com/public/images/icon.png">
     <title>@yield('title')</title>
+    <meta name="keywords" content="UPSC answer writing, AI answer evaluation, UPSC Mains preparation, IAS exam help, check answer sheet online, Civil Services Exam, UPSC AI tool, answer writing practice, Aspire Scan">
+    <meta name="description" content="Boost your UPSC Mains score with Aspire Scan. Upload your handwritten answer sheets and get instant, data-driven AI evaluation and feedback in just 120 seconds.">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aspirescan.com<?= $_SERVER["REQUEST_URI"] ?>" />
+    <meta property="og:site_name" content="Aspire Scan" />
     @include('student.template.style')
     @yield('style')
 </head>

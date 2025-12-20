@@ -258,7 +258,26 @@
                 <!-- </p> -->
                 <!-- <p class=""> -->
                     <h4 style="margin: 5px 0 0 0;padding: 0;margin-top: 20px;padding-bottom: 20px!important;">Optimal Solution</h4>
+                    @if(str_contains($gap->correct_action, "(1)") || str_contains($gap->correct_action, "(१)"))
+                       <?php
+                            $pos = mb_strpos($gap->correct_action, '(1)', 0, 'UTF-8');
+                            if ($pos === false) {
+                                $pos = mb_strpos($gap->correct_action, '(१)', 0, 'UTF-8');
+                            }
+                            $heading = mb_substr($gap->correct_action, 0, $pos, 'UTF-8');
+                                
+                            preg_match_all('/\(\d+\)\s*([^()]+)/u', $gap->correct_action, $matches);
+                            $points = array_map('trim', $matches[1]);
+                        ?>
+                        {{$heading}}
+                        <ul class="section-text ml-20px unset-default-css">
+                            @foreach($points as $point)
+                            <li>{{$point}}</li>
+                            @endforeach
+                        </ul>
+                    @else
                     {{ $gap->correct_action }}
+                    @endif
                 </p>
             </div>
             @endforeach

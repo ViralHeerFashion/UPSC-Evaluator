@@ -39,6 +39,7 @@ class MainsEvaluationController extends Controller
                 }
             ])
             ->where('task_id', $process_id)
+            ->where('user_id', Auth::id())
             ->first();
 
             if (is_null($student_answer_sheet)) {
@@ -52,6 +53,7 @@ class MainsEvaluationController extends Controller
     public function list()
     {
         $student_answer_sheets = StudentAnswerSheet::where('user_id', Auth::id())
+                                                    ->whereNotNull('task_id')
                                                     ->where('is_evaluated', 1)
                                                     ->orderBy('created_at', 'desc')
                                                     ->get()
@@ -133,7 +135,7 @@ class MainsEvaluationController extends Controller
             'success' => true,
             'message' => "Task generated successfully. Please wait for evaluation.",
             'task_id' => $student_answer_sheet->task_id,
-            'loader_second' => $total_page_available_in_pdf * 4
+            'loader_second' => $total_page_available_in_pdf > 8 ? $total_page_available_in_pdf * 4.5 : 40
         ]);
 
     }
@@ -327,6 +329,12 @@ class MainsEvaluationController extends Controller
 
     public function makeEvaluate(Request $request)
     {
+        if (!$request->hasFile('answer_sheet')) {
+            return response()->json([
+                'success' => false,
+                'message' => "Answer sheet not found!"
+            ]);
+        }
         $parser = new Parser();
         $pdf = $parser->parseFile($request->file('answer_sheet')->getPathname());
         $total_page_available_in_pdf = count($pdf->getPages());
