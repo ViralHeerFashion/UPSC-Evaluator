@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\{
 	AuthController,
 	DashboardController,
 	UsersController,
+	InstituteController,
 	TestController
 };
 
@@ -18,6 +19,18 @@ Route::middleware('auth:admin')->group(function(){
 	Route::controller(DashboardController::class)->group(function(){
 		Route::prefix('dashboard')->group(function(){
 			Route::get('', 'index')->name('dashboard');
+		});
+	});
+
+	Route::controller(InstituteController::class)->group(function(){
+		Route::prefix('institutes')->group(function(){
+			Route::get('', 'index')->name('institute');
+			Route::get('/add/{uuid?}', 'add')->name('institute.add');
+			Route::post('/create', 'create')->name('institute.create');
+			Route::post('/upload-logo', 'uploadLogo')->name('institute.uploadLogo');
+			Route::get('/delete-logo', 'deleteLogo')->name('institute.deleteLogo');
+			Route::get('/{uuid}/student-sheet', 'studentSheet')->name('institute.studentSheet');
+			Route::post('/{institute_id}/upload-sheet', 'uploadSheet')->name('institute.uploadSheet');
 		});
 	});
 

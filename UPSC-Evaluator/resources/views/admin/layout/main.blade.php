@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    <link rel="icon" type="image/x-icon" href="{{asset('img/logo.jpg')}}">
+    <link rel="icon" href="{{asset('public/images/icon.png')}}">
+    <link rel="apple-touch-icon" href="{{asset('public/images/icon.png')}}">
     @include('admin.layout.style')
     @yield('styles')
 </head>

@@ -1,12 +1,12 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="javascript:void(0);" class="brand-link">
-        <!-- <img src="{{asset('img/logo.jpg')}}" alt="UPSE - Evaluator" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-        <span class="brand-text font-weight-light">UPSE - Evaluator</span>
+        <img src="{{asset('public/images/icon.png')}}" alt="Aspire Scan" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">Aspire Scan</span>
     </a>
     <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <!-- <img src="{{asset('img/logo.jpg')}}" class="img-circle elevation-2" alt="User Image"> -->
+                <img src="{{asset('public/images/team-01sm.jpg')}}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info text-center">
                 <a href="javascript:void(0);" class="d-block text-center">
@@ -39,10 +39,18 @@
 					</a>
 				</li>
                 <li class="nav-item">
+					<a href="{{ route('admin.institute') }}" class="nav-link institute-link">
+    					<i class="nav-icon fas fa-university"></i>
+						<p>
+							Institute
+						</p>
+					</a>
+				</li>
+                <li class="nav-item">
                     <a href="{{ route('admin.users') }}" class="nav-link users-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
-                            Users
+                            Students
                         </p>
                     </a>
                 </li>
