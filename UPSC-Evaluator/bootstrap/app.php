@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('admin')
                 ->name('admin.')
                 ->group(base_path('routes/admins.php'));
+
+            Route::middleware('web')
+                ->prefix('institute')
+                ->name('institute.')
+                ->group(base_path('routes/institutes.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -24,15 +29,20 @@ return Application::configure(basePath: dirname(__DIR__))
             'question_attemp' => EnsureScreeningQuestionCompleted::class
         ])
         ->redirectGuestsTo(function(Request $request){
-            return $request->is('admin/*') ? '/admin/login' : '/login';  
+            if ($request->is('admin/*')) return '/admin/login';
+            if ($request->is('institute/*')) return '/institute/login';
+            return '/login';
         })
         ->redirectUsersTo(function(Request $request): string {
-            if (Auth::guard('admin')->check()) {
-                return $request->is('admin/*') ? '/admin/dashboard' : '/mains-evaluation/start';
-            } elseif (Auth::check()) {
-                return '/mains-evaluation/start';
+            if ($request->is('admin/*') && Auth::guard('admin')->check()) {
+                return '/admin/dashboard';
             }
-            return '/login';
+            if ($request->is('institute/*') && Auth::guard('institute')->check()) {
+                return '/institute/students';
+            }
+            return Auth::check()
+                ? '/mains-evaluation/start'
+                : '/login';
         })
         ->validateCsrfTokens(except: [
             '/webhook/recharge/verify-payment',

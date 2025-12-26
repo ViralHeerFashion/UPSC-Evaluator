@@ -49,7 +49,30 @@
     </div>
 </div>
 
+<div class="rainbow-brand-area rainbow-section-gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title rating-title text-center sal-animate" style="margin-bottom: 5px;" data-sal="slide-up" data-sal-duration="700" data-sal-delay="100">
+                    <p class="b1 mb--0 small-title">Our Partners</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 mt--10">
+                <marquee>
+                    <a href="javascript:void(0);"><img src="{{ asset('public/images/partners/unique-academy.jpeg') }}" style="border-radius: 10px;" alt="Brand Image" width="150"></a>
+                </marquee>
 
+                <!-- <ul class="brand-list brand-style-2 slider-brand slider-brand-activation">
+                    <li class="slide-single-layout">
+                        <a href="javascript:void(0);"><img src="{{ asset('public/images/partners/unique-academy.jpeg') }}" alt="Brand Image"></a>
+                    </li>
+                </ul> -->
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="rainbow-service-area rainbow-section-gap">
     <div class="container">

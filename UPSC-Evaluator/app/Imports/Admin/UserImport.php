@@ -59,9 +59,9 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:2', 'max:50'],
+            '*.name' => ['required', 'string', 'min:2', 'max:50'],
 
-            'mobile_number' => [
+            '*.mobile_number' => [
                 'required',
                 'digits:10',
                 function ($attr, $value, $fail) {
@@ -73,7 +73,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation
                 Rule::unique('users', 'phone'),
             ],
 
-            'email_id' => [
+            '*.email_id' => [
                 'required',
                 'email',
                 'min: 5',
@@ -86,7 +86,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation
                 Rule::unique('users', 'email'),
             ],
 
-            'unique_id' => [
+            '*.unique_id' => [
                 'required',
                 'string',
                 'min:1',

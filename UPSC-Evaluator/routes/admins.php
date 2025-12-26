@@ -31,6 +31,10 @@ Route::middleware('auth:admin')->group(function(){
 			Route::get('/delete-logo', 'deleteLogo')->name('institute.deleteLogo');
 			Route::get('/{uuid}/student-sheet', 'studentSheet')->name('institute.studentSheet');
 			Route::post('/{institute_id}/upload-sheet', 'uploadSheet')->name('institute.uploadSheet');
+
+			Route::get('/{uuid}/recharge/{id?}', 'recharge')->name('institute.recharge');
+			Route::post('/{uuid}/make-recharge', 'makeRecharge')->name('institute.makeRecharge');
+			Route::get('/{uuid}/recharge/{id}/delete', 'deleteRecharge')->name('institute.deleteRecharge');
 		});
 	});
 
@@ -38,6 +42,8 @@ Route::middleware('auth:admin')->group(function(){
 		Route::prefix('users')->group(function(){
 			Route::get('', 'index')->name('users');
 			Route::get('/{id}/attempted-question', 'getAttemptedQuestion')->name('users.attemtedQuestion');
+
+			Route::post('/{institute_uuid}/distribute-recharge', 'distributeRecharge')->name('institute.distributeRecharge');
 		});
 	});
 

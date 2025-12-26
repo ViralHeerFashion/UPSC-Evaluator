@@ -41,10 +41,16 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" class="form-control" id="name" name="name" @if(!is_null($institue)) value="{{ $institue->name }}" @endif>
+                                </div>
+                            </div>
+                             <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="institute_api_name" class="form-label">Institute API Name</label>
+                                    <input type="text" class="form-control" id="institute_api_name" name="institute_api_name" @if(!is_null($institue)) value="{{ $institue->institute_api_name }}" @endif>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -126,6 +132,9 @@
         $("#institute-form").validate({
             rules: {
                 name: {
+                    required: true
+                },
+                institute_api_name: {
                     required: true
                 },
                 phone: {

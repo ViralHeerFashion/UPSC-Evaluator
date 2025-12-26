@@ -36,9 +36,12 @@
                                 <th>Date</th>
                                 <th>Logo</th>
                                 <th>Name</th>
+                                <th>API Name</th>
                                 <th>Phone</th>
                                 <th>Email</th>
                                 <th>Student Sheet</th>
+                                <th>Recharge</th>
+                                <th>Login Link</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -55,10 +58,18 @@
                                     @endif
                                 </td>
                                 <td>{{ $institute->name }}</td>
+                                <td>{{ $institute->institute_api_name }}</td>
                                 <td>{{ $institute->phone }}</td>
                                 <td>{{ $institute->email }}</td>
                                 <td>
+                                    <a href="javascript:void(0);">{{ substr(route('student.login', ['institute' => $institute->uuid]), 0, 35) }}...</a>
+                                    <a href="javascript:void(0);"><i class="fa fa-clone copy-text" aria-hidden="true" data-text="{{ route('admin.institute.studentSheet', ['uuid' => $institute->uuid]) }}"></i></a>
+                                </td>
+                                <td>
                                     <a href="{{ route('admin.institute.studentSheet', ['uuid' => $institute->uuid]) }}"><i class="far fa-file-excel fa-2x"></i></a>
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.institute.recharge', ['uuid' => $institute->uuid]) }}"><i class="fab fa-uncharted fa-2x"></i></a>
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.institute.add', ['uuid' => $institute->uuid]) }}" class="text-success"><i class="far fa-edit"></i></a>
@@ -88,6 +99,30 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".institute-link").addClass('active');
+        $(document).on("click", ".copy-text", function () {
+            let text = $(this).data('text');
+            let _this = this;
+            $('.fa-check').addClass('fa-clone');
+            $(_this).removeClass('fa-check');
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            $(this).append(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Unable to copy to clipboard', err);
+            }
+            textArea.remove();
+            $(this).removeClass('fa-clone');
+            $(this).addClass('fa-check');
+            setTimeout(
+            function() {
+                $(_this).addClass('fa-clone');
+                $(_this).removeClass('fa-check');
+            }, 1000);
+        });
 	});
 </script>
 @endsection

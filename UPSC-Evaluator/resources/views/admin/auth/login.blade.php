@@ -30,7 +30,8 @@
                 <div class="alert alert-success mb-3" role="alert">{{session('msg')}}</div>
                 @endif
 
-                <form action="{{route('admin.authenticate')}}" method="post">
+                @php($form_action = request()->is('admin/*') ? 'admin.authenticate' : 'institute.authenticate')
+                <form action="{{route($form_action)}}" method="post">
                     @csrf
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" placeholder="Email" name="email" required>

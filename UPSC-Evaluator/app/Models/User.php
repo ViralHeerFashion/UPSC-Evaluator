@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\{
-    UserAttemptQuestion
+    UserAttemptQuestion,
+    Institute
 };
 
 class User extends Authenticatable
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function questionAttemp()
     {
         return $this->hasMany(UserAttemptQuestion::class, 'user_id', 'id');
+    }
+
+    public function institute()
+    {
+        return $this->hasOne(Institute::class, 'id', 'institute_id');    
     }
 }

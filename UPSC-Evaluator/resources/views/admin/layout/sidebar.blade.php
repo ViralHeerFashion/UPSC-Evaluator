@@ -10,7 +10,11 @@
             </div>
             <div class="info text-center">
                 <a href="javascript:void(0);" class="d-block text-center">
+                    @if(request()->is('admin/*') && auth()->guard('admin')->check())
 					{{ auth()->guard('admin')->user()->name }}
+                    @else
+                    {{ auth()->guard('institute')->user()->name }}
+                    @endif
 				</a>
             </div>
         </div>
@@ -30,6 +34,7 @@
 		<!-- Sidebar Menu -->
 		<nav class="mt-2">
 			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @if(request()->is('admin/*') && auth()->guard('admin')->check())
 				<li class="nav-item">
 					<a href="{{ route('admin.dashboard') }}" class="nav-link dashboard-link">
     					<i class="nav-icon fas fa-chart-line"></i>
@@ -48,12 +53,22 @@
 				</li>
                 <li class="nav-item">
                     <a href="{{ route('admin.users') }}" class="nav-link users-link">
-                        <i class="nav-icon fas fa-users"></i>
+                        <i class="nav-icon fas fa-user-graduate"></i>
                         <p>
                             Students
                         </p>
                     </a>
                 </li>
+                @elseif(request()->is('institute/*') && auth()->guard('institute')->check())
+                <li class="nav-item">
+                    <a href="{{ route('admin.users') }}" class="nav-link users-link">
+                        <i class="nav-icon fas fa-user-graduate"></i>
+                        <p>
+                            Students
+                        </p>
+                    </a>
+                </li>
+                @endif
 			</ul>
 		</nav>
     </div>

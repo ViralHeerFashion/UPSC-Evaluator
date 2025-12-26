@@ -37,8 +37,10 @@
                 <div class="card-body">
                     @if ($errors->any())
                     <div class="mb-3">
-                        Sheet is not imported
-                        <table class="table table-striped table-danger">
+                        <div class="alert alert-danger" role="alert">
+                            Error: Your whole sheet is not import please check below errors!
+                        </div>
+                        <table class="table table-bordered table-danger">
                             <thead>
                                 <tr>
                                     <th>Row Number</th>
@@ -47,13 +49,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (json_decode($errors->all()[0]) as $row => $errors)
+                                @foreach (collect(json_decode($errors->all()[0]))->sortKeys() as $row => $errors)
+                                    @php($j = 1)
                                     @foreach($errors as $error_column => $error)
                                     <tr>
-                                        <td>{{$row}}</td>
+                                        @if($j == 1)
+                                        <td rowspan="{{ count((array) $errors) }}">{{$row}}</td>
+                                        @endif
                                         <td>{{$error_column}}</td>
                                         <td>{{$error[0]}}</td>
                                     </tr>
+                                    @php($j++)
                                     @endforeach
                                 @endforeach
                             </tbody>
@@ -71,6 +77,41 @@
                             <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Upload</button>
                         </div>
                     </form>
+
+                    @if($student_sheets->count() > 0)
+                    <table class="table table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Sheet</th>
+                                <th>Total Students</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>
+                                    <a href="{{ route('admin.users', ['life_time' => true, 'institute' => $institue->uuid, 'limit' => 5000]) }}">ALL</a>
+                                </td>
+                                <td>{{$total_students}}</td>
+                            </tr>
+                            @php($i = 1)
+                            @foreach($student_sheets as $sheet)
+                            <tr>
+                                <td>{{$i}}</td>
+                                <td>{{date("d-m-Y h:i A", strtotime($sheet->created_at))}}</td>
+                                <td>
+                                    <a href="{{ route('admin.users', ['life_time' => true, 'institute' => $institue->uuid, 'sheet_id' => $sheet->id, 'limit' => 5000]) }}">{{$sheet->sheet_name}}</a>
+                                </td>
+                                <td>{{$sheet->users_count}}</td>
+                            </tr>
+                            @php($i++)
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @endif
                 </div>
             </div>
         </div>

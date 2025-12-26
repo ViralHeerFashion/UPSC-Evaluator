@@ -27,18 +27,25 @@ class ScreeningQuestionController extends Controller
             $user->question_attempted = 1;
             $user->save();
 
-            $recharge = new Recharge;
-            $recharge->user_id = Auth::id();
-            $recharge->amount = 15;
-            $recharge->order_id = date("Ymd")."R";
-            $recharge->razorpay_order_id = "Welcome bonus";
-            $recharge->save();
-
-            $wallet = new Wallet;
-            $wallet->user_id = $recharge->user_id;
-            $wallet->recharge_id = $recharge->id;
-            $wallet->amount = 15;
-            $wallet->save();
+            $welcome_bonus_exists = Recharge::where('user_id', Auth::id())
+                                            ->where('razorpay_order_id', "Welcome bonus")
+                                            ->exists();
+                                            
+            if(!$welcome_bonus_exists){
+                $recharge = new Recharge;
+                $recharge->user_id = Auth::id();
+                $recharge->amount = 15;
+                $recharge->order_id = date("Ymd")."R";
+                $recharge->razorpay_order_id = "Welcome bonus";
+                $recharge->payment_status = 1;
+                $recharge->save();
+    
+                $wallet = new Wallet;
+                $wallet->user_id = $recharge->user_id;
+                $wallet->recharge_id = $recharge->id;
+                $wallet->amount = 15;
+                $wallet->save();
+            }
         }
 
         return redirect()->route('student.mains-evaluation');
