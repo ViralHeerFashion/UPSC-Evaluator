@@ -61,10 +61,18 @@
                 </li>
                 @elseif(request()->is('institute/*') && auth()->guard('institute')->check())
                 <li class="nav-item">
-                    <a href="{{ route('admin.users') }}" class="nav-link users-link">
+                    <a href="{{ route('institute.students') }}" class="nav-link users-link">
                         <i class="nav-icon fas fa-user-graduate"></i>
                         <p>
                             Students
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('institute.model-answer') }}" class="nav-link model-answer-link">
+                        <i class="nav-icon fas fa-atom"></i>
+                        <p>
+                            Model Answer
                         </p>
                     </a>
                 </li>

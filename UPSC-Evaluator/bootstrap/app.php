@@ -5,7 +5,10 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Http\Middleware\EnsureScreeningQuestionCompleted;
+use App\Http\Middleware\{
+    EnsureScreeningQuestionCompleted,
+    InstituteStudentResetPassword
+};
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -26,7 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'question_attemp' => EnsureScreeningQuestionCompleted::class
+            'question_attemp' => EnsureScreeningQuestionCompleted::class,
+            'institute_student_reset_password' => InstituteStudentResetPassword::class
         ])
         ->redirectGuestsTo(function(Request $request){
             if ($request->is('admin/*')) return '/admin/login';

@@ -123,6 +123,13 @@ class TestController extends Controller
         dd("PDF deleted successfully");
     }
 
+    private function modelAnswerJson()
+    {
+        $response = Storage::get('/model_answer/response_1.json');
+        echo "<pre>";
+        print_r(json_decode($response));
+    }
+
     private function modelAnswer()
     {
         $student_answer_sheet = StudentAnswerSheet::where('task_id', '9456ff83-6f7b-4975-b160-6919da494908')->first();

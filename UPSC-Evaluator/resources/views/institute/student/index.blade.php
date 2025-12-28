@@ -25,10 +25,12 @@
 		<div class="col-md-12">
 			<div class="card card-primary card-outline">
 				<div class="card-header">
-					<form action="" method="get">
-						<input type="search" name="search" id="search" placeholder="Name/Phone/Email" value="{{ @$_GET['search'] }}">
-						<button>Search</button>
-					</form>
+					<div class="card-title">
+						<form action="" method="get">
+							<input type="search" name="search" id="search" placeholder="Name/Phone/Email" value="{{ @$_GET['search'] }}">
+							<button>Search</button>
+						</form>
+					</div>
 				</div>
 				<div class="card-body">
 					<table class="table table-striped">
@@ -39,7 +41,6 @@
 								<th>Phone</th>
 								<th>Eamil</th>
 								<th>Unique code</th>
-								<th>Password</th>
 								<th>No of evalution</th>
 							</tr>
 						</thead>
@@ -52,7 +53,6 @@
 								<td>{{$student->phone}}</td>
 								<td>{{$student->email}}</td>
 								<td>{{$student->unique_id}}</td>
-								<td>{{$student->plain_password}}</td>
 								<td></td>
 							</tr>
 							@php($i++)

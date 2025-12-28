@@ -1,3 +1,7 @@
+@php($institute = null)
+@if(Cookie::has('institute'))
+    @php($institute = json_decode(Cookie::get('institute')))
+@endif
 <header class="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header">
     <div class="container-fluid position-relative">
         <div class="row align-items-center justify-content-between">
@@ -8,7 +12,10 @@
                     </div>
                     <div class="logo">
                         <a href="{{ route('home') }}">
-                            <img class="logo-light" src="{{ asset('public/images/logo.png') }}" alt="ChatBot Logo">
+                            <img class="logo-light" src="{{ asset('public/images/logo.png') }}" alt="Aspire Scan">
+                            @if(!is_null($institute) && Storage::disk('public')->exists($institute->logo))
+                            <img src="{{ Storage::disk('public')->url($institute->logo) }}" class="institute-logo">
+                            @endif
                         </a>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $students = User::select('id', 'name', 'phone', 'email', 'unique_id', 'plain_password')
+        $students = User::select('id', 'name', 'phone', 'email', 'unique_id')
                         ->where('institute_id', Auth::guard('institute')->id());
 
         if ($request->filled('search')) {

@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\Admin\{
+	UsersExport
+};
 use App\Models\{
 	User,
 	UserAttemptQuestion,
@@ -26,7 +30,7 @@ class UsersController extends Controller
 			$filter_to = date("Y-m-d");
 		}
 
-    	$users = User::select('id', 'name', 'phone', 'email', 'is_registered', 'question_attempted', 'created_at', 'institute_id')
+    	$users = User::select('id', 'name', 'phone', 'email', 'is_registered', 'question_attempted', 'created_at', 'institute_id', 'plain_password')
     				->withCount('questionAttemp as question_attempted_count')
     				->whereDate('created_at', '>=', $filter_from)
     				->whereDate('created_at', '<=', $filter_to);
@@ -57,6 +61,16 @@ class UsersController extends Controller
     				->orWhere('phone', 'like', '%'.$request->search.'%');
     		});
     	}
+
+		if ($request->filled('download')) {
+			$users = $users->orderByDesc('id')
+    					->get();
+
+			return Excel::download(
+				new UsersExport($users),
+				date("d-m-Y h:i A").".xlsx"
+			);
+		}
 
     	$users = $users->orderByDesc('id')
     					->paginate($limit);

@@ -28,6 +28,12 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
+        if (!is_null($user->plain_password)) {
+            $user->plain_password = null;
+            $user->save();
+
+            return redirect()->route('student.logout');
+        }
         return back()->with('success', 'Password Updated successfully...');
     }
 

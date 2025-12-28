@@ -1,10 +1,17 @@
+@php($institute = null)
+@if(Cookie::has('institute'))
+    @php($institute = json_decode(Cookie::get('institute')))
+@endif
 <header class="rainbow-header header-default header-transparent header-sticky">
     <div class="container position-relative">
         <div class="row align-items-center row--0">
             <div class="col-lg-2 col-md-6 col-6">
                 <div class="logo">
                     <a href="{{ route('home') }}">
-                        <img class="logo-light" src="{{ asset('public/images/logo.png') }}" alt="ChatBot Logo">
+                        <img class="logo-light" src="{{ asset('public/images/logo.png') }}" alt="Aspire Scan">
+                        @if(!is_null($institute) && Storage::disk('public')->exists($institute->logo))
+                        <img src="{{ Storage::disk('public')->url($institute->logo) }}" class="institute-logo">
+                        @endif
                     </a>
                 </div>
             </div>

@@ -13,4 +13,5 @@
     .content-page{padding-top: 10px!important;}
     .toast .toast-title{font-size: 17px;}
     .toast .toast-message{font-size: 12px;}
+    .institute-logo{border-radius: 10px;}
 </style>

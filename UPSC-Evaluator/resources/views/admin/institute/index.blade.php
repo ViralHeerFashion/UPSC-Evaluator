@@ -62,14 +62,14 @@
                                 <td>{{ $institute->phone }}</td>
                                 <td>{{ $institute->email }}</td>
                                 <td>
-                                    <a href="javascript:void(0);">{{ substr(route('student.login', ['institute' => $institute->uuid]), 0, 35) }}...</a>
-                                    <a href="javascript:void(0);"><i class="fa fa-clone copy-text" aria-hidden="true" data-text="{{ route('admin.institute.studentSheet', ['uuid' => $institute->uuid]) }}"></i></a>
-                                </td>
-                                <td>
                                     <a href="{{ route('admin.institute.studentSheet', ['uuid' => $institute->uuid]) }}"><i class="far fa-file-excel fa-2x"></i></a>
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.institute.recharge', ['uuid' => $institute->uuid]) }}"><i class="fab fa-uncharted fa-2x"></i></a>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);">{{ substr(route('student.login', ['institute' => $institute->uuid]), 0, 35) }}...</a>
+                                    <a href="javascript:void(0);"><i class="fa fa-clone copy-text" aria-hidden="true" data-text="{{ route('student.login', ['institute' => $institute->uuid]) }}"></i></a>
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.institute.add', ['uuid' => $institute->uuid]) }}" class="text-success"><i class="far fa-edit"></i></a>

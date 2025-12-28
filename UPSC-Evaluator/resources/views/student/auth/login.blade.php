@@ -3,12 +3,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-style-mode" content="1">
     <title>Sign In</title>
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
+    <link rel="icon" href="{{asset('public/images/icon.png')}}">
+    <link rel="apple-touch-icon" href="{{asset('public/images/icon.png')}}">
     <link rel="stylesheet" href="{{asset('public/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('public/css/fontawesome-all.min.css')}}">
     <link rel="stylesheet" href="{{asset('public/css/feature.css')}}">
     <link rel="stylesheet" href="{{asset('public/css/style.css')}}">
     <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
         .three-body {position: relative;display: inline-block;height: 35px;width: 35px;animation: spin78236 2s infinite linear;}
         .three-body__dot {position: absolute;height: 100%;width: 30%;}
         .three-body__dot:after {content: '';position: absolute;height: 0%;width: 100%;padding-bottom: 100%;background-color: #5D3FD3;border-radius: 50%;}
@@ -34,6 +39,8 @@
         .error{color: #c64d4d;display: block;text-align: left;}
         .disable-button{opacity: 0.6;cursor: not-allowed;pointer-events: none;}
         .show-inline {display: inline-block !important;}
+        .institute-logo{border-radius: 10px;}
+        
     </style>
 </head>
 
@@ -45,7 +52,18 @@
                     <div class="col-lg-12 bg-color-blackest left-wrapper">
                         <div class="sign-up-box">
                             <div class="signup-box-top">
+                                @if(!is_null($institute) && Storage::disk('public')->exists($institute->logo))
+                                <div class="row">
+                                    <div class="col-md-6 col-6">
+                                        <img src="{{ asset('public/images/logo.png') }}" alt="sign-up logo">
+                                    </div>
+                                    <div class="col-md-6 col-6">
+                                        <img src="{{ Storage::disk('public')->url($institute->logo) }}" class="institute-logo">
+                                    </div>
+                                </div>
+                                @else
                                 <img src="{{ asset('public/images/logo.png') }}" alt="sign-up logo">
+                                @endif
                             </div>
                             <div class="signup-box-bottom">
                                 <div class="signup-box-content">

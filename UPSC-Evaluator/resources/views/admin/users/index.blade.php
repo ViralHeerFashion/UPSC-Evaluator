@@ -53,34 +53,40 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header">
-				<form class="d-inline-block" id="filter-form">
-					<input type="hidden" name="institute" value="{{@$_GET['institute']}}">
-					<input type="hidden" name="life_time" value="{{@$_GET['life_time']}}">
-					<div id="reportrange">
-                        <i class="fa fa-calendar"></i>
-                        <span>{{date("F d, Y", strtotime($filter_from))}} - {{date("F d, Y", strtotime($filter_to))}}</span> <b class="caret"></b>
-                        <input type="hidden" name="filter_from" id="filter_from" value="{{ $filter_from }}">
-                        <input type="hidden" name="filter_to" id="filter_to" value="{{ $filter_to }}">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <select name="is_registered" id="is_registered">
-                        <option value="">Is Registered</option>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
-                    </select>
-					<select name="limit" id="limit">
-						<option value="100">100</option>
-						<option value="250">250</option>
-						<option value="500">500</option>
-						<option value="750">750</option>
-						<option value="1000">1000</option>
-						<option value="1500">1500</option>
-						<option value="2000">2000</option>
-						<option value="5000">5000</option>
-					</select>
-                    <input type="search" name="search" value="{{ @$_GET['search'] }}" placeholder="Search">
-                    <button type="submit"><i class="fas fa-search"></i></button>
-				</form>
+				<div class="card-title">
+					<form class="d-inline-block" id="filter-form">
+						<input type="hidden" name="institute" value="{{@$_GET['institute']}}">
+						<input type="hidden" name="life_time" value="{{@$_GET['life_time']}}">
+						<div id="reportrange">
+							<i class="fa fa-calendar"></i>
+							<span>{{date("F d, Y", strtotime($filter_from))}} - {{date("F d, Y", strtotime($filter_to))}}</span> <b class="caret"></b>
+							<input type="hidden" name="filter_from" id="filter_from" value="{{ $filter_from }}">
+							<input type="hidden" name="filter_to" id="filter_to" value="{{ $filter_to }}">
+							<i class="fas fa-chevron-down"></i>
+						</div>
+						<select name="is_registered" id="is_registered">
+							<option value="">Is Registered</option>
+							<option value="1">Yes</option>
+							<option value="0">No</option>
+						</select>
+						<select name="limit" id="limit">
+							<option value="100">100</option>
+							<option value="250">250</option>
+							<option value="500">500</option>
+							<option value="750">750</option>
+							<option value="1000">1000</option>
+							<option value="1500">1500</option>
+							<option value="2000">2000</option>
+							<option value="5000">5000</option>
+						</select>
+						<input type="search" name="search" value="{{ @$_GET['search'] }}" placeholder="Search">
+						<button type="submit"><i class="fas fa-search"></i></button>
+					</form>
+				</div>
+				<div class="card-tools">
+					@php($param_saprator = count($_GET) > 0 ? "&" : "?")
+					<a href="{{ Request::fullUrl() . $param_saprator }}download=true" class="btn btn-info btn-sm"><i class="fas fa-download"></i>&nbsp;Export</a>
+				</div>
 			</div>
 			<div class="card-body">
 				@if($institute_wallet_amount > 0)
@@ -101,6 +107,7 @@
     							<th>Name</th>
     							<th>Phone</th>
     							<th>Email</th>
+								<th>Temporary Password</th>
     							<th>Is Registerd</th>
     							<th>Question Attemp</th>
     						</tr>
@@ -119,6 +126,7 @@
     							<td>{{ $u->name }}</td>
     							<td>{{ $u->phone }}</td>
     							<td>{{ $u->email }}</td>
+								<td>{{ $u->plain_password }}</td>
     							<td>
     								@if($u->is_registered)
     								<span class="badge badge-success">Yes</span>

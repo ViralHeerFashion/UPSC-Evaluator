@@ -8,7 +8,9 @@
 <link rel="stylesheet" href="{{ asset('public/css/bootstrap-select.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/css/prism.css') }}">
 <link rel="stylesheet" href="{{ asset('public/css/style.css') }}">
-
+<style>
+    .institute-logo{border-radius: 10px;}
+</style>
 <script>
     function showModal() {
         const overlay = document.createElement('div');

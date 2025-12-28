@@ -4,25 +4,53 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\{
-    User
+    User,
+    Institute
 };
 
 class AuthController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        if ($request->filled('institute')) {
+            $institute = Institute::select('logo')
+                                        ->where('uuid', $request->institute)
+                                        ->first();
+            Cookie::queue('institute', json_encode($institute), 525600);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $institute = null;
+        if($request->hasCookie('institute')) {
+            $institute = json_decode($request->cookie('institute'));
+        }
+        return view('student.auth.login', compact(
+            'institute'
+        ));
+    }
+
     public function view(Request $request)
     {
         $button_message = "Send OTP";
         $user = null;
+        $institute = null;
+        if($request->hasCookie('institute')) {
+            $institute = json_decode($request->cookie('institute'));
+        }
         if ($request->session()->has('otp_send')) {
             $user = User::findOrFail($request->session()->get('otp_send'));
             $button_message = $user->is_registered ? "Submit" : "Verify OTP";
         }
         return view('student.auth.register', compact(
             'user',
-            'button_message'
+            'button_message',
+            'institute'
         ));    
     }
 
@@ -136,6 +164,17 @@ class AuthController extends Controller
                 'redirect_url' => route('student.dashboard')
             ]);
         }
+    }
+
+    public function forgotPasswordView(Request $request)
+    {
+        $institute = null;
+        if($request->hasCookie('institute')) {
+            $institute = json_decode($request->cookie('institute'));
+        }
+        return view('student.auth.forgot-password', compact(
+            'institute'
+        ));   
     }
 
     public function forgotPassword(Request $request)
