@@ -44,6 +44,7 @@ Route::middleware('auth:admin')->group(function(){
 			Route::get('/{id}/attempted-question', 'getAttemptedQuestion')->name('users.attemtedQuestion');
 
 			Route::post('/{institute_uuid}/distribute-recharge', 'distributeRecharge')->name('institute.distributeRecharge');
+			Route::get('/{id}/{status}/change-status', 'changeStatus')->name('users.changeStatus');
 		});
 	});
 

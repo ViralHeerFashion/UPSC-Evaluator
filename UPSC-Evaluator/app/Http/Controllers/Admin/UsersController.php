@@ -30,7 +30,7 @@ class UsersController extends Controller
 			$filter_to = date("Y-m-d");
 		}
 
-    	$users = User::select('id', 'name', 'phone', 'email', 'is_registered', 'question_attempted', 'created_at', 'institute_id', 'plain_password')
+    	$users = User::select('id', 'name', 'phone', 'email', 'is_registered', 'question_attempted', 'created_at', 'institute_id', 'plain_password', 'status')
     				->withCount('questionAttemp as question_attempted_count')
     				->whereDate('created_at', '>=', $filter_from)
     				->whereDate('created_at', '<=', $filter_to);
@@ -132,5 +132,14 @@ class UsersController extends Controller
 			'wallet' => $wallet,
 			'per_student_recharge' => $per_student_recharge
 		];
+	}
+
+	public function changeStatus(int $id, int $status)
+	{
+		$user = User::find($id);
+		$user->status = $status;
+		$user->save();
+
+		return response()->json(true);
 	}
 }

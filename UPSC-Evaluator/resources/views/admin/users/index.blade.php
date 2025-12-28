@@ -29,6 +29,12 @@
     .stat-box strong{font-size:18px;font-weight:700;color:#1e9c5b;}
     .per-student{grid-column:1 / 3;background:linear-gradient(135deg,#e8fff3,#ffffff);border:1px dashed #1e9c5b;}
     .per-student strong{font-size:22px;color:#1e9c5b;}
+	.checkbox {display: none;}
+	.slider {width: 60px;height: 30px;background-color: lightgray;border-radius: 20px;overflow: hidden;display: flex;align-items: center;border: 4px solid transparent;transition: .3s;box-shadow: 0 0 10px 0 rgb(0, 0, 0, 0.25) inset;cursor: pointer;}
+	.slider::before {content: '';display: block;width: 100%;height: 100%;background-color: #fff;transform: translateX(-30px);border-radius: 20px;transition: .3s;box-shadow: 0 0 10px 3px rgb(0, 0, 0, 0.25);}
+	.checkbox:checked ~ .slider::before {transform: translateX(30px);box-shadow: 0 0 10px 3px rgb(0, 0, 0, 0.25);}
+	.checkbox:checked ~ .slider {background-color: #2196F3;}
+	.checkbox:active ~ .slider::before {transform: translate(0);}
 </style>
 @endsection
 @section('content-header')
@@ -110,6 +116,7 @@
 								<th>Temporary Password</th>
     							<th>Is Registerd</th>
     							<th>Question Attemp</th>
+								<th>Status</th>
     						</tr>
     					</thead>
     					<tbody>
@@ -141,6 +148,12 @@
     								</a>
     								@endif
     							</td>
+								<td>
+									<label class="switch">
+										<input type="checkbox" class="checkbox account-status" data-user-id="{{ $u->id }}" @if($u->status) checked @endif>
+										<div class="slider"></div>
+									</label>
+								</td>
     						</tr>
     						@php($i++)
     						@endforeach
@@ -297,6 +310,14 @@
         	let modal = $(this).data('modal');
         	$(modal).modal('hide');
         });
+		$(".account-status").on('change', function(){
+			let user_id = $(this).data('user-id');
+			let status = $(this).is(':checked') ? 1 : 0;
+			let url = "{{ route('admin.users.changeStatus', ['id' => ':id', 'status' => ':status']) }}";
+			let ajax_url = url.replace(':id', user_id);
+			ajax_url = ajax_url.replace(':status', status);
+			$.get(ajax_url);
+		});
 	});
 </script>
 @endsection

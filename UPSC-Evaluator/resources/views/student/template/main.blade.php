@@ -24,8 +24,24 @@
                 <div class="rbt-daynamic-page-content">
                     <div class="rbt-dashboard-content">
                         @yield('tab-name')
-                        <div class="content-page">@yield('content')</div>
+                        <div class="content-page">
+                            @yield('content')
+                        </div>
                     </div>
+                    @if(request()->route()->getName() == "student.mains-evaluation")
+                    <div class="rbt-right-side-panel question-redirect-container">
+                        <div class="right-side-bottom">
+                            <div class="chat-history-section has-show-more">
+                                <h6 class="title">Questions</h6>
+                                <ul class="chat-history-list has-show-more-inner-content link-container">
+                                    <div class="history-box">
+                                    </div>
+                                </ul>
+                                <div class="rbt-show-more-btn">Show More</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

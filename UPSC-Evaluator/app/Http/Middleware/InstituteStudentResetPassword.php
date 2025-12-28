@@ -17,6 +17,15 @@ class InstituteStudentResetPassword
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!Auth::user()->status) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            
+            return redirect()
+                    ->route('student.login')
+                    ->withErrors(['error' => "Sorry! Your Account was deactive. please contact our support team"]);
+        }
         if (!is_null(Auth::user()->plain_password) && !in_array(Route::currentRouteName(), ['student.profile.security', 'student.profile.update-password', 'student.logout'])) {
             return redirect()->route('student.profile.security')->with('alert_success', "Please reset password.");
         }

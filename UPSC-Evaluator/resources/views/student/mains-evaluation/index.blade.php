@@ -233,6 +233,7 @@
     .bootstrap-select{background-color: #212529!important;border: 1px solid #212529;}
     .unset-default-css li {font-size: unset;line-height: unset;margin-top: unset;margin-bottom: unset;color: unset;font-weight: unset;}
     .ml-20px{margin-left: 20px!important;}
+    .question-redirect-container{display: none;}
 </style>
 @endsection
 @section('tab-name')
@@ -319,6 +320,10 @@
 @endsection
 @section('script')
 <script>
+    @if(!is_null($question_list))
+    $(".question-redirect-container").show();
+    $(".question-redirect-container .link-container").html(`{!! $question_list !!}`);
+    @endif
     function renderDashboardAnimations() {
         const dashboards = document.querySelectorAll('.dashboard');
         
@@ -574,7 +579,7 @@
                                 if (response.success) {
                                     ajaxInProgress = false;
                                     toastr.success(response.message, 'Success');
-                                    typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations);
+                                    typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations, response.question_shortcut);
                                 } else if ('process_task' in response) {
                                     if (retries < maxRetries) {
                                         return new Promise((resolve) => {
@@ -645,12 +650,15 @@
 
 </script>
 <script>
-    function typeWriterHTML(html, elementId, speed = 50, callback = null) {
+    
+    function typeWriterHTML(html, elementId, speed = 50, callback = null, question_redirection_html) {
         const element = document.getElementById(elementId);
         element.innerHTML = "";
 
         let i = 0;
         let current = "";
+        let finished = false;
+
         const instantTags = ["svg", "table", "pre", "code", "img", "video", "h6", "h4", "h5"];
         const instantBlocks = [
             '<div class="chat-content custom-margin-bottom">',
@@ -659,6 +667,16 @@
 
         let lastTime = performance.now();
 
+        function finish() {
+            if (finished) return;
+            finished = true;
+
+            $(".question-redirect-container").show();
+            $(".question-redirect-container .link-container").html(question_redirection_html);
+
+            if (typeof callback === "function") callback();
+        }
+
         function typing(now) {
             const delta = now - lastTime;
 
@@ -666,7 +684,7 @@
                 lastTime = now;
 
                 if (i >= html.length) {
-                    if (typeof callback === "function") callback();
+                    finish();
                     return;
                 }
 
@@ -677,10 +695,10 @@
                     if (html.slice(i).toLowerCase().startsWith(block.toLowerCase())) {
                         let depth = 0;
                         let j = i;
+
                         while (j < html.length) {
-                            if (html.slice(j, j + 5).toLowerCase() === "<div") {
-                                depth++;
-                            } else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
+                            if (html.slice(j, j + 5).toLowerCase() === "<div") depth++;
+                            else if (html.slice(j, j + 6).toLowerCase() === "</div>") {
                                 depth--;
                                 if (depth === 0) {
                                     j += 6;
@@ -689,6 +707,7 @@
                             }
                             j++;
                         }
+
                         current += html.slice(i, j);
                         element.innerHTML = current;
                         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -745,11 +764,12 @@
             if (i < html.length) {
                 requestAnimationFrame(typing);
             } else {
-                if (typeof callback === "function") callback();
+                finish();
             }
         }
 
         requestAnimationFrame(typing);
     }
+
 </script>
 @endsection

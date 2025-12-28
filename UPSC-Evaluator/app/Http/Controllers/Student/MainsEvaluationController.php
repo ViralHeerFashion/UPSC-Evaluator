@@ -27,6 +27,7 @@ class MainsEvaluationController extends Controller
     public function index(string $process_id = null)
     {
         $student_answer_sheet = null;
+        $question_list = null;
         if (!is_null($process_id)) {
             $student_answer_sheet = StudentAnswerSheet::with([
                 'student_answer_evaluation' => function ($query) {
@@ -42,12 +43,27 @@ class MainsEvaluationController extends Controller
             ->where('user_id', Auth::id())
             ->first();
 
+            $questions = [];
+            foreach ($student_answer_sheet->student_answer_evaluation as $key => $student_answer_evaluation) {
+                array_push($questions, array(
+                    'question_text' => substr($student_answer_evaluation->question, 0, 30)."..."
+                ));
+            }
+
+            $question_list =  view('student.mains-evaluation.partials.question-shortcut', compact(
+                'questions',
+                'process_id'
+            ))->render();
+
             if (is_null($student_answer_sheet)) {
                 abort(404);
             }
         }
 
-        return view('student.mains-evaluation.index', compact('student_answer_sheet'));
+        return view('student.mains-evaluation.index', compact(
+            'student_answer_sheet',
+            'question_list'
+        ));
     }
 
     public function list()
@@ -226,6 +242,7 @@ class MainsEvaluationController extends Controller
 
     private function storeEvaluation($student_answer_sheet, $response)
     {
+        $questions = [];
         foreach ($response->result->questions as $key => $question) {
                 
             if (isset($question->question_text)) {
@@ -241,6 +258,10 @@ class MainsEvaluationController extends Controller
                 $student_answer_evaluation->model_answer_conclusion = $question->model_answer->conclusion;
                 $student_answer_evaluation->model_answer_evaluation = isset($question->model_answer->evaluation) && !empty($question->model_answer->evaluation) ? $question->model_answer->evaluation : null;
                 $student_answer_evaluation->save();
+
+                array_push($questions, array(
+                    'question_text' => substr($student_answer_evaluation->question, 0, 30)."..."
+                ));
                 
                 if (isset($question->model_answer->sections)) {
                     foreach ($question->model_answer->sections as $key => $section) {
@@ -322,6 +343,9 @@ class MainsEvaluationController extends Controller
             'message' => "PDF proccess successfully...",
             'view' => view('student.mains-evaluation.partials.questions', compact(
                 'student_answer_sheet'
+            ))->render(),
+            'question_shortcut' => view('student.mains-evaluation.partials.question-shortcut', compact(
+                'questions'
             ))->render(),
             'student_answer_sheet_id' => $student_answer_sheet->id
         ]);
