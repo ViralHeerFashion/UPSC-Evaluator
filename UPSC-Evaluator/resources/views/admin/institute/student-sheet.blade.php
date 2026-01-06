@@ -31,7 +31,7 @@
                 <div class="card-header">
                     <div class="card-title">Student Sheet</div>
                     <div class="card-tools">
-                        <a href="" class="btn btn-dark btn-sm">Download Sample File</a>
+                        <a href="{{ asset('public/samples/student-sheet.xlsx') }}" class="btn btn-dark btn-sm" download="sample-student-sheet.xlsx">Download Sample File</a>
                     </div>
                 </div>
                 <div class="card-body">

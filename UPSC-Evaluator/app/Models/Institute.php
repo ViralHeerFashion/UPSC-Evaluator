@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use App\Models\{
+    User
+};
 
 class Institute extends Authenticatable
 {
@@ -31,5 +34,10 @@ class Institute extends Authenticatable
                 $model->uuid = (string) Str::uuid();
             }
         });
+    }
+
+    public function students()
+    {
+        return $this->hasMany(User::class, 'institute_id');    
     }
 }

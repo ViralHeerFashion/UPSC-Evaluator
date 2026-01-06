@@ -1,5 +1,11 @@
 @extends('admin.layout.main')
 @section('title', 'Admin - Institute')
+@section('styles')
+<style>
+    .excel-sheet{color: #1D6F42!important;}
+    .money-icon{color: #97831b!important;}
+</style>
+@endsection
 @section('content-header')
 <div class="content-header">
     <div class="container-fluid">
@@ -62,10 +68,10 @@
                                 <td>{{ $institute->phone }}</td>
                                 <td>{{ $institute->email }}</td>
                                 <td>
-                                    <a href="{{ route('admin.institute.studentSheet', ['uuid' => $institute->uuid]) }}"><i class="far fa-file-excel fa-2x"></i></a>
+                                    <a href="{{ route('admin.institute.studentSheet', ['uuid' => $institute->uuid]) }}" class="excel-sheet"><i class="far fa-file-excel fa-2x"></i></a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.institute.recharge', ['uuid' => $institute->uuid]) }}"><i class="fab fa-uncharted fa-2x"></i></a>
+                                    <a href="{{ route('admin.institute.recharge', ['uuid' => $institute->uuid]) }}" class="money-icon"><i class="fas fa-money-bill-alt fa-2x"></i></a>
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);">{{ substr(route('student.login', ['institute' => $institute->uuid]), 0, 35) }}...</a>
@@ -75,7 +81,9 @@
                                     <a href="{{ route('admin.institute.add', ['uuid' => $institute->uuid]) }}" class="text-success"><i class="far fa-edit"></i></a>
                                 </td>
                                 <td>
-                                    <a href="" class="text-danger"><i class="fas fa-trash"></i></a>
+                                    @if(!$institute->students_exists)
+                                    <a href="{{ route('admin.institute.delete', ['institute_id' => $institute->id]) }}" class="text-danger" onclick="return confirm('Are you sure do you want to delete this institute?')"><i class="fas fa-trash"></i></a>
+                                    @endif
                                 </td>
                             </tr>
                             @php($i++)

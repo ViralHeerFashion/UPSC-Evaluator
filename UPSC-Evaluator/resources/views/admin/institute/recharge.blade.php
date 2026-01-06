@@ -74,8 +74,8 @@
                                 <th>Order Id</th>
                                 <th>Amount</th>
                                 <th>Payment Proof</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <!-- <th>Edit</th>
+                                <th>Delete</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +87,7 @@
                                 <td>{{ !is_null($w->recharge) ? $w->recharge->order_id : "" }}</td>
                                 <td>₹{{ number_format($w->amount) }}</td>
                                 <td>{{ !is_null($w->recharge) ? $w->recharge->razorpay_order_id : "" }}</td>
+                                {{--
                                 <td>
                                     @if(!is_null($w->recharge))
                                     <a href="{{ route('admin.institute.recharge', ['uuid' => $uuid, 'id' => $w->recharge_id]) }}" class="text-success"><i class="far fa-edit"></i></a>
@@ -97,6 +98,7 @@
                                     <a href="{{ route('admin.institute.deleteRecharge', ['uuid' => $uuid, 'id' => $w->recharge_id]) }}" class="text-danger" onclick="return confirm('Are you sure to delete this recharge?')"><i class="fas fa-trash"></i></a>
                                     @endif
                                 </td>
+                                --}}
                             </tr>
                             @php($i++)
                             @empty
@@ -134,6 +136,11 @@
                     error.insertAfter(element.closest(".input-group"));
                 } else {
                     error.insertAfter(element);
+                }
+            },
+            submitHandler: function(form){
+                if (confirm("Are you verified all details? after submiting form all options are disable")) {
+                    form.submit();
                 }
             }
         });

@@ -26,9 +26,14 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $institute = null;
-        if($request->hasCookie('institute')) {
+        if ($request->filled('institute')) {
+            $institute = Institute::select('logo')
+                ->where('uuid', $request->institute)
+                ->first();
+        } elseif ($request->hasCookie('institute')) {
             $institute = json_decode($request->cookie('institute'));
+        } else {
+            $institute = null;
         }
         return view('student.auth.login', compact(
             'institute'
@@ -327,9 +332,10 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        $request->session()->forget('is_institute_temporary_login');
         return redirect('/');
     }
 

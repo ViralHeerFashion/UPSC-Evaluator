@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     @if(request()->route()->getName() == "student.mains-evaluation")
-                    <div class="rbt-right-side-panel question-redirect-container">
+                    <div class="rbt-right-side-panel popup-dashboardright-section question-redirect-container">
                         <div class="right-side-bottom">
                             <div class="chat-history-section has-show-more">
                                 <h6 class="title">Questions</h6>

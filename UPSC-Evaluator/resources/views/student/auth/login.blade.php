@@ -78,6 +78,14 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
                                     @endif
+
+                                    @if(Session::has('alert_success'))
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        {{ Session::get('alert_success') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    @endif
+                                    
                                     <form action="{{route('student.passwordLogin')}}" method="POST" id="login-form">
                                         @csrf
                                         <div class="input-section">

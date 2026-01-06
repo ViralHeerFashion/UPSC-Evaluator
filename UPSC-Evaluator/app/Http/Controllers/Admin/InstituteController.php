@@ -24,7 +24,8 @@ class InstituteController extends Controller
 {
     public function index(Request $request)
     {
-        $institutes = Institute::select('id', 'name', 'phone', 'email', 'logo', 'created_at', 'uuid', 'institute_api_name');
+        $institutes = Institute::select('id', 'name', 'phone', 'email', 'logo', 'created_at', 'uuid', 'institute_api_name')
+                                ->withExists('students');
 
         $institutes = $institutes->orderByDesc('id')
                                 ->paginate(100);
@@ -209,5 +210,15 @@ class InstituteController extends Controller
         $wallet = Wallet::where('recharge_id', $id)->delete();
 
         return back()->with('alert_success', "Recharge deleted successfully...");
+    }
+
+    public function delete(int $institute_id)
+    {
+        $institute = Institute::findOrFail($institute_id);
+        if (Storage::disk('public')->exists($institute->logo)) {
+            Storage::disk('public')->delete($institute->logo);
+        }
+        $institute->delete();
+        return back()->with('alert_success', "Institute deleted successfully...");
     }
 }

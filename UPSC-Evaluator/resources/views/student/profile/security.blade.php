@@ -29,8 +29,7 @@
         @if(auth()->check() && !is_null(auth()->user()->plain_password))
         <ul class="list-group notice-list">
             <li class="list-group-item list-group-item-info">You need to reset your password and login again.</li>
-            <li class="list-group-item list-group-item-info">Phone number is not editable.</li>
-            <li class="list-group-item list-group-item-info">{{ auth()->user()->phone }}</li>
+            <li class="list-group-item list-group-item-info">Mobile no: {{ auth()->user()->phone }}</li>
         </ul>
         @endif
         <div class="col-lg-12 col-md-12 col-sm-12 col-12">

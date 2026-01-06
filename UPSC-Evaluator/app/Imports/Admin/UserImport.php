@@ -47,6 +47,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation
             $user->phone = $row['mobile_number'];
             $user->email = $row['email_id'];
             $user->unique_id = $row['unique_id'];
+            $user->is_registered = 1;
             $user->plain_password = $password;
             $user->password = Hash::make($password);
             $user->email_verified_at = date("Y-m-d H:i:s");

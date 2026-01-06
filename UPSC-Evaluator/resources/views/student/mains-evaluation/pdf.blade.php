@@ -1,316 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Beautifying Template</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <style>
-        @font-face {
-            font-family: 'muktavaani', sans-serif;
-            src: url('{{ $fontPath }}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        /* Base styling */
-        body {
-            /* font-family: 'NotoDeva', sans-serif; */
-            /* font-family: 'notosansdevanagari', sans-serif; */
-            font-family: 'muktavaani', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 0!important;
-            /* background-color: #f9f9f9; */
-        }
-        .watermark {
-            position: fixed;
-            top: 30%;
-            left: 40%;
-            width: 100%;
-            opacity: 0.3;
-            font-size: 100px;
-            color: #000;
-            transform: rotate(-30deg);
-            /*z-index: -1000;*/
-        }
-        .watermark1 {
-            position: fixed;
-            top: 65%;
-            left: 40%;
-            width: 100%;
-            opacity: 0.3;
-            font-size: 100px;
-            color: #000;
-            transform: rotate(-30deg);
-            /*z-index: -1000;*/
-        }
-        /* Container for content */
-        .container {
-            width: 100%;
-            margin: 0 auto;
-            padding: 0;
-            /* padding: 10px; */
-            background-color: white;
-            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-        }
-        
-        /* Header section */
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #805AF5;
-            /* padding-bottom: 20px; */
-        }
-        
-        .header h1 {
-            color: #2c3e50;
-            margin: 0;
-            font-size: 28px;
-        }
-        
-        .header p {
-            color: #7f8c8d;
-            margin: 5px 0 0;
-        }
-        
-        /* Section styling */
-        .section {
-            margin-bottom: 30px;
-        }
-        
-        .section-title {
-            color: #805AF5;
-            border-bottom: 1px solid #ecf0f1;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-        
-        /* Paragraph styling */
-        .paragraph {
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-        
-        /* Title + description combination */
-        .title-desc {
-            margin-bottom: 20px;
-        }
-        
-        .title-desc h3 {
-            color: #2c3e50;
-            margin: 0 0 5px;
-            font-size: 18px;
-        }
-        
-        .title-desc p {
-            color: #7f8c8d;
-            margin: 0;
-        }
-        
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        
-        table th, table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ecf0f1;
-        }
-        
-        table th {
-            background-color: #805AF5;
-            color: white;
-        }
-        
-        table tr:nth-child(even) {
-            background-color: #f5f5f5;
-        }
-        
-        /* List styling */
-        ul, ol {
-            margin: 0 0 20px 20px;
-            padding: 0;
-        }
-        
-        li {
-            margin-bottom: 8px;
-        }
-        
-        ul li {
-            list-style-type: disc;
-        }
-        
-        ol li {
-            list-style-type: decimal;
-        }
-        
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-        .text-bold{font-weight: bold;}
-        .table-container {
-            display: table;
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .table-row {
-            display: table-row;
-        }
-        
-        .table-cell {
-            display: table-cell;
-            vertical-align: top;
-            border: 1px solid #e0e6ed;
-        }
-        
-        .table-cell:first-child {
-            border-left: none;
-        }
-        
-        .table-cell:last-child {
-            border-right: none;
-        }
-    </style>
+<style>
+    @font-face {
+        font-family: 'muktavaani';
+        src: url('{{ $fontPath }}') format('truetype');
+    }
+    html, body{margin:0;padding:0;width:100%;font-family:'muktavaani', sans-serif;font-size:11pt;line-height:1.65;color:#1f2933;}
+    .header{background:#1f2933;}
+    .header-table{width:100%;border-collapse:collapse;}
+    .header-left{padding:14pt 18pt;}
+    .header-label{font-size:9pt;letter-spacing:1px;color:#9fb3c8;font-weight:700;}
+    .subject{font-size:18pt;font-weight:700;color:#f1f5f9;}
+    .filename{font-size:10pt;color:#cbd5e1;}
+    .header-right{width:90pt;text-align:center;}
+    .qr-box{background:#ffffff;padding:4pt;}
+    .accent{height:3pt;background:#94a3b8;}
+    .question{font-size:15pt;font-weight:700;margin:12pt 0 10pt 0;}
+    .section-title{font-size:13pt;font-weight:700;margin:12pt 0 4pt 0;}
+    .section-line{height:1pt;background:#e5e7eb;margin-bottom:6pt;}
+    .text{font-size:10.8pt;color:#2f3438;}
+    .table{width:100%;border-collapse:collapse;font-size:10.5pt;}
+    .table th{border-bottom:2px solid #1f2933;padding:6pt 4pt;text-align:left;font-weight:700;}
+    .table td{border-bottom:1px solid #e5e7eb;padding:6pt 4pt;vertical-align:top;}
+    .panel{background:#f8fafc;border:1px solid #e5e7eb;padding:8pt;margin-top:6pt;}
+    .marks-wrap{margin-top:16pt;text-align:right;}
+    .marks{font-size:22pt;font-weight:800;}
+    .marks span{font-size:12pt;color:#64748b;}
+    .marks-label{font-size:9pt;color:#64748b;}
+    .mb-6{ margin-bottom:6pt; }
+    .mb-10{ margin-bottom:10pt; }
+</style>
 </head>
+
 <body>
-    {{--
-    <div class="watermark">
-        <img src="{{ asset('public/images/logo.png') }}">
+
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td class="header-left">
+                    <div class="header-label">GS EVALUATION</div>
+                    <div class="subject">General Studies</div>
+                    <div class="filename">{{ $student_answer_sheet->file_name }}</div>
+                </td>
+                <td class="header-right">
+                    <div class="qr-box">
+                        <img src="{{ asset('public/images/qrcode.png') }}" width="70">
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="watermark1">
-        <img src="{{ asset('public/images/logo.png') }}">
-    </div>
-    --}}
-    <div class="container">
-        <!-- Header Section -->
-        <div class="header">
-            <table class="table-container">
+    <div class="accent"></div>
+
+    @php($i = 1)
+    @foreach($student_answer_sheet->student_answer_evaluation as $question)
+        @if($i > 1)
+        <pagebreak />
+        @endif
+
+        <div class="question"><b>Q{{ $i }}. {{ $question->question }}</b></div>
+        <div class="section-title"><b>Question Deconstruction</b></div>
+        <div class="section-line"></div>
+        <div class="text mb-10">
+            {{ $question->deconstruction }}
+        </div>
+
+        <div class="section-title"><b>Micro-Marking Grid</b></div>
+        <div class="section-line"></div>
+
+        <table class="table mb-10">
+            <thead>
                 <tr>
-                    <td>
-                        <div>
-                            <img src="{{ asset('public/images/qrcode.png') }}" style="width: 50px;display: inline-block;">
-                            <!-- <p>Generated on: {{ date("M d, Y", strtotime($student_answer_sheet->created_at)) }}</p> -->
-                        </div>
+                    <th style="">Component</th>
+                    <th style="text-align:center;">Weight</th>
+                    <th style="text-align:center;">Max</th>
+                    <th style="text-align:center;">Given</th>
+                    <th>Justification</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($question->micro_marking_grid as $g)
+                <tr>
+                    <td>{{ $g->component }}</td>
+                    <td style="text-align:center;">{{ $g->weight }}%</td>
+                    <td style="text-align:center;">{{ $g->max_marks }}</td>
+                    <td style="text-align:center;font-weight:700;">{{ $g->marks_awarded }}</td>
+                    <td>{{ $g->justifications }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+
+        <div class="section-title"><b>Strengths Snapshot</b></div>
+        <div class="section-line"></div>
+        <table class="table mb-10">
+            @foreach($question->strength_snapshot as $k=>$s)
+            <tr>
+                <td width="24" style="font-weight:700;">{{ $k+1 }}.</td>
+                <td>{{ $s->snapshot }}</td>
+            </tr>
+            @endforeach
+        </table>
+
+        
+        <div class="section-title"><b>Gap Analysis & Priority Fixes</b></div>
+        <div class="section-line"></div>
+
+        @foreach($question->gap_analysis_priority_fix as $index => $gap)
+
+            <div class="panel mb-10">
+                <div style="font-weight:700;font-size:11.5pt;margin-bottom:4pt;">
+                    <b>{{ $index + 1 }})</b> {{ $gap->gap }}
+                </div>
+                <div style="font-size:10.5pt;line-height:1.6;margin-bottom:6pt;">
+                    <b>Impact Analysis:</b> {{ $gap->impact }}
+                </div>
+                <div style="font-size:10.5pt;line-height:1.6;">
+                    <b>Optimal Solution:</b>
+                </div>
+
+                @if(str_contains($gap->correct_action, '(1)') || str_contains($gap->correct_action, '(१)'))
+                    <?php
+                        $pos = mb_strpos($gap->correct_action, '(1)', 0, 'UTF-8');
+                        if ($pos === false) {
+                            $pos = mb_strpos($gap->correct_action, '(१)', 0, 'UTF-8');
+                        }
+
+                        $heading = mb_substr($gap->correct_action, 0, $pos, 'UTF-8');
+                        preg_match_all('/\(\d+\)\s*([^()]+)/u', $gap->correct_action, $matches);
+                        $points = array_map('trim', $matches[1]);
+                    ?>
+
+                    <div style="margin:4pt 0;font-weight:600;">
+                        {{ $heading }}
+                    </div>
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                        @foreach($points as $pIndex => $point)
+                        <tr>
+                            <td width="22" valign="top" style="font-weight:700;">
+                                {{ $pIndex + 1 }}.
+                            </td>
+                            <td style="padding-bottom:3pt;">
+                                {{ $point }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                @else
+                    <div style="margin-top:3pt;">
+                        {{ $gap->correct_action }}
+                    </div>
+                @endif
+            </div>
+        @endforeach
+
+
+        <div class="section-title"><b>Model Answer Architectural Points</b></div>
+        <div class="section-line"></div>
+
+        @if(!empty($question->custom_model_answer))
+            @php($custom_model_answer = json_decode(json_decode($question->custom_model_answer)->model_answer))
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+            @foreach($custom_model_answer as $model_answer)
+                @if($model_answer->type == "heading")
+                <tr>
+                    <td style="font-size:13pt;font-weight:700;color:#1f2933;padding:6pt 0 3pt 0;border-bottom:1px solid #1f2933;">
+                        <b>{{ $model_answer->text }}</b>
                     </td>
-                    <td style="text-align: right;">
-                        <h1>GS Evaluation</h1>
-                        <div>{{ $student_answer_sheet->file_name }}</div>  
+                </tr>
+                @endif
+
+                @if($model_answer->type == "paragraph")
+                <tr>
+                    <td style="font-size:10.5pt;line-height:1.65;color:#2f3438;padding:4pt 0 6pt 0;">
+                        {{ $model_answer->text }}
+                    </td>
+                </tr>
+                @endif
+
+                
+                @if($model_answer->type == "list")
+                <tr>
+                    <td style="padding:2pt 0 6pt 0;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                            @foreach($model_answer->items as $index => $item)
+                            <tr>
+                                <td width="22" valign="top" style="font-size:10.5pt;font-weight:700;color:#1f2933;padding-top:2pt;">{{ $index + 1 }}.
+                                </td>
+                                <td style="font-size:10.5pt;line-height:1.6;color:#2f3438;padding-bottom:4pt;">
+                                    @if(!empty($item->heading))
+                                        <span style="font-weight:700;">
+                                            <strong>{{ $item->heading }}</strong>
+                                        </span>
+                                    @endif
+                                    @if(!empty($item->text))
+                                        <span> {{ $item->text }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </td>
+                </tr>
+                @endif
+
+                @if($model_answer->type == "table")
+                <tr>
+                    <td style="padding:6pt 0 8pt 0;">
+                        @if(!empty($model_answer->caption))
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4pt;">
+                            <tr>
+                                <td style="font-size:12pt;font-weight:700;color:black;">
+                                    {{ $model_answer->caption }}
+                                </td>
+                            </tr>
+                        </table>
+                        @endif
+
+                        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:10.5pt;">
+                            <thead>
+                                <tr>
+                                    @foreach($model_answer->headers as $header)
+                                    <th style="border:1px solid #d1d5db;background:#1f2933;color:#ffffff;padding:6pt;font-weight:700;text-align:left;">
+                                        {{ $header }}
+                                    </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($model_answer->rows as $rows)
+                                <tr>
+                                    @foreach($rows as $row)
+                                    <td style="border:1px solid #d1d5db;padding:6pt;line-height:1.5;color:#2f3438;">
+                                        {{ $row }}
+                                    </td>
+                                    @endforeach
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                @endif
+            @endforeach
+            </table>
+        @else
+
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 14pt 0;">
+                <tr>
+                    <td style="border:1px solid #d1d5db;padding:12pt 14pt;background:#ffffff;">
+
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="border-collapse:collapse;margin:0 0 8pt 0;">
+                            <tr>
+                                <td style="font-size:10.5pt;line-height:1.65;color:#2f3438;padding:5px;font-style: italic;background-color: #efebeb;color: black;">
+                                    Model answer architectural points are intentionally detailed and may exceed prescribed word limits. Use them to understand answer structure, depth, and value-addition.
+                                </td>
+                            </tr>
+                        </table>
+
+                        @if(!empty($question->model_answer_intro))
+                        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 8pt 0;">
+                            <tr>
+                                <td style="font-size:10.5pt;line-height:1.65;color:#2f3438;padding:0;">
+                                    {{ $question->model_answer_intro }}
+                                </td>
+                            </tr>
+                        </table>
+                        @endif
+
+                        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:0 8pt;margin:0;">
+                            @foreach($question->model_answer as $model_answer)
+                            <tr>
+                                <td style="padding:0;">
+
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0;">
+                                        <tr>
+                                            <td style="font-size:11.5pt;font-weight:700;color:#1f2933;padding:0 0 2pt 0;border-bottom:1px solid #1f2933;">
+                                                <b>{{ $model_answer->title }}</b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table width="100%" cellpadding="0" cellspacing="0"
+                                        style="border-collapse:collapse;margin:3pt 0 0 0;">
+                                        <tr>
+                                            <td style="font-size:10.5pt;line-height:1.65;color:#2f3438;padding:0;">
+                                                {{ $model_answer->description }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </table>
+
+                        @if(!empty($question->model_answer_evaluation))
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="border-collapse:collapse;margin:8pt 0 0 0;">
+                            <tr>
+                                <td style="font-size:10.5pt;line-height:1.6;color:#2f3438;padding:0;">
+                                    {{ $question->model_answer_evaluation }}
+                                </td>
+                            </tr>
+                        </table>
+                        @endif
+
+                        @if(!empty($question->model_answer_conclusion))
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="border-collapse:collapse;margin:8pt 0 0 0;">
+                            <tr>
+                                <td style="font-size:10.5pt;line-height:1.6;color:#1f2933;font-weight:600;padding:0;">
+                                    {{ $question->model_answer_conclusion }}
+                                </td>
+                            </tr>
+                        </table>
+                        @endif
+
                     </td>
                 </tr>
             </table>
-        </div>
-        @php($i = 1)
-        @foreach($student_answer_sheet->student_answer_evaluation as $question)
-        <p class="text-bold">{{ $i }}) {{ $question->question }}</p>
-        <div class="section">
-            <h2 class="section-title">Question Deconstruction</h2>
-            <p class="paragraph">{{ $question->deconstruction }}</p>
-        </div>
+        @endif
 
-        <div class="section">
-            <h2 class="section-title">Micro-Marking Grid</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Weight</th>
-                        <th>Max</th>
-                        <th>Given</th>
-                        <th>Justification</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($question->micro_marking_grid as $grid)
-                    <tr>
-                        <td>{{ $grid->component }}</td>
-                        <td>{{ $grid->weight }}%</td>
-                        <td>{{ $grid->max_marks }}</td>
-                        <td>{{ $grid->marks_awarded }}</td>
-                        <td>{{ $grid->justifications }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
 
-        <div class="section">
-            <h2 class="section-title">Strengths Snapshot</h2>
-            <ul>
-            @foreach($question->strength_snapshot as $snapshot)
-            <li>{{$snapshot->snapshot}}</li>
-            @endforeach
-            </ul>
+    <div class="marks-wrap">
+        <div class="marks">
+            {{ $question->marks_awarded }}
+            <span>/ {{ $question->max_marks }}</span>
         </div>
-
-        <div class="section">
-            <h2 class="section-title" style="">Gap Analysis & Priority Fixes</h2>
-            @foreach($question->gap_analysis_priority_fix as $gap)
-            <div class="section" style="border: 1px solid black;padding: 0 20px 0 20px;">
-                <p style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;font-size: 20px;">{{ $gap->gap }}</p>
-                <p class="">
-                    <h4 style="margin: 0px 0 0 0;padding: 0;">Impact Analysis</h4>
-                    {{ $gap->impact }} <br>
-                    {{ $gap->gap }}
-                <!-- </p> -->
-                <!-- <p class=""> -->
-                    <h4 style="margin: 5px 0 0 0;padding: 0;margin-top: 20px;padding-bottom: 20px!important;">Optimal Solution</h4>
-                    @if(str_contains($gap->correct_action, "(1)") || str_contains($gap->correct_action, "(१)"))
-                       <?php
-                            $pos = mb_strpos($gap->correct_action, '(1)', 0, 'UTF-8');
-                            if ($pos === false) {
-                                $pos = mb_strpos($gap->correct_action, '(१)', 0, 'UTF-8');
-                            }
-                            $heading = mb_substr($gap->correct_action, 0, $pos, 'UTF-8');
-                                
-                            preg_match_all('/\(\d+\)\s*([^()]+)/u', $gap->correct_action, $matches);
-                            $points = array_map('trim', $matches[1]);
-                        ?>
-                        {{$heading}}
-                        <ul class="section-text ml-20px unset-default-css">
-                            @foreach($points as $point)
-                            <li>{{$point}}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                    {{ $gap->correct_action }}
-                    @endif
-                </p>
-            </div>
-            @endforeach
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Model Answer Architectural Points</h2>
-            <div class="model-answer-container" style="border: 1px solid black;padding: 0 20px 0 20px;">
-                <p>Model answer architectural points are intentionally detailed and often exceed word limits. You should use it to understand the structure and add value to your answer.</p>
-                @if(!empty($question->model_answer_intro))
-                <p>{{ $question->model_answer_intro }}</p>
-                @endif
-                @foreach($question->model_answer as $model_answer)
-                <p style="margin: 5px 0 0 0;padding: 0;border-bottom: 1px solid black;">{{ $model_answer->title }}</p>
-                <p>{{$model_answer->description}}</p>
-                @endforeach
-                @if(!empty($question->model_answer_evaluation))
-                <p>{{ $question->model_answer_evaluation }}</p>
-                @endif
-                @if(!empty($question->model_answer_conclusion))
-                <p>{{ $question->model_answer_conclusion }}</p>
-                @endif
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Marks Breakdown</h2>
-            <div class="model-answer-container" style="border: 1px solid black;padding: 0 20px 0 20px;">
-                <h3>{{$question->marks_awarded}} / {{$question->max_marks}} Marks</h3>
-            </div>
-        </div>
-        @php($i++)
-        @endforeach
+        <div class="marks-label">Total Marks Awarded</div>
     </div>
+@php($i++)
+@endforeach
+
 </body>
 </html>

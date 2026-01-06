@@ -14,4 +14,9 @@
     .toast .toast-title{font-size: 17px;}
     .toast .toast-message{font-size: 12px;}
     .institute-logo{border-radius: 10px;}
+    @media only screen and (max-width: 479px) {
+        .expand-btn-grp button.popup-dashboardright-btn {
+            right: 315px;
+        }
+    }
 </style>

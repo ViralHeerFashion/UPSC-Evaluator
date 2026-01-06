@@ -234,6 +234,68 @@
     .unset-default-css li {font-size: unset;line-height: unset;margin-top: unset;margin-bottom: unset;color: unset;font-weight: unset;}
     .ml-20px{margin-left: 20px!important;}
     .question-redirect-container{display: none;}
+
+    .custom-model-answer-container {
+        --bg: #0E0C15;
+        --card: #18191c;
+        --ink: #F5F5F7;
+        --muted: #A1A1A6;
+        --accent: #CD99FF;
+        --border: rgba(255,255,255,.12);
+        --soft-glow: rgba(205,153,255,.18);
+        color: var(--ink);
+    }
+    .custom-model-answer-container .answer-surface {max-width: 1100px;margin: auto;background:linear-gradient(180deg, rgba(255,255,255,.05), transparent),var(--card);border-radius: 28px;padding: 34px 38px;border: 1px solid var(--border);box-shadow:0 40px 90px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.04);position: relative;}
+    .custom-model-answer-container .answer-surface::after {content: "";position: absolute;inset: 0;border-radius: inherit;pointer-events: none;box-shadow: 0 0 0 1px rgba(205,153,255,.25);opacity: .3;}
+    .custom-model-answer-container .answer-heading {font-size: 20px;font-weight: 800;line-height: 1.25;margin-bottom: 10px;}
+    .custom-model-answer-container .answer-heading span {display: block;font-size: 17px;font-weight: 500;color: var(--accent);margin-top: 6px;}
+    .custom-model-answer-container .answer-paragraph {font-size: 14px;color: rgba(245,245,247,0.88);margin-bottom: 30px;letter-spacing: 0.2px;}
+    .custom-model-answer-container .answer-caption {font-size: 15px;font-weight: 600;color: var(--accent);margin-bottom: 14px;padding-left: 14px;border-left: 3px solid var(--accent);}
+    .custom-model-answer-container .answer-table-wrapper {overflow-x: auto;padding-bottom: 10px;border-radius: 12px;background:linear-gradient(90deg,var(--card) 0%,transparent 6%,transparent 94%,var(--card) 100%);}
+    .custom-model-answer-container .answer-table {width: 100%;border-collapse: separate;border-spacing: 0;background: rgba(255,255,255,0.015);border-radius: 12px;overflow: hidden;margin-bottom: 10px!important;}
+    .custom-model-answer-container .answer-table th, .custom-model-answer-container .answer-table td {padding: 18px 18px;vertical-align: top;}
+    .custom-model-answer-container .answer-table th {text-transform: uppercase;letter-spacing: .05em;font-size: 12px;font-weight: 600;color: var(--accent);border-bottom: 1px solid var(--border);}
+    .custom-model-answer-container .answer-table td {font-size: 14px;line-height: 1.75;color: var(--muted);border-bottom: 1px solid rgba(255,255,255,.04);}
+    .custom-model-answer-container .answer-table tbody tr {transition: background .2s ease;}
+    .custom-model-answer-container .answer-table tbody tr:hover {background: rgba(205,153,255,.05);}
+    .custom-model-answer-container .answer-table-wrapper {scrollbar-width: thin;scrollbar-color: rgba(205,153,255,.35) transparent;}
+    .custom-model-answer-container .answer-table-wrapper::-webkit-scrollbar {height: 6px;}
+    .custom-model-answer-container .answer-table-wrapper::-webkit-scrollbar-track {background: transparent;}
+    .custom-model-answer-container .answer-table-wrapper::-webkit-scrollbar-thumb {background: rgba(205,153,255,.35);border-radius: 6px;}
+    .custom-model-answer-container .answer-list {margin: 0;padding: 0;}
+    .custom-model-answer-container .answer-list li {list-style: none;position: relative;padding-left: 20px;margin-bottom: 10px;font-size: 15px;line-height: 1.9;color: rgba(245,245,247,0.88);}
+    .custom-model-answer-container .answer-list li strong {font-weight: 600;color: var(--accent);}
+    .custom-model-answer-container .answer-list li span {color: rgba(245,245,247,0.88);}
+    .custom-model-answer-container .answer-list li em {display: block;margin-top: 6px;padding-left: 10px;border-left: 2px solid rgba(205,153,255,0.35);font-style: normal;font-size: 15px;color: rgba(221,214,255,0.9);}
+    @media (max-width: 640px) {
+        .custom-model-answer-container .answer-surface {padding: 26px 22px;}
+        .custom-model-answer-container .answer-heading {font-size: 22px;}
+    }
+    .question-shortcut {display: flex;overflow: hidden;align-items: center;}
+    .question-shortcut .margin-right-auto {margin-right: auto;}
+    .w-100{width: 100%!important;}
+    .loader-card {width: 100%;padding: 32px 28px 34px;background:linear-gradient(180deg,rgba(205,153,255,0.10),rgba(24,25,28,0.95) 40%),var(--card-color);border-radius: 20px;border: 1px solid rgba(255,255,255,.08);text-align: center;position: relative;box-shadow:0 40px 90px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.04);overflow: hidden;}
+    .loader-card::before {content: '';position: absolute;inset: -60%;background:radial-gradient(circle at top,rgba(205,153,255,.35),transparent 65%);opacity: .18;animation: ambientGlow 6s ease-in-out infinite;}
+    @keyframes ambientGlow {
+        0%,100% { transform: scale(1); opacity:.18; }
+        50% { transform: scale(1.25); opacity:.28; }
+    }
+    .loader-ring {position: relative;width: 68px;height: 68px;margin: 6px auto 26px;border-radius: 50%;border: 3px solid rgba(255,255,255,.06);border-top-color: var(--secondary-accent);border-right-color: rgba(205,153,255,.55);box-shadow:inset 0 0 10px rgba(0,0,0,.6),0 0 18px rgba(205,153,255,.35);animation: spinFast 0.85s linear infinite;}
+    .loader-ring::before {content: '';position: absolute;inset: 7px;border-radius: 50%;background:radial-gradient(circle,rgba(205,153,255,.35),transparent 70%);opacity: .7;filter: blur(2px);}
+    .loader-ring::after {content: '';position: absolute;inset: -4px;border-radius: 50%;background:conic-gradient(from 0deg,transparent 0deg,rgba(205,153,255,.55) 40deg,transparent 90deg);filter: blur(6px);opacity: .9;animation: spinTrail 0.85s linear infinite;}
+    @keyframes spinFast {to { transform: rotate(360deg); }}
+    @keyframes spinTrail {to { transform: rotate(-360deg); }}
+    @keyframes spin {to { transform: rotate(360deg); }}
+    .timer {display: flex;justify-content: center;gap: 14px;margin-bottom: 18px;}
+    .time-box {min-width: 74px;padding: 12px 6px 10px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.45));border-radius: 12px;border: 1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 6px rgba(0,0,0,.6);}
+    .time-value {font-size: 23px;font-weight: 700;color: var(--secondary-accent);letter-spacing: .6px;transition: transform .35s ease, text-shadow .35s ease;}
+    .time-value.tick {transform: translateY(-2px) scale(1.12);text-shadow:0 0 14px rgba(205,153,255,.6),0 0 26px rgba(205,153,255,.35);}
+    .time-label {margin-top: 4px;font-size: 10.5px;color: var(--text-secondary);text-transform: uppercase;letter-spacing: .14em;}
+    .divider {height: 1px;width: 100%;margin: 20px 0 18px;background:linear-gradient(90deg,transparent,rgba(205,153,255,.45),transparent);}
+    .loader-title {font-size: 18.5px;font-weight: 600;margin-bottom: 6px;letter-spacing: .2px;}
+    .loader-desc {font-size: 13.8px;color: var(--text-secondary);line-height: 1.7;}
+    .progress-bar {height: 4px;background: rgba(255,255,255,.06);border-radius: 10px;overflow: hidden;margin-top: 22px;}
+    .progress-bar span {display: block;height: 100%;width: 0%;background:linear-gradient(90deg,var(--secondary-accent),#9f7cff,var(--secondary-accent));transition: width 1s linear;box-shadow: 0 0 14px rgba(205,153,255,.5);}
 </style>
 @endsection
 @section('tab-name')
@@ -508,7 +570,7 @@
                     ajaxInProgress = true;
                     if (response.success) {
                         audio.pause();
-                        $("#answers-container").html(`
+                        /*$("#answers-container").html(`
                         <div class="decoration decoration-1"></div>
                         <div class="decoration decoration-2"></div>
                         
@@ -524,11 +586,39 @@
                                 </div>
                             </div>        
                         </div>
+                        `);*/
+                        $("#answers-container").html(`
+                            <div class="loader-card">
+                                <div class="loader-ring"></div>
+
+                                <div class="timer">
+                                    <div class="time-box">
+                                        <div class="time-value" id="minutes">00</div>
+                                        <div class="time-label">Minutes</div>
+                                    </div>
+                                    <div class="time-box">
+                                        <div class="time-value" id="seconds">00</div>
+                                        <div class="time-label">Seconds</div>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <div class="loader-title">Evaluting your Answer Sheet...</div>
+                                <div class="loader-desc">
+                                    Your report will be ready within approximately 7 minutes.
+                                    This won’t take long.
+                                </div>
+
+                                <div class="progress-bar">
+                                    <span></span>
+                                </div>
+                            </div>
                         `);
                         
                         $("#answers-container").show();
                         
-                        function startLoader(duration) {
+                        /*function startLoader(duration) {
                             $('#completionMessage').css('opacity', '0');
                         
                             let progress = 0;
@@ -561,7 +651,9 @@
                         
                             }, 1000);
                         }
-                        startLoader(response.loader_second);
+                        startLoader(response.loader_second);*/
+
+                        startTimer(response.loader_second);
 
                         let task_id = response.task_id;
 
@@ -647,6 +739,32 @@
             $("#answer_sheet").trigger('click');
         });
     });
+
+    function startTimer(maxSeconds) {
+
+    let currentSeconds = 0; // ⬅ start from 0
+
+    function updateTimer() {
+        if (
+            currentSeconds > maxSeconds ||
+            !document.getElementById('minutes')
+        ) {
+            clearInterval(timerInterval);
+            return;
+        }
+
+        const minutes = Math.floor((currentSeconds % 3600) / 60);
+        const seconds = currentSeconds % 60;
+
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+        currentSeconds++; // ⬆ count UP
+    }
+
+    updateTimer(); // initial render
+    const timerInterval = setInterval(updateTimer, 1000);
+}
 
 </script>
 <script>

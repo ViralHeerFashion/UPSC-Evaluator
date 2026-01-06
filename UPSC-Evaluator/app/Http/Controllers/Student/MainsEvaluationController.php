@@ -17,14 +17,15 @@ use App\Models\{
     StrengthSnapShot,
     GapAnalysisPriorityFixes,
     ModelAnswer,
-    Wallet
+    Wallet,
+    CustomModelAnswer
 };
 
 class MainsEvaluationController extends Controller
 {
     private $per_page_evaluation_charge = 1.2;
     private $api_base_url = "https://upsc-ai-evaluator.onrender.com";
-    public function index(string $process_id = null)
+    public function index(Request $request, string $process_id = null)
     {
         $student_answer_sheet = null;
         $question_list = null;
@@ -35,7 +36,8 @@ class MainsEvaluationController extends Controller
                         'micro_marking_grid',
                         'strength_snapshot',
                         'gap_analysis_priority_fix',
-                        'model_answer'
+                        'model_answer',
+                        'custom_model_answer'
                     ]);
                 }
             ])
@@ -45,8 +47,9 @@ class MainsEvaluationController extends Controller
 
             $questions = [];
             foreach ($student_answer_sheet->student_answer_evaluation as $key => $student_answer_evaluation) {
-                array_push($questions, array(
-                    'question_text' => substr($student_answer_evaluation->question, 0, 30)."..."
+                 array_push($questions, array(
+                    'marks_awarded' => $student_answer_evaluation->marks_awarded,
+                    'max_marks' => $student_answer_evaluation->max_marks
                 ));
             }
 
@@ -58,6 +61,8 @@ class MainsEvaluationController extends Controller
             if (is_null($student_answer_sheet)) {
                 abort(404);
             }
+        } elseif(is_null($process_id) && $request->session()->has('is_institute_temporary_login')) {
+            return redirect()->route('student.mains-evaluation.list');
         }
 
         return view('student.mains-evaluation.index', compact(
@@ -119,7 +124,8 @@ class MainsEvaluationController extends Controller
 
         $payload = [
             'answer_sheet' => new \CURLFile($filePath, 'application/pdf', $student_answer_sheet->file_name),
-            'language' => $student_answer_sheet->language->name
+            'language' => $student_answer_sheet->language->name,
+            'institute_name' => !empty(Auth::user()->institute) ? Auth::user()->institute->institute_api_name : null
         ];
 
         curl_setopt_array($ch, [
@@ -132,6 +138,9 @@ class MainsEvaluationController extends Controller
                 "X-API-KEY: 1_Vm83n4ZJrVTMJGgVPqmXZGWKx-d0MlvEk3i6frwEE"
             ],
         ]);
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -151,7 +160,8 @@ class MainsEvaluationController extends Controller
             'success' => true,
             'message' => "Task generated successfully. Please wait for evaluation.",
             'task_id' => $student_answer_sheet->task_id,
-            'loader_second' => $total_page_available_in_pdf > 8 ? $total_page_available_in_pdf * 4.5 : 40
+            // 'loader_second' => $total_page_available_in_pdf > 8 ? $total_page_available_in_pdf * 4.5 : 40
+            'loader_second' => 420
         ]);
 
     }
@@ -177,10 +187,18 @@ class MainsEvaluationController extends Controller
                 CURLOPT_TIMEOUT_MS => 1200000
             ]);
 
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
             $response = json_decode(curl_exec($ch));
             curl_close($ch);
 
+            // $response = json_decode(
+            //     Storage::get('/model_answer/evaluation.json')
+            // );
+
             $api_status = isset($response->result) && !empty($response->result) ? "SUCCESS" : $response->status;
+
             if($api_status == "SUCCESS") {
                 $student_answer_sheet->api_response = json_encode($response);
                 $student_answer_sheet->save();
@@ -260,26 +278,34 @@ class MainsEvaluationController extends Controller
                 $student_answer_evaluation->save();
 
                 array_push($questions, array(
-                    'question_text' => substr($student_answer_evaluation->question, 0, 30)."..."
+                    'marks_awarded' => $student_answer_evaluation->marks_awarded,
+                    'max_marks' => $student_answer_evaluation->max_marks
                 ));
                 
-                if (isset($question->model_answer->sections)) {
-                    foreach ($question->model_answer->sections as $key => $section) {
-                        foreach ($section as $title => $description) {
+                if (isset($question->model_answer_source) && !empty($question->model_answer_source) && $question->model_answer_source == "database") {
+                    $model_answer = new CustomModelAnswer;
+                    $model_answer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                    $model_answer->model_answer = json_encode($question->model_answer_structured);
+                    $model_answer->save();
+                } else {
+                    if (isset($question->model_answer->sections)) {
+                        foreach ($question->model_answer->sections as $key => $section) {
+                            foreach ($section as $title => $description) {
+                                $modelAnswer = new ModelAnswer;
+                                $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
+                                $modelAnswer->title = $title;
+                                $modelAnswer->description = $description;
+                                $modelAnswer->save();
+                            }
+                        }
+                    } else {
+                        foreach ($question->model_answer->body as $title => $description) {
                             $modelAnswer = new ModelAnswer;
                             $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
                             $modelAnswer->title = $title;
                             $modelAnswer->description = $description;
                             $modelAnswer->save();
                         }
-                    }
-                } else {
-                    foreach ($question->model_answer->body as $title => $description) {
-                        $modelAnswer = new ModelAnswer;
-                        $modelAnswer->student_answer_evaluation_id = $student_answer_evaluation->id;
-                        $modelAnswer->title = $title;
-                        $modelAnswer->description = $description;
-                        $modelAnswer->save();
                     }
                 }
 
@@ -499,6 +525,10 @@ class MainsEvaluationController extends Controller
         ->where('task_id', $process_id)
         ->first(); 
 
+        $institute = Auth::user()->institute;
+        
+        $second_img = !is_null($institute) && Storage::disk('public')->exists($institute->logo) ? Storage::disk('public')->url($institute->logo) : public_path('images/logo.png');
+        
         $fontPath = public_path('MuktaVaani/MuktaVaani-Regular.ttf');
 
         $fontDir = public_path('MuktaVaani');
@@ -515,18 +545,28 @@ class MainsEvaluationController extends Controller
                 'muktavaani' => [
                     'R' => 'MuktaVaani-Regular.ttf'
                 ],
+                'fontawesome' => [
+                    'R' => 'fontawesome.ttf'
+                ]
             ],
             'default_font' => 'muktavaani',
             'autoScriptToLang' => true,
             'autoLangToFont' => true,
+            'margin_top' => 10,
+            'margin_bottom' => 15,
+            'default_font_size' => 14,
+            'dpi' => 96,
+            'img_dpi' => 96,
+            'shrink_tables_to_fit' => 0,
+            'use_kwt' => true
         ]);
 
         $mpdf->SetHTMLHeader('
             <div style="position:absolute; top:30%; left:40%; ">
-                <img src="'.public_path('images/logo.png').'" style="width:200px;opacity:0.3; filter: alpha(opacity=20);transform: rotate(-30deg)">
+                <img src="'.public_path('images/logo.png').'" style="width:200px;opacity:0.5; filter: alpha(opacity=20);transform: rotate(-30deg)">
             </div>
             <div style="position:absolute; top:65%; left:40%; opacity:0.5;">
-                <img src="'.public_path('images/logo.png').'" style="width:200px;opacity:0.3; filter: alpha(opacity=20);transform: rotate(-30deg)">
+                <img src="'.$second_img.'" style="width:200px;opacity:0.3; filter: alpha(opacity=20);transform: rotate(-30deg)">
             </div>
         ');
 
@@ -535,12 +575,20 @@ class MainsEvaluationController extends Controller
             'fontPath'
         ))->render();
 
-
         $mpdf->WriteHTML($html);
 
         return response($mpdf->Output('Evaluation-'.$student_answer_sheet->file_name, 'S'))
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'attachment; filename="'.'Evaluation-'.$student_answer_sheet->file_name.'"');
+
+        /*return response(
+            $mpdf->Output('Evaluation-'.$student_answer_sheet->file_name, 'I')
+        )
+        ->header('Content-Type', 'application/pdf')
+        ->header(
+            'Content-Disposition',
+            'inline; filename="Evaluation-'.$student_answer_sheet->file_name.'"'
+        );*/
 
         return view('student.mains-evaluation.pdf', compact(
             'student_answer_sheet',

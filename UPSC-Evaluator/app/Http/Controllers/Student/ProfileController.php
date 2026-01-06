@@ -32,7 +32,11 @@ class ProfileController extends Controller
             $user->plain_password = null;
             $user->save();
 
-            return redirect()->route('student.logout');
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('student.login')->with('alert_success', "Please login with your updated password");
         }
         return back()->with('success', 'Password Updated successfully...');
     }

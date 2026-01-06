@@ -76,7 +76,7 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="logo" class="form-label">Logo <span class="text-mute">(Height: 60 or Width: Auto)</span></label>
+                            <label for="logo" class="form-label">Logo <span class="text-mute">(Height: 60px or Width: Auto)</span></label>
                             <input type="file" class="form-control" id="logo-image" accept=".jpg, .jpeg, .png, image/jpeg, image/png">
                         </div>
                         <div class="preview-image-container">

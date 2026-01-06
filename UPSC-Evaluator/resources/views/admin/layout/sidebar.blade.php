@@ -76,6 +76,22 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('institute.profile') }}" class="nav-link security-link">
+                        <i class="nav-icon fas fa-user-shield"></i>
+                        <p>
+                            Security
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('institute.logout') }}" class="nav-link">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <p>
+                            Logout
+                        </p>
+                    </a>
+                </li>
                 @endif
 			</ul>
 		</nav>

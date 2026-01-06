@@ -151,25 +151,74 @@
         </div>
         <div class="section-content model-answer-container">
             <div class="model-answer-card">
-                <p class="p-3 m-auto text-note">Model answer architectural points are intentionally detailed and often exceed word limits. You should use it to understand the structure and add value to your answer.</p>
-                @if(!empty($question->model_answer_intro))
-                <p class="p-3 m-auto mb-3">{{ $question->model_answer_intro }}</p>
-                @endif
-                @foreach($question->model_answer as $model_answer)
-                <div class="model-title-wrapper">
-                    <div class="model-icon">
-                        <img src="{{ asset('public/images/icons/mat.svg') }}" class="w35">
+                @if(!empty($question->custom_model_answer))
+                    @php($custom_model_answer = json_decode(json_decode($question->custom_model_answer)->model_answer))
+                    <div class="custom-model-answer-container">
+                    @foreach($custom_model_answer as $model_answer)
+                        @if($model_answer->type == "paragraph")
+                        <p class="answer-paragraph">{{ $model_answer->text }}</p>
+                        @elseif($model_answer->type == 'heading')
+                        <h2 class="answer-heading">{{ $model_answer->text }}</h2>
+                        @elseif($model_answer->type == 'list')
+                        <ul class="answer-list">
+                            @php($last_key = array_key_last($model_answer->items))
+                            @foreach($model_answer->items as $key => $item)
+                            <li @if($key === $last_key) style="margin-bottom: 20px;" @endif>
+                                @if(!empty($item->heading))
+                                <strong>{{ $item->heading }}</strong>
+                                @endif
+                                @if(!empty($item->text))
+                                <span>{{ $item->text }}</span>
+                                @endif
+                            </li>
+                            @endforeach
+                        </ul>
+                        @elseif($model_answer->type == 'table')
+                        <div class="answer-table-wrapper">
+                            <table class="answer-table">
+                                <caption class="answer-caption">{{$model_answer->caption}}</caption>
+                                <thead>
+                                    <tr>
+                                        @foreach($model_answer->headers as $header)
+                                        <th>{{ $header }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($model_answer->rows as $rows)
+                                        <tr>
+                                        @foreach($rows as $row)
+                                            <td>{{$row}}</td>
+                                        @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @endif
+                    @endforeach
+                @else
+                    <p class="p-3 m-auto text-note">Model answer architectural points are intentionally detailed and often exceed word limits. You should use it to understand the structure and add value to your answer.</p>
+                    @if(!empty($question->model_answer_intro))
+                    <p class="p-3 m-auto mb-3">{{ $question->model_answer_intro }}</p>
+                    @endif
+                    @foreach($question->model_answer as $model_answer)
+                    <div class="model-title-wrapper">
+                        <div class="model-icon">
+                            <img src="{{ asset('public/images/icons/mat.svg') }}" class="w35">
+                        </div>
+                        <h5 class="model-title">{{ $model_answer->title }}</h5>
                     </div>
-                    <h5 class="model-title">{{ $model_answer->title }}</h5>
-                </div>
-                <p class="model-description">{{ $model_answer->description }}</p>
-                @endforeach
-                @if(!empty($question->model_answer_evaluation))
-                <p class="p-3 m-auto mb-3">{{ $question->model_answer_evaluation }}</p>
+                    <p class="model-description">{{ $model_answer->description }}</p>
+                    @endforeach
+                    @if(!empty($question->model_answer_evaluation))
+                    <p class="p-3 m-auto mb-3">{{ $question->model_answer_evaluation }}</p>
+                    @endif
+                    @if(!empty($question->model_answer_conclusion))
+                    <p class="p-3 m-auto mb-3">{{ $question->model_answer_conclusion }}</p>
+                    @endif
                 @endif
-                @if(!empty($question->model_answer_conclusion))
-                <p class="p-3 m-auto mb-3">{{ $question->model_answer_conclusion }}</p>
-                @endif
+                
             </div>
         </div>
     </section>

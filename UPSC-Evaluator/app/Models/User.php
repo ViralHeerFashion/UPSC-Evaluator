@@ -8,7 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\{
     UserAttemptQuestion,
-    Institute
+    Institute,
+    StudentAnswerSheet
 };
 
 class User extends Authenticatable
@@ -58,5 +59,10 @@ class User extends Authenticatable
     public function institute()
     {
         return $this->hasOne(Institute::class, 'id', 'institute_id');    
+    }
+
+    public function answer_sheet()
+    {
+        return $this->hasMany(StudentAnswerSheet::class, 'user_id')->where('is_evaluated', 1);
     }
 }

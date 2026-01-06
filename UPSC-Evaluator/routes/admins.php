@@ -35,6 +35,8 @@ Route::middleware('auth:admin')->group(function(){
 			Route::get('/{uuid}/recharge/{id?}', 'recharge')->name('institute.recharge');
 			Route::post('/{uuid}/make-recharge', 'makeRecharge')->name('institute.makeRecharge');
 			Route::get('/{uuid}/recharge/{id}/delete', 'deleteRecharge')->name('institute.deleteRecharge');
+
+			Route::get('/{institute_id}/delete', 'delete')->name('institute.delete');
 		});
 	});
 

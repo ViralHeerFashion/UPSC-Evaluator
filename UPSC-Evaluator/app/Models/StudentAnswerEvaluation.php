@@ -7,7 +7,8 @@ use App\Models\{
     QuestionMicroMarkingGrid,
     StrengthSnapShot,
     GapAnalysisPriorityFixes,
-    ModelAnswer
+    ModelAnswer,
+    CustomModelAnswer
 };
 
 class StudentAnswerEvaluation extends Model
@@ -33,5 +34,10 @@ class StudentAnswerEvaluation extends Model
     public function model_answer()
     {
         return $this->hasMany(ModelAnswer::class, 'student_answer_evaluation_id');    
+    }
+
+    public function custom_model_answer()
+    {
+        return $this->hasOne(CustomModelAnswer::class, 'student_answer_evaluation_id');
     }
 }

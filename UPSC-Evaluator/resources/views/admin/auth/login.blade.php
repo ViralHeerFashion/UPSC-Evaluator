@@ -26,8 +26,8 @@
                     @endforeach
                 @enderror
                 
-                @if(session()->has('msg'))
-                <div class="alert alert-success mb-3" role="alert">{{session('msg')}}</div>
+                @if(session()->has('alert_success'))
+                <div class="alert alert-success mb-3" role="alert">{{session('alert_success')}}</div>
                 @endif
 
                 @php($form_action = request()->is('admin/*') ? 'admin.authenticate' : 'institute.authenticate')

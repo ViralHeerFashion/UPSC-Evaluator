@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="content">
                                         <span class="title ">{{ auth()->user()->name }}</span>
-                                        <p>{{ !is_null(auth()->user()->email) ? auth()->user()->email : auth()->user()->phone }}</p>
+                                        <p>{{ !is_null(auth()->user()->email) ? shortEmail(auth()->user()->email) : auth()->user()->phone }}</p>
                                     </div>
                                 </div>
                                 <div class="icon">
@@ -68,6 +68,7 @@
                                 </div>
                             </a>
                         </div>
+                       
                         <div class="rbt-user-menu-list-wrapper">
                             <div class="inner">
                                 <div class="rbt-admin-profile">
@@ -137,6 +138,11 @@
                             </div>
                         </div>
                     </div>
+                    @if(request()->route()->getName() == "student.mains-evaluation" && isset($student_answer_sheet) && !is_null($student_answer_sheet))
+                    <div class="expand-btn-grp @@display-class">
+                        <button class="bg-solid-primary popup-dashboardright-btn"><i class="fa-sharp fa-regular fa-sidebar-flip"></i></button>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

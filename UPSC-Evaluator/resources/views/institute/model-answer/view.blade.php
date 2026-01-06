@@ -63,11 +63,11 @@
                     <div class="paper">
                         @foreach($model_answer->qa_structured as $question)
                             <div class="question">
-                                <div class="qno">Q{{$question->number}}.</div>
+                                <div class="qno"><b>Q{{$question->number}}.</b></div>
                                 <div class="qtext">
-                                    {{$question->question}}
+                                    <b>{{$question->question}}</b>
                                 </div>
-                                <div class="marks">({{$question->marks}})</div>
+                                <div class="marks"><b>({{$question->marks}})</b></div>
                             </div>
                             @foreach($question->answer_structured as $answer)
                                 @if($answer->type == 'paragraph')

@@ -21,8 +21,12 @@ class EnsureScreeningQuestionCompleted
     public function handle(Request $request, Closure $next): Response
     {
         if (
-            request()->routeIs('student.*') && !Auth::user()->question_attempted && !is_null(Auth::user()->plain_password) && !in_array(Route::currentRouteName(), ['student.profile.security', 'student.profile.update-password']) ||
-            (!Auth::user()->question_attempted && is_null(Auth::user()->plain_password))
+            !in_array(Route::currentRouteName(), ['student.logout']) && 
+            (
+                request()->routeIs('student.*') && !Auth::user()->question_attempted && !is_null(Auth::user()->plain_password) && !in_array(Route::currentRouteName(), ['student.profile.security', 'student.profile.update-password']) ||
+                (!Auth::user()->question_attempted && is_null(Auth::user()->plain_password))
+            )
+            
         ) {
             $screen_questions = ScreeningQuestion::with('user_attempt_question')->get();
 

@@ -115,7 +115,7 @@ class UsersController extends Controller
 
 		foreach ($request->user_ids as $key => $user_id) {
 			$wallet = new Wallet;
-			$wallet->user_id = Auth::id();
+			$wallet->user_id = $user_id;
 			$wallet->wallet_id = $institue_wallet->id;
 			$wallet->amount = $recahrge_data['per_student_recharge'];
 			$wallet->save();

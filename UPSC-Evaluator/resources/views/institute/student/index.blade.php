@@ -11,7 +11,7 @@
 			</div>
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="{{ route('admin.users') }}">Home</a></li>
+					<li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
 					<li class="breadcrumb-item active">Students</li>
 				</ol>
 			</div>
@@ -53,7 +53,11 @@
 								<td>{{$student->phone}}</td>
 								<td>{{$student->email}}</td>
 								<td>{{$student->unique_id}}</td>
-								<td></td>
+								<td>
+									@if($student->answer_sheet_count)
+									<a href="{{ route('institute.students.loginStudentAccount', ['user_id' => $student->id]) }}" target="_blank">{{$student->answer_sheet_count}}</a>
+									@endif
+								</td>
 							</tr>
 							@php($i++)
 							@endforeach

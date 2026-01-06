@@ -130,6 +130,28 @@ class TestController extends Controller
         print_r(json_decode($response));
     }
 
+    private function filterUniqueField()
+    {
+        $response = Storage::get('/model_answer/response_2.json');
+
+        $response = json_decode($response);
+
+        $types = [];
+
+        foreach ($response->result->qa_structured as $q) {
+            foreach ($q->answer_structured as $block) {
+                if (!empty($block->type)) {
+                    $types[$block->type] = true; // use key to keep unique
+                }
+            }
+        }
+
+        $uniqueTypes = array_keys($types);
+
+        print_r($uniqueTypes);
+    
+    }
+
     private function modelAnswer()
     {
         $student_answer_sheet = StudentAnswerSheet::where('task_id', '9456ff83-6f7b-4975-b160-6919da494908')->first();
