@@ -139,9 +139,6 @@ class MainsEvaluationController extends Controller
             ],
         ]);
 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -187,9 +184,6 @@ class MainsEvaluationController extends Controller
                 CURLOPT_TIMEOUT_MS => 1200000
             ]);
 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
             $response = json_decode(curl_exec($ch));
             curl_close($ch);
 
@@ -223,6 +217,7 @@ class MainsEvaluationController extends Controller
                 'process_task' => true,
                 'message' => "Your file is being process"
             ]);
+            
 
             /*do {
                 curl_setopt_array($ch, [
@@ -272,8 +267,8 @@ class MainsEvaluationController extends Controller
                 $student_answer_evaluation->max_marks = $question->max_marks;
                 $student_answer_evaluation->marks_awarded = $question->marks_awarded;
                 $student_answer_evaluation->question_no = $question->question_number;
-                $student_answer_evaluation->model_answer_intro = $question->model_answer->introduction;
-                $student_answer_evaluation->model_answer_conclusion = $question->model_answer->conclusion;
+                $student_answer_evaluation->model_answer_intro = isset($question->model_answer->introduction) && !empty($question->model_answer->introduction) ? $question->model_answer->introduction : null;
+                $student_answer_evaluation->model_answer_conclusion = isset($question->model_answer->conclusion) && !empty($question->model_answer->conclusion) ? $question->model_answer->conclusion : null;
                 $student_answer_evaluation->model_answer_evaluation = isset($question->model_answer->evaluation) && !empty($question->model_answer->evaluation) ? $question->model_answer->evaluation : null;
                 $student_answer_evaluation->save();
 
@@ -366,7 +361,7 @@ class MainsEvaluationController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "PDF proccess successfully...",
+            'message' => "Answer Sheet has been processed successfully...",
             'view' => view('student.mains-evaluation.partials.questions', compact(
                 'student_answer_sheet'
             ))->render(),
@@ -527,7 +522,12 @@ class MainsEvaluationController extends Controller
 
         $institute = Auth::user()->institute;
         
-        $second_img = !is_null($institute) && Storage::disk('public')->exists($institute->logo) ? Storage::disk('public')->url($institute->logo) : public_path('images/logo.png');
+        $second_img_opacity = 0.4;
+        $second_img = public_path('images/logo.png');
+        if (!is_null($institute) && Storage::disk('public')->exists($institute->logo)) {
+            $second_img = Storage::disk('public')->url($institute->logo);
+            $second_img_opacity = 0.3;
+        }
         
         $fontPath = public_path('MuktaVaani/MuktaVaani-Regular.ttf');
 
@@ -540,13 +540,17 @@ class MainsEvaluationController extends Controller
         $fontData = $defaultFontConfig['fontdata'];
 
         $mpdf = new Mpdf([
-            'fontDir' => array_merge($fontDirs, [public_path('fonts')]),
+            'fontDir' => array_merge($fontDirs, [public_path('fonts'), public_path('NotoSans')]),
             'fontdata' => $fontData + [
                 'muktavaani' => [
                     'R' => 'MuktaVaani-Regular.ttf'
                 ],
                 'fontawesome' => [
                     'R' => 'fontawesome.ttf'
+                ],
+                'notodeva' => [
+                    'R' => 'NotoSansDevanagari-Regular.ttf',
+                    'B' => 'NotoSansDevanagari-Bold.ttf',
                 ]
             ],
             'default_font' => 'muktavaani',
@@ -560,13 +564,13 @@ class MainsEvaluationController extends Controller
             'shrink_tables_to_fit' => 0,
             'use_kwt' => true
         ]);
-
+        
         $mpdf->SetHTMLHeader('
             <div style="position:absolute; top:30%; left:40%; ">
-                <img src="'.public_path('images/logo.png').'" style="width:200px;opacity:0.5; filter: alpha(opacity=20);transform: rotate(-30deg)">
+                <img src="'.$second_img.'" style="width:200px;opacity:'.$second_img_opacity.'; filter: alpha(opacity=20);transform: rotate(-30deg)">
             </div>
-            <div style="position:absolute; top:65%; left:40%; opacity:0.5;">
-                <img src="'.$second_img.'" style="width:200px;opacity:0.3; filter: alpha(opacity=20);transform: rotate(-30deg)">
+            <div style="position:absolute; top:65%; left:40%;">
+                <img src="'.$second_img.'" style="width:200px;opacity:'.$second_img_opacity.'; filter: alpha(opacity=20);transform: rotate(-30deg)">
             </div>
         ');
 

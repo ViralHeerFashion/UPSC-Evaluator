@@ -31,6 +31,9 @@
 							<button>Search</button>
 						</form>
 					</div>
+					<div class="card-tools">
+					   <a href="{{ asset('public/samples/student-sheet.xlsx') }}" class="btn btn-primary btn-sm">Sample Student Sheet</a>
+					</div> 
 				</div>
 				<div class="card-body">
 					<table class="table table-striped">

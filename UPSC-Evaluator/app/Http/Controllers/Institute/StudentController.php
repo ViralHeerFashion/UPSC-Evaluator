@@ -19,7 +19,7 @@ class StudentController extends Controller
 
         if ($request->filled('search')) {
             $students = $students->whereAny(
-                ['name', 'phone', 'email'],
+                ['name', 'phone', 'email', 'unique_id'],
                 'like',
                 '%'.$request->search.'%'
             );

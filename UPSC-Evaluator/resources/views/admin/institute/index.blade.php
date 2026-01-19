@@ -89,7 +89,7 @@
                             @php($i++)
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center">No Institute Found</td>
+                                <td colspan="12" class="text-center">No Institute Found</td>
                             </tr>
                             @endforelse
                         </tbody>

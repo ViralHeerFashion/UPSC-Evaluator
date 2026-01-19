@@ -29,6 +29,7 @@ Route::middleware('auth:institute')->group(function(){
             Route::get('', 'index')->name('model-answer');
             Route::get('/add', 'add')->name('model-answer.add');
             Route::post('/create', 'create')->name('model-answer.create');
+            Route::get('/{task_id}/proces', 'processTask')->name('model-answer.processTask');
             Route::get('/view/{id}', 'view')->name('model-answer.view');
             Route::get('/delete/{id}', 'delete')->name('model-answer.delete');
         });

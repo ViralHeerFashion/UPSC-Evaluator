@@ -184,6 +184,7 @@ class InstituteController extends Controller
         } else {
             $recharge = new Recharge;
         }        
+        $recharge->razorpay_order_id = "Institute Recharge";
         $recharge->institute_id = $institue->id;
         $recharge->amount = $request->amount;
         $recharge->order_id = $request->order_no;

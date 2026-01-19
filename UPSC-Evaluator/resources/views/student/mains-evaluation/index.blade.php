@@ -95,7 +95,7 @@
     .question-container{background-color: #17151f;padding: 15px;border-radius: 10px;}
     .mark-container{background: #805af5;border-radius: 25px;padding: 5px;border: 1px dashed #0e0c15;color: #fff;}
     .text-right{text-align: right;margin-top: 15px!important;}
-    .upload-file-btn, .refresh-btn{width: 100%;height: 55px;background-color: #805af5;border: 2px solid #805af5;color: var(--text-primary);line-height: 22px;padding: 16px 130px 16px 60px;font-size: 20px;}
+    .upload-file-btn, .upload-file-btn:focus, .upload-file-btn:hover, .refresh-btn, .refresh-btn:hover, .refresh-btn:focus{display: inline-block;width: 100%;height: 55px;background-color: #805af5;border: 2px solid #805af5;color: var(--text-primary);line-height: 22px;padding: 16px 130px 16px 60px;font-size: 20px;}
     .premium-upload-container {width: 100%;box-sizing: border-box;font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;}
     .premium-upload-input {display: none;}
     .premium-upload-label {width: 100%;min-height: 160px;display: flex;flex-direction: column;align-items: center;justify-content: center;gap: 12px;padding: 24px;border: 2px dashed var(--border-color);border-radius: 12px;background-color: var(--card-color);cursor: pointer;transition: all 0.3s ease;box-sizing: border-box;}
@@ -296,6 +296,7 @@
     .loader-desc {font-size: 13.8px;color: var(--text-secondary);line-height: 1.7;}
     .progress-bar {height: 4px;background: rgba(255,255,255,.06);border-radius: 10px;overflow: hidden;margin-top: 22px;}
     .progress-bar span {display: block;height: 100%;width: 0%;background:linear-gradient(90deg,var(--secondary-accent),#9f7cff,var(--secondary-accent));transition: width 1s linear;box-shadow: 0 0 14px rgba(205,153,255,.5);}
+    .new-evaluation{display: inline-block;}
 </style>
 @endsection
 @section('tab-name')
@@ -369,9 +370,9 @@
         <div class="rbt-static-bar" style="display: block;">
             <form class="new-chat-form border-gradient">
                 @if(!is_null($student_answer_sheet))
-                <button type="button" class="refresh-btn"><i class="fa-solid fa-arrows-rotate"></i>&nbsp; New Evaluation</button>
+                <a href="{{ route('student.mains-evaluation') }}" class="new-evaluation refresh-btn"><i class="fa-solid fa-arrows-rotate"></i>&nbsp; New Evaluation</a>
                 @else
-                <button type="button" class="upload-file-btn"><i class="fa-solid fa-upload"></i>&nbsp; Start Evaluation</button>
+                <a href="javascript:void(0);" class="new-evaluation upload-file-btn"><i class="fa-solid fa-arrows-rotate"></i>&nbsp; New Evaluation</a>
                 @endif
             </form>
             <p class="b3 small-text">Upload your PDF to get instant, detailed feedback.</p>
@@ -452,7 +453,7 @@
         
         @if(!is_null($student_answer_sheet))
         renderDashboardAnimations();
-        $(".refresh-btn").on('click', function(){
+        $(document).on('click', ".refresh-btn", function(){
             let refresh_page = "{{ route('student.mains-evaluation') }}";
             window.location.href = refresh_page;
         });
@@ -518,7 +519,6 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
 
                 var url = "{{ route('student.mains-evaluation.generate-task') }}";
                 var file = $("#answer_sheet")[0].files[0];
@@ -657,7 +657,7 @@
 
                         let task_id = response.task_id;
 
-                        function processTask(task_id, retries = 0, maxRetries = 50) {
+                        function processTask(task_id, retries = 0, maxRetries = 150) {
                             ajaxInProgress = true;
                             let process_url = "{{ route('student.mains-evaluation.process-task', ':task_id') }}".replace(':task_id', task_id);
 
@@ -672,6 +672,11 @@
                                     ajaxInProgress = false;
                                     toastr.success(response.message, 'Success');
                                     typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations, response.question_shortcut);
+                                    $('.upload-file-btn').replaceWith(`
+                                        <a href="{{ route('student.mains-evaluation') }}" class="refresh-btn">
+                                            New Evaluation
+                                        </a>
+                                    `);
                                 } else if ('process_task' in response) {
                                     if (retries < maxRetries) {
                                         return new Promise((resolve) => {
@@ -682,14 +687,17 @@
                                     } else {
                                         ajaxInProgress = false;
                                         toastr.error("Max retries reached. Please try again later.", 'Error');
+                                        $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                                     }
                                 } else {
                                     ajaxInProgress = false;
-                                    toastr.error("Something went wrong, please contact our support team.", 'Error');
+                                    toastr.error("Something went wrong please contact our support team.", 'Error');
+                                    $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                                 }
                             }).fail(function () {
                                 ajaxInProgress = false;
-                                toastr.error("Something went wrong, please support our team.", 'Error');
+                                toastr.error("Something went wrong please contact our support team.", 'Error');
+                                $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                             });
                         }
 
@@ -702,13 +710,15 @@
                             toastr.info(response.message, 'Info');
                         } else {
                             toastr.error(response.message, 'Error');
+                            $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                         }
                         return $.Deferred().resolve().promise();
                     }
 
                 }).fail(function(err) {
                     ajaxInProgress = false;
-                    toastr.error("Something went wrong please support our team.", 'Error');
+                    toastr.error("Something went wrong please contact our support team.", 'Error');
+                    $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                 });
 
                 return false;

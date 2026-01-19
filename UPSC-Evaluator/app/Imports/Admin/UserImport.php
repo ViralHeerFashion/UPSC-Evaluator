@@ -48,8 +48,8 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation
             $user->email = $row['email_id'];
             $user->unique_id = $row['unique_id'];
             $user->is_registered = 1;
-            $user->plain_password = $password;
-            $user->password = Hash::make($password);
+            $user->plain_password = $row['unique_id'];
+            $user->password = Hash::make($row['unique_id']);
             $user->email_verified_at = date("Y-m-d H:i:s");
             $user->institute_id = $this->institute_id;
             $user->student_sheet_id = $student_sheet->id;

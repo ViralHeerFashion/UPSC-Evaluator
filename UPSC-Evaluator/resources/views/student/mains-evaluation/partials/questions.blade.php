@@ -112,26 +112,30 @@
                             <h5>Optimal Solution</h5>
                         </div>
                         <p class="section-text ml-10px">
-                            @if(str_contains($gap_analysis_priority_fix->correct_action, "(1)") || str_contains($gap_analysis_priority_fix->correct_action, "(१)"))
-                                <?php
-                                    $pos = mb_strpos($gap_analysis_priority_fix->correct_action, '(1)', 0, 'UTF-8');
-                                    if ($pos === false) {
-                                        $pos = mb_strpos($gap_analysis_priority_fix->correct_action, '(१)', 0, 'UTF-8');
-                                    }
-                                    $heading = mb_substr($gap_analysis_priority_fix->correct_action, 0, $pos, 'UTF-8');
-                            
-                                    preg_match_all('/\(\d+\)\s*([^()]+)/u', $gap_analysis_priority_fix->correct_action, $matches);
-                                    $points = array_map('trim', $matches[1]);
-                                ?>
-                                {{$heading}}
+                        @if(str_contains($gap_analysis_priority_fix->correct_action, '$'))
+                            <?php
+                                $text = $gap_analysis_priority_fix->correct_action;
+                        
+                                $pos = mb_strpos($text, '$', 0, 'UTF-8');
+                        
+                                $heading = trim(mb_substr($text, 0, $pos, 'UTF-8'));
+                        
+                                preg_match_all('/\$\s*([^$]+)/u', $text, $matches);
+                                $points = array_map('trim', $matches[1]);
+                            ?>
+                        
+                            {{ $heading }}
+                        
+                            @if(!empty($points))
                                 <ul class="section-text ml-20px unset-default-css">
                                     @foreach($points as $point)
-                                    <li>{{$point}}</li>
+                                        <li>{{ $point }}</li>
                                     @endforeach
                                 </ul>
-                            @else
-                            {{ $gap_analysis_priority_fix->correct_action }}
                             @endif
+                        @else
+                            {{ $gap_analysis_priority_fix->correct_action }}
+                        @endif
                         </p>
                     </div>
                 </div>

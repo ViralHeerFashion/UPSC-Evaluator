@@ -13,6 +13,6 @@ class StudentSheet extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class, 'institute_id');    
+        return $this->hasMany(User::class, 'student_sheet_id');    
     }
 }

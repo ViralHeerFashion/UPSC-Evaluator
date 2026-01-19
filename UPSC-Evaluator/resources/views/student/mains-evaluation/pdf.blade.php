@@ -123,15 +123,25 @@
                     <b>Optimal Solution:</b>
                 </div>
 
-                @if(str_contains($gap->correct_action, '(1)') || str_contains($gap->correct_action, '(१)'))
+                @if(str_contains($gap->correct_action, '$'))
                     <?php
-                        $pos = mb_strpos($gap->correct_action, '(1)', 0, 'UTF-8');
+                        /*$pos = mb_strpos($gap->correct_action, '$', 0, 'UTF-8');
                         if ($pos === false) {
-                            $pos = mb_strpos($gap->correct_action, '(१)', 0, 'UTF-8');
+                            $pos = mb_strpos($gap->correct_action, '$', 0, 'UTF-8');
                         }
 
                         $heading = mb_substr($gap->correct_action, 0, $pos, 'UTF-8');
                         preg_match_all('/\(\d+\)\s*([^()]+)/u', $gap->correct_action, $matches);
+                        $points = array_map('trim', $matches[1]);*/
+                    ?>
+                    <?php
+                        $text = $gap->correct_action;
+                
+                        $pos = mb_strpos($text, '$', 0, 'UTF-8');
+                
+                        $heading = trim(mb_substr($text, 0, $pos, 'UTF-8'));
+                
+                        preg_match_all('/\$\s*([^$]+)/u', $text, $matches);
                         $points = array_map('trim', $matches[1]);
                     ?>
 
@@ -281,8 +291,8 @@
 
                                     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0;">
                                         <tr>
-                                            <td style="font-size:11.5pt;font-weight:700;color:#1f2933;padding:0 0 2pt 0;border-bottom:1px solid #1f2933;">
-                                                <b>{{ $model_answer->title }}</b>
+                                            <td style="font-size:11.5pt;color:black;padding:0 0 2pt 0;border-bottom:1px solid #1f2933;font-weight: bold;">
+                                                <b style="font-weight: bold;">{{ $model_answer->title }}</b>
                                             </td>
                                         </tr>
                                     </table>
