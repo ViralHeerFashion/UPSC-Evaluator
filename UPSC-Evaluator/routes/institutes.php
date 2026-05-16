@@ -5,7 +5,8 @@ use App\Http\Controllers\Institute\{
     AuthController,
     StudentController,
     ModelAnswerController,
-    ProfileController
+    ProfileController,
+    BulkPDFProcessController
 };
 
 Route::middleware('guest:institute')->group(function () {
@@ -32,6 +33,17 @@ Route::middleware('auth:institute')->group(function(){
             Route::get('/{task_id}/proces', 'processTask')->name('model-answer.processTask');
             Route::get('/view/{id}', 'view')->name('model-answer.view');
             Route::get('/delete/{id}', 'delete')->name('model-answer.delete');
+        });
+    });
+
+    // Bulk PDF Process
+    Route::controller(BulkPDFProcessController::class)->group(function(){
+        Route::prefix('bulk-pdf-process')->group(function(){
+            Route::get('', 'index')->name('bulk-pdf-process');
+            Route::post('/upload-files', 'uploadFiles')->name('bulk-pdf-process.uploadFiles');
+
+            Route::get('/download', 'download')->name('bulk-pdf-process.download');
+            Route::get('/history', 'history')->name('bulk-pdf-process.history');
         });
     });
     

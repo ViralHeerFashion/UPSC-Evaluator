@@ -18,7 +18,9 @@ class AuthController extends Controller
     	if (Auth::guard('institute')->attempt($credentials, 1)) {
             $request->session()->regenerate();
 
-            return redirect()->route('institute.students');
+            return redirect(
+                $this->redirectInstituteTab()
+            );
 		}
 
         return back();
@@ -32,5 +34,32 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('institute.login');
+    }
+    
+    private function redirectInstituteTab()
+    {
+        $permission = json_decode(Auth::guard('institute')->user()->permissions);
+        if(is_null($permission)){
+            return route('institute.profile');
+        }
+        $route = null;
+        switch ($permission[0]) {
+            case 'model_answer':
+                $route = route('institute.model-answer');
+                break;
+            
+            case 'students':
+                $route = route('institute.students');
+                break;
+                
+            case 'bulk_pdf_process':
+                $route = route('institute.bulk-pdf-process');
+                break;
+                
+            default:
+                $route = route('institute.profile');
+                break;
+        }
+        return $route;
     }
 }

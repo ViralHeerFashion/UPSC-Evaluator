@@ -27,7 +27,7 @@ class ScreeningQuestionController extends Controller
             $user->question_attempted = 1;
             $user->save();
 
-            if (is_null($user->institute_id)) {
+            if (is_null($user->institute_id) && is_null($user->affiliate_id)) {
                 $welcome_bonus_exists = Recharge::where('user_id', Auth::id())
                                             ->where('razorpay_order_id', "Welcome bonus")
                                             ->exists();

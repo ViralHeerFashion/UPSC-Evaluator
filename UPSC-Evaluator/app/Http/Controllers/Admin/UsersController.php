@@ -54,6 +54,10 @@ class UsersController extends Controller
     		$users = $users->where('is_registered', $request->is_registered);
     	}
 
+		if ($request->filled('affiliate_id')) {
+			$users = $users->where('affiliate_id', $request->affiliate_id);
+		}
+
     	if ($request->filled('search')) {
     		$users = $users->where(function($query) use($request){
     			$query->where('name', 'like', '%'.$request->search.'%')

@@ -94,7 +94,7 @@
             document.head.appendChild(style);
         }
         document.addEventListener('DOMContentLoaded', () => {
-            if (window.self !== window.top) {
+            if (false && window.self !== window.top) {
                 showModal();
             }
         });

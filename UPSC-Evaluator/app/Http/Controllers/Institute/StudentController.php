@@ -11,6 +11,14 @@ use App\Models\{
 
 class StudentController extends Controller
 {
+    public function __construct()
+    {
+        $permission = json_decode(Auth::guard('institute')->user()->permissions);
+        if (is_null($permission) || !in_array("students", $permission)) {
+            abort(403);
+        }
+    }
+
     public function index(Request $request)
     {
         $students = User::select('id', 'name', 'phone', 'email', 'unique_id')

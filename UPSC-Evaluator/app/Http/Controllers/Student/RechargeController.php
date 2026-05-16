@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Razorpay\Api\Api;
+use App\Mail\Affiliate\{
+    StudentRechargeMail
+};
 use App\Models\{
     Recharge,
     Error,
-    Wallet
+    Wallet,
+    Affiliate
 };
 
 class RechargeController extends Controller
@@ -89,6 +94,13 @@ class RechargeController extends Controller
                 $wallet->recharge_id = $recharge->id;
                 $wallet->amount = $recharge_amount;
                 $wallet->save();
+                
+                if (!is_null(Auth::user()->affiliate_id)) {
+                    $affiliate = Affiliate::find(Auth::user()->affiliate_id);
+                    Mail::to($affiliate->email)->send(
+                        new StudentRechargeMail(Auth::user(), $affiliate->name, $recharge->amount)
+                    );
+                }
             }
 
         } catch (SignatureVerificationError $e) {

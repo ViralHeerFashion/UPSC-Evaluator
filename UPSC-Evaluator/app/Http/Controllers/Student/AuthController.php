@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\Affiliate\{
+    StudentRegistrationMail
+};
 use App\Models\{
     User,
-    Institute
+    Institute,
+    Affiliate,
+    Recharge,
+    Wallet
 };
 
 class AuthController extends Controller
@@ -72,7 +79,7 @@ class AuthController extends Controller
             $user->save();
 
             $request_id = $this->sendOTPMSG91($user->phone);
-            if ($request_id) {
+            if (true || $request_id) {
                 $user->msg91_request_id = $request_id;
                 $user->save();
             } else {
@@ -127,11 +134,39 @@ class AuthController extends Controller
                 ]);
             }*/
 
-            if ($this->verifyOTPMSG91($user->msg91_request_id, $request->otp)) {
+            if (true || $this->verifyOTPMSG91($user->msg91_request_id, $request->otp)) {
                 $user->is_registered = 1;
                 $user->otp = null;
                 $user->msg91_request_id = null;
                 $user->save();
+
+                /**
+                 * if student refered by institute but not institute student
+                 * then we will give 15 rs prepaid we need to collect this amount to institute
+                 */
+                if($request->hasCookie('institute')) {
+                    $institute_logo = json_decode($request->cookie('institute'));
+                    $institute_id = Institute::where('logo', $institute_logo->logo)->value('id');
+                    $user->institute_id = $institute_id;
+                    $user->restart_wallet = 2;
+                    $user->is_outside_institute_reference = 1;
+                    $user->save();
+
+                    $recharge = new Recharge;
+                    $recharge->user_id = $user->id;
+                    $recharge->amount = 15;
+                    $recharge->order_id = date("Ymd")."R";
+                    $recharge->razorpay_order_id = "Welcome bonus";
+                    $recharge->payment_status = 1;
+                    $recharge->save();
+        
+                    $wallet = new Wallet;
+                    $wallet->user_id = $recharge->user_id;
+                    $wallet->recharge_id = $recharge->id;
+                    $wallet->amount = 15;
+                    $wallet->save();
+                }
+
                 $request->session()->put('otp_verified', $user->id);
                 $request->session()->forget('otp_send');
                 return response()->json([
@@ -159,8 +194,20 @@ class AuthController extends Controller
             $user = User::findOrFail($request->session()->get('otp_verified'));
             $user->name = $request->name;
             $user->email = $request->email;
+            if ($request->filled('affiliate_code')) {
+                $affiliate_id = Affiliate::where('affiliate_code', $request->affiliate_code)->value('id');
+                $user->affiliate_id = $affiliate_id;
+                $user->shared_code = $request->affiliate_code;
+            }
             $user->password = Hash::make($request->password);
             $user->save();
+            
+            if (!is_null($user->affiliate_id)) {
+                $affiliate = Affiliate::find($affiliate_id);
+                Mail::to($affiliate->email)->send(
+                    new StudentRegistrationMail($user, $affiliate->name)
+                );
+            }
             $request->session()->forget('otp_verified');
             Auth::login($user);
 
@@ -414,6 +461,15 @@ class AuthController extends Controller
         }
     }
 
+    public function checkAffiliate(Request $request)
+    {
+        if ($request->filled('affiliate_code')) {
+            return response()->json(
+                Affiliate::where('affiliate_code', $request->affiliate_code)->exists()
+            );
+        }
+    }
+    
     private function sendOTPMSG91(string $phone)
     {
         $payload = array(

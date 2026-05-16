@@ -33,7 +33,8 @@ Route::middleware('guest')->group(function () {
         Route::get('register', 'view')->name('student.register');
         Route::post('store', 'store')->name('student.register.store');
         Route::get('check-field', 'checkField')->name('student.register.check-field');
-
+        Route::get('check-affiliate', 'checkAffiliate')->name('student.register.check-affiliate');
+        
         Route::get('login', 'login')->name('student.login');
         Route::post('forgot-password', 'forgotPassword')->name('student.forgotPassword');
         Route::get('resend-otp', 'otpResend')->name('student.otpResend');

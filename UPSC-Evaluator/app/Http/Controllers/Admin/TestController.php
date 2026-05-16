@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use App\Models\{
     StudentAnswerSheet,
     StudentAnswerEvaluation,
     QuestionMicroMarkingGrid,
     StrengthSnapShot,
     GapAnalysisPriorityFixes,
-    ModelAnswer
+    ModelAnswer,
+    InstituteUploadFile,
+    InstituteUploadBatch
 };
 
 class TestController extends Controller
@@ -20,7 +24,7 @@ class TestController extends Controller
     {
         $method_name = $request->filled('method_name') ? $request->method_name : null;
         if (!is_null($method_name)) {
-            $this->$method_name($request);
+            return $this->$method_name($request);
         }
     }
 
@@ -130,6 +134,63 @@ class TestController extends Controller
         print_r(json_decode($response));
     }
 
+    private function deleteInstituteExpireEvalutionPDFs()
+    {
+        $institute_upload_files = InstituteUploadFile::select('id', 'success_file_path')
+                                                    ->where('status', 1)
+                                                    ->where('is_success_file_deleted', 0)
+                                                    ->whereHas('upload_batch', function($query){
+                                                        $query->whereRaw('TIMESTAMPDIFF(HOUR, created_at, CURRENT_TIMESTAMP) > 48');
+                                                    })
+                                                    ->get();
+
+        foreach ($institute_upload_files as $key => $file) {
+            if (Storage::disk('public')->exists($file->success_file_path)) {
+                Storage::disk('public')->delete($file->success_file_path);
+                $file->is_success_file_deleted = 1;
+                $file->save();
+            }
+        }
+    }
+
+    private function completeUploadedBatchEmail()
+    {
+        $institute_upload_batch = InstituteUploadBatch::find(18);
+        
+        return view('institute.email.complete-uploaded-batch', compact(
+            'institute_upload_batch'
+        ));
+    }
+    
+    private function testEmail()
+    {
+        try {
+            Mail::raw('Student registered successfully.', function ($message) {
+                $message->to('veerghodadara37@gmail.com')
+                        ->subject('New Student Registration');
+            });
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to send email.',
+                'error'   => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function clearDB()
+    {
+        $tables = collect(
+            DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_type = 'BASE TABLE' LIMIT 50", ['u388846536_aspire_scan'])
+        )
+        ->pluck('TABLE_NAME')
+        ->toArray();
+        
+        foreach ($tables as $key => $table) {
+            DB::statement("DROP TABLE {$table}");
+        }
+    }
+
     private function filterUniqueField()
     {
         $response = Storage::get('/model_answer/response_2.json');
@@ -150,6 +211,15 @@ class TestController extends Controller
 
         print_r($uniqueTypes);
     
+    }
+    
+    private function testRecord()
+    {
+        $institute_upload_batch = InstituteUploadBatch::where('id', 7)->first();
+        foreach ($institute_upload_batch->files()->limit(2)->get() as $file)
+        {
+            
+        }
     }
 
     private function modelAnswer()

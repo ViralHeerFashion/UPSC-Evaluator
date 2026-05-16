@@ -383,6 +383,8 @@
 @endsection
 @section('script')
 <script>
+    var ajaxInProgress = false;
+    var cancelTaskPolling = false;
     @if(!is_null($question_list))
     $(".question-redirect-container").show();
     $(".question-redirect-container .link-container").html(`{!! $question_list !!}`);
@@ -498,8 +500,6 @@
             return 'File must be ' + params + ' MB or smaller.';
         });
         
-        let ajaxInProgress = false;
-
         $("#evaluate-form").validate({
             ignore: ":hidden:not(#answer_sheet)",
             rules: {
@@ -659,6 +659,9 @@
 
                         function processTask(task_id, retries = 0, maxRetries = 150) {
                             ajaxInProgress = true;
+                            if (cancelTaskPolling) {
+                                return;
+                            }
                             let process_url = "{{ route('student.mains-evaluation.process-task', ':task_id') }}".replace(':task_id', task_id);
 
                             return $.ajax({
@@ -687,17 +690,35 @@
                                     } else {
                                         ajaxInProgress = false;
                                         toastr.error("Max retries reached. Please try again later.", 'Error');
-                                        $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                                        // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                                        $("#answers-container").html(`
+                                            <div class="alert alert-danger" role="alert">
+                                                <h4 class="alert-heading">Error!</h4>
+                                                Something went wrong with connection. Please upload your answer sheet once again
+                                            </div>
+                                        `);
                                     }
                                 } else {
                                     ajaxInProgress = false;
                                     toastr.error("Something went wrong please contact our support team.", 'Error');
-                                    $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                                    // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                                    $("#answers-container").html(`
+                                        <div class="alert alert-danger" role="alert">
+                                            <h4 class="alert-heading">Error!</h4>
+                                            Something went wrong with connection. Please upload your answer sheet once again
+                                        </div>
+                                    `);
                                 }
                             }).fail(function () {
                                 ajaxInProgress = false;
                                 toastr.error("Something went wrong please contact our support team.", 'Error');
-                                $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                                // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                                $("#answers-container").html(`
+                                    <div class="alert alert-danger" role="alert">
+                                        <h4 class="alert-heading">Error!</h4>
+                                        Something went wrong with connection. Please upload your answer sheet once again
+                                    </div>
+                                `);
                             });
                         }
 
@@ -718,7 +739,13 @@
                 }).fail(function(err) {
                     ajaxInProgress = false;
                     toastr.error("Something went wrong please contact our support team.", 'Error');
-                    $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                    // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
+                    $("#answers-container").html(`
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Error!</h4>
+                            Something went wrong with connection. Please upload your answer sheet once again
+                        </div>
+                    `);
                 });
 
                 return false;
@@ -752,29 +779,36 @@
 
     function startTimer(maxSeconds) {
 
-    let currentSeconds = 0; // ⬅ start from 0
-
-    function updateTimer() {
-        if (
-            currentSeconds > maxSeconds ||
-            !document.getElementById('minutes')
-        ) {
-            clearInterval(timerInterval);
-            return;
+        let currentSeconds = 0; // ⬅ start from 0
+    
+        function updateTimer() {
+            if (
+                currentSeconds > maxSeconds ||
+                !document.getElementById('minutes')
+            ) {
+                clearInterval(timerInterval);
+                cancelTaskPolling = true;
+                $("#answers-container").html(`
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Error!</h4>
+                        Something went wrong with connection. Please upload your answer sheet once again
+                    </div>
+                `);
+                return;
+            }
+    
+            const minutes = Math.floor((currentSeconds % 3600) / 60);
+            const seconds = currentSeconds % 60;
+    
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    
+            currentSeconds++; // ⬆ count UP
         }
-
-        const minutes = Math.floor((currentSeconds % 3600) / 60);
-        const seconds = currentSeconds % 60;
-
-        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-
-        currentSeconds++; // ⬆ count UP
+    
+        updateTimer(); // initial render
+        const timerInterval = setInterval(updateTimer, 1000);
     }
-
-    updateTimer(); // initial render
-    const timerInterval = setInterval(updateTimer, 1000);
-}
 
 </script>
 <script>

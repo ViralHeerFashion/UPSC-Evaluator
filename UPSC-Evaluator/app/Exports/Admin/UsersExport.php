@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\{
     WithHeadings,
     WithMapping
 };
+use App\Models\Recharge;
 
 class UsersExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -32,18 +33,23 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
             'Name',
             'Mobile',
             'Email',
-            'Temporary Password'
+            'Temporary Password',
+            'Recharge Amount'
         ];
     }
 
     public function map($user): array
     {
+        $recharge_total = Recharge::where('user_id', $user->id)
+                                ->where('payment_status', 1)
+                                ->sum('amount');
         return [
             date("d-m-Y h:i A", strtotime($user->created_at)),
             $user->name,
             $user->phone,
             $user->email,
-            $user->plain_password
+            $user->plain_password,
+            $recharge_total
         ];
     }
 

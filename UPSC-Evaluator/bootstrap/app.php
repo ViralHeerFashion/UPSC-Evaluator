@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Middleware\{
@@ -42,7 +43,23 @@ return Application::configure(basePath: dirname(__DIR__))
                 return '/admin/dashboard';
             }
             if ($request->is('institute/*') && Auth::guard('institute')->check()) {
-                return '/institute/students';
+                $permission = json_decode(Auth::guard('institute')->user()->permissions);
+                if (is_null($permission)) {
+                    return route('institute.profile');
+                }
+                switch ($permission[0]) {
+                    case 'model_answer':
+                        return route('institute.model-answer');
+        
+                    case 'students':
+                        return route('institute.students');
+        
+                    case 'bulk_pdf_process':
+                        return route('institute.bulk-pdf-process');
+        
+                    default:
+                        return route('institute.profile');
+                }
             }
             return Auth::check()
                 ? '/mains-evaluation/start'
@@ -52,6 +69,18 @@ return Application::configure(basePath: dirname(__DIR__))
             '/webhook/recharge/verify-payment',
             '/recharge/verify-payment'
         ]);
+    })
+    ->withCommands([
+        base_path('app/Console/CommandsBackup'),
+    ])
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('app:delete-institute-expired-evaluation-pdfs')
+                ->dailyAt('19:00')
+                ->timezone('Asia/Kolkata');
+                
+        $schedule->command('app:run-parallel-queue')
+                ->everyMinute()
+                ->withoutOverlapping();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

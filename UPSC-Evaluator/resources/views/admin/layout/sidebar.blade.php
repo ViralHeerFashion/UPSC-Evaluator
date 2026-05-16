@@ -52,6 +52,14 @@
 					</a>
 				</li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.bulk-pdf-process') }}" class="nav-link bulk-pdf-process-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>
+                            Upload Files
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.users') }}" class="nav-link users-link">
                         <i class="nav-icon fas fa-user-graduate"></i>
                         <p>
@@ -59,7 +67,17 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.affiliate') }}" class="nav-link affiliate-link">
+                        <i class="nav-icon fas fa-share-alt"></i>
+                        <p>
+                            Affiliate
+                        </p>
+                    </a>
+                </li>
                 @elseif(request()->is('institute/*') && auth()->guard('institute')->check())
+                @php($permissions = json_decode(auth()->guard('institute')->user()->permissions))
+                @if(!is_null($permissions) && in_array("students", $permissions))
                 <li class="nav-item">
                     <a href="{{ route('institute.students') }}" class="nav-link users-link">
                         <i class="nav-icon fas fa-user-graduate"></i>
@@ -68,6 +86,18 @@
                         </p>
                     </a>
                 </li>
+                @endif
+                @if(!is_null($permissions) && in_array("bulk_pdf_process", $permissions))
+                <li class="nav-item">
+                    <a href="{{ route('institute.bulk-pdf-process') }}" class="nav-link bulk-pdf-process-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>
+                            Upload Files
+                        </p>
+                    </a>
+                </li>
+                @endif
+                @if(!is_null($permissions) && in_array("model_answer", $permissions))
                 <li class="nav-item">
                     <a href="{{ route('institute.model-answer') }}" class="nav-link model-answer-link">
                         <i class="nav-icon fas fa-atom"></i>
@@ -76,6 +106,7 @@
                         </p>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('institute.profile') }}" class="nav-link security-link">
                         <i class="nav-icon fas fa-user-shield"></i>

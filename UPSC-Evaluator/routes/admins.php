@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\{
 	DashboardController,
 	UsersController,
 	InstituteController,
-	TestController
+	TestController,
+	AffiliateController,
+	BulkPDFProcessController
 };
 
 Route::middleware('guest:admin')->group(function () {
@@ -31,6 +33,7 @@ Route::middleware('auth:admin')->group(function(){
 			Route::get('/delete-logo', 'deleteLogo')->name('institute.deleteLogo');
 			Route::get('/{uuid}/student-sheet', 'studentSheet')->name('institute.studentSheet');
 			Route::post('/{institute_id}/upload-sheet', 'uploadSheet')->name('institute.uploadSheet');
+			Route::post('/feature-permission', 'featurePermission')->name('institute.featurePermission');
 
 			Route::get('/{uuid}/recharge/{id?}', 'recharge')->name('institute.recharge');
 			Route::post('/{uuid}/make-recharge', 'makeRecharge')->name('institute.makeRecharge');
@@ -47,6 +50,20 @@ Route::middleware('auth:admin')->group(function(){
 
 			Route::post('/{institute_uuid}/distribute-recharge', 'distributeRecharge')->name('institute.distributeRecharge');
 			Route::get('/{id}/{status}/change-status', 'changeStatus')->name('users.changeStatus');
+		});
+	});
+
+	Route::controller(BulkPDFProcessController::class)->group(function(){
+		Route::prefix('bulk-pdf-process')->group(function(){
+			Route::get('', 'index')->name('bulk-pdf-process');
+		});
+	});
+	
+	Route::controller(AffiliateController::class)->group(function(){
+		Route::prefix('affiliate')->group(function(){
+			Route::get('', 'index')->name('affiliate');
+			Route::post('/create', 'create')->name('affiliate.create');
+			Route::get('/{id}/delete', 'delete')->name('affiliate.delete');
 		});
 	});
 

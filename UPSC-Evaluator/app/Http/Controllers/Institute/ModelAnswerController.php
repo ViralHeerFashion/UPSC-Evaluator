@@ -13,6 +13,14 @@ use App\Models\{
 class ModelAnswerController extends Controller
 {
     private $api_base_url = "https://upsc-ai-evaluator.onrender.com";
+    public function __construct()
+    {
+        $permission = json_decode(Auth::guard('institute')->user()->permissions);
+        if (is_null($permission) || !in_array("model_answer", $permission)) {
+            abort(403);
+        }
+    }
+
     public function index(Request $request)
     {
         $model_answers = InstituteModelAnswer::select('id', 'file_name', 'created_at')

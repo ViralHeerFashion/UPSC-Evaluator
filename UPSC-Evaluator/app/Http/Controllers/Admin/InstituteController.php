@@ -24,7 +24,7 @@ class InstituteController extends Controller
 {
     public function index(Request $request)
     {
-        $institutes = Institute::select('id', 'name', 'phone', 'email', 'logo', 'created_at', 'uuid', 'institute_api_name')
+        $institutes = Institute::select('id', 'name', 'phone', 'email', 'logo', 'created_at', 'uuid', 'institute_api_name', 'permissions')
                                 ->withExists('students');
 
         $institutes = $institutes->orderByDesc('id')
@@ -115,6 +115,15 @@ class InstituteController extends Controller
             'student_sheets',
             'total_students'
         ));
+    }
+
+    public function featurePermission(Request $request)
+    {
+        $institue = Institute::findOrFail($request->institute_id);
+        $institue->permissions = $request->filled('features') ? json_encode($request->features) : null;
+        $institue->save();
+        
+        return back()->with('alert_success', "Permission set successfully...");
     }
 
     public function uploadSheet(int $institute_id, Request $request)

@@ -109,6 +109,10 @@
                                             <div class="icon"><i class="fa-sharp fa-regular fa-envelope"></i></div>
                                             <input type="email" placeholder="Email address (Optional)" name="email" id="email">
                                         </div>
+                                        <div class="input-section mail-section basic-info-container" @if(!is_null($user) && $user->is_registered) style="display: block;" @endif>
+                                            <div class="icon"><i class="fas fa-project-diagram"></i></div>
+                                            <input type="text" placeholder="Referral Code (Optional)" name="affiliate_code" id="affiliate_code">
+                                        </div>
                                         <div class="input-section password-section basic-info-container" @if(!is_null($user) && $user->is_registered) style="display: block;" @endif>
                                             <div class="icon"><i class="fa-sharp fa-regular fa-lock"></i></div>
                                             <input type="password" placeholder="Create Password" name="password" id="password">
@@ -130,7 +134,7 @@
                     </div>
                 </div>
             </div>
-            <a class="close-button" href="href="{{ route('home') }}">
+            <a class="close-button" href="{{ route('home') }}">
                 <i class="fa-sharp fa-regular fa-x"></i>
             </a>
         </div>
@@ -185,6 +189,17 @@
                     name: {
                         required: true
                     },
+                    affiliate_code: {
+                        remote: {
+                            url: "{{ route('student.register.check-affiliate') }}",
+                            type: "GET",
+                            data: {
+                                affiliate_code: function(){
+                                    return $("#affiliate_code").val();
+                                }
+                            }
+                        }
+                    },
                     email: {
                         email: true,
                         remote: {
@@ -209,6 +224,9 @@
                 messages: {
                     phone: {
                         remote: "Account with this number is already exists!"
+                    },
+                    affiliate_code: {
+                        remote: "This Referral code does not exists!"
                     },
                     email: {
                         remote: "This email is already exists!"
