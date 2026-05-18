@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Smalot\PdfParser\Parser;
 use Mpdf\Mpdf;
 use Mpdf\Config\ConfigVariables;
@@ -18,13 +19,15 @@ use App\Models\{
     GapAnalysisPriorityFixes,
     ModelAnswer,
     Wallet,
-    CustomModelAnswer
+    CustomModelAnswer,
+    Recharge
 };
 
 class MainsEvaluationController extends Controller
 {
-    private $per_page_evaluation_charge = 1.2;
+    private $per_page_evaluation_charge = 2.5;
     private $api_base_url = "https://upsc-ai-evaluator.onrender.com";
+    private $is_pdf_based_evaluation = true;
     public function index(Request $request, string $process_id = null)
     {
         $student_answer_sheet = null;
@@ -45,9 +48,13 @@ class MainsEvaluationController extends Controller
             ->where('user_id', Auth::id())
             ->first();
 
+            if ($student_answer_sheet->is_pdf_based_evaluation) {
+                goto skipQuestionRendering;
+            }
+
             $questions = [];
             foreach ($student_answer_sheet->student_answer_evaluation as $key => $student_answer_evaluation) {
-                 array_push($questions, array(
+                array_push($questions, array(
                     'marks_awarded' => $student_answer_evaluation->marks_awarded,
                     'max_marks' => $student_answer_evaluation->max_marks
                 ));
@@ -57,6 +64,8 @@ class MainsEvaluationController extends Controller
                 'questions',
                 'process_id'
             ))->render();
+
+            skipQuestionRendering:
 
             if (is_null($student_answer_sheet)) {
                 abort(404);
@@ -117,6 +126,7 @@ class MainsEvaluationController extends Controller
         $student_answer_sheet->evaluation_charge = $evaluation_charge;
         $student_answer_sheet->subject_id = 1;
         $student_answer_sheet->language_id = $request->language;
+        $student_answer_sheet->is_pdf_based_evaluation = $this->is_pdf_based_evaluation ? 1 : 0;
         $student_answer_sheet->save();
 
         $ch = curl_init();
@@ -128,8 +138,9 @@ class MainsEvaluationController extends Controller
             'institute_name' => !empty(Auth::user()->institute) ? Auth::user()->institute->institute_api_name : null
         ];
 
+        $api_endpoint = $this->is_pdf_based_evaluation ? "/api/evaluate-annotated" : "/api/evaluate";
         curl_setopt_array($ch, [
-            CURLOPT_URL => $this->api_base_url."/api/evaluate",
+            CURLOPT_URL => $this->api_base_url.$api_endpoint,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_TIMEOUT => 600,
@@ -158,7 +169,7 @@ class MainsEvaluationController extends Controller
             'message' => "Task generated successfully. Please wait for evaluation.",
             'task_id' => $student_answer_sheet->task_id,
             // 'loader_second' => $total_page_available_in_pdf > 8 ? $total_page_available_in_pdf * 4.5 : 40
-            'loader_second' => 420
+            'loader_second' => 600
         ]);
 
     }
@@ -167,7 +178,10 @@ class MainsEvaluationController extends Controller
     {
         $student_answer_sheet = StudentAnswerSheet::where('task_id', $task_id)->first();
         if(!is_null($student_answer_sheet)){
-            $url = $this->api_base_url."/api/results/".$student_answer_sheet->task_id;
+
+            $api_endpoint = $this->is_pdf_based_evaluation ? "/api/annotated-pdf/" : "/api/results/";
+
+            $url = $this->api_base_url.$api_endpoint.$student_answer_sheet->task_id;
             
             $api_status = "PENDING";
 
@@ -184,13 +198,22 @@ class MainsEvaluationController extends Controller
                 CURLOPT_TIMEOUT_MS => 1200000
             ]);
 
-            $response = json_decode(curl_exec($ch));
+            if (!$this->is_pdf_based_evaluation) {
+                $response = json_decode(curl_exec($ch));
+            } else {
+                $response = curl_exec($ch);
+            }
+            $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
             curl_close($ch);
 
             // $response = json_decode(
             //     Storage::get('/model_answer/evaluation.json')
             // );
 
+            if ($this->is_pdf_based_evaluation) {
+                return $this->handlePdfResponse($response, $content_type, $student_answer_sheet);
+            }
+ 
             $api_status = isset($response->result) && !empty($response->result) ? "SUCCESS" : $response->status;
 
             if($api_status == "SUCCESS") {
@@ -217,40 +240,59 @@ class MainsEvaluationController extends Controller
                 'process_task' => true,
                 'message' => "Your file is being process"
             ]);
-            
-
-            /*do {
-                curl_setopt_array($ch, [
-                    CURLOPT_URL => $url,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_HTTPHEADER => [
-                        "X-API-KEY: 1_Vm83n4ZJrVTMJGgVPqmXZGWKx-d0MlvEk3i6frwEE"
-                    ],
-                    CURLOPT_TIMEOUT => 1200,
-                    CURLOPT_CONNECTTIMEOUT => 60,
-                    CURLOPT_TIMEOUT_MS => 1200000
-                ]);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-                $response = json_decode(curl_exec($ch));
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
-
-                $api_status = isset($response->result) && !empty($response->result) ? "SUCCESS" : $response->status;
-                if($api_status == "SUCCESS") {
-                    $student_answer_sheet->api_response = json_encode($response);
-                    $student_answer_sheet->save();
-                } else {
-                    sleep(10);   
-                }
-            } while (!in_array($api_status, ["SUCCESS", "FAILURE"]));*/
         }
 
         return response()->json([
             'success' => false,
             'message' => "Task ID not found"
         ]);
+    }
+
+    private function handlePdfResponse($response, $content_type, $student_answer_sheet)
+    {
+        $send_response = [];
+        if ($content_type == 'application/pdf') {
+
+            $safe_name = Str::slug(pathinfo($student_answer_sheet->file_name, PATHINFO_FILENAME));
+            $file_name = 'evaluate_' . time() . '_' . $safe_name . '.pdf';
+            $file_path = 'student_answer_sheet_output/' . $file_name;
+            Storage::disk('public')->put(
+                'student_answer_sheet_output/' . $file_name,
+                $response
+            );
+            $student_answer_sheet->is_evaluated = 1;
+            $student_answer_sheet->pdf_evaluation_status = 1;
+            $student_answer_sheet->success_file_path = $file_path;
+            $student_answer_sheet->save();
+
+            $this->manageUserWallet($student_answer_sheet, );
+            
+            $send_response = [
+                'success' => true,
+                'is_pdf_based_evaluation' => true,
+                'pdf_path' => Storage::disk('public')->url($file_path),
+                'message' => "Answer Sheet has been processed successfully..."
+            ];
+        } elseif($content_type == 'application/json'){
+            $response = json_decode($response);
+            if ($response->status == "FAILURE") {
+                $student_answer_sheet->pdf_evaluation_status = 2;
+                $student_answer_sheet->api_response = json_encode($response);
+                $student_answer_sheet->save();
+
+                $send_response = [
+                    'success' => false,
+                    'message' => "Something went wrong while processing your answersheet. Please try again later or contact our support team."
+                ];
+            } else {
+                $send_response = [
+                    'success' => false,
+                    'process_task' => true,
+                    'message' => "Your file is being process"
+                ];
+            }
+        }
+        return response()->json($send_response);
     }
 
     private function storeEvaluation($student_answer_sheet, $response)
@@ -370,6 +412,35 @@ class MainsEvaluationController extends Controller
             ))->render(),
             'student_answer_sheet_id' => $student_answer_sheet->id
         ]);
+    }
+
+    private function manageUserWallet($student_answer_sheet)
+    {
+        $wallet = new Wallet;
+        $wallet->user_id = Auth::id();
+        $wallet->student_answersheet_id = $student_answer_sheet->id;
+        $wallet->amount = -$student_answer_sheet->evaluation_charge;
+        $wallet->save();
+
+        $wallet_total = $this->getWalleTotal();
+
+        if (Auth::user()->is_outside_institute_reference && Auth::user()->restart_wallet > 0 && $wallet_total < 15) {
+            $recharge = new Recharge;
+            $recharge->user_id = Auth::id();
+            $recharge->amount = 15;
+            $recharge->order_id = date("Ymd")."R";
+            $recharge->razorpay_order_id = "Welcome bonus ".Auth::user()->restart_wallet;
+            $recharge->payment_status = 1;
+            $recharge->save();
+
+            $wallet = new Wallet;
+            $wallet->user_id = $recharge->user_id;
+            $wallet->recharge_id = $recharge->id;
+            $wallet->amount = 15;
+            $wallet->save();
+
+            Auth::user()->decrement('restart_wallet');
+        }
     }
 
     public function makeEvaluate(Request $request)

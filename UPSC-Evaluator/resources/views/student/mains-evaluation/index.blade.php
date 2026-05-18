@@ -358,7 +358,11 @@
                 <div class="inner">
                     <div class="answers-container" id="answers-container">
                         @if(!is_null($student_answer_sheet))
-                            @include('student.mains-evaluation.partials.questions')
+                            @if($student_answer_sheet->is_pdf_based_evaluation)
+                                <embed src="{{ Storage::disk('public')->url($student_answer_sheet->success_file_path) }}" type="application/pdf" width="100%" height="500">
+                            @else
+                                @include('student.mains-evaluation.partials.questions')
+                            @endif
                         @else
                             <img src="{{ asset('public\images\chat-img.png') }}?v=1" alt="Upload your PDF to get instant, detailed feedback.">
                         @endif
@@ -385,6 +389,8 @@
 <script>
     var ajaxInProgress = false;
     var cancelTaskPolling = false;
+    var evaluationCompleted = false;
+    var timerInterval = null;
     @if(!is_null($question_list))
     $(".question-redirect-container").show();
     $(".question-redirect-container .link-container").html(`{!! $question_list !!}`);
@@ -489,7 +495,7 @@
                 return true;
             }
 
-            var maxBytes = parseFloat(maxMB) * 1024 * 1024; // convert MB to bytes
+            var maxBytes = parseFloat(maxMB) * 1024 * 1024;
             for (var i = 0; i < element.files.length; i++) {
                 if (element.files[i].size > maxBytes) {
                     return false;
@@ -606,7 +612,7 @@
 
                                 <div class="loader-title">Evaluting your Answer Sheet...</div>
                                 <div class="loader-desc">
-                                    Your report will be ready within approximately 7 minutes.
+                                    Your report will be ready within approximately 10 minutes.
                                     This won’t take long.
                                 </div>
 
@@ -617,41 +623,6 @@
                         `);
                         
                         $("#answers-container").show();
-                        
-                        /*function startLoader(duration) {
-                            $('#completionMessage').css('opacity', '0');
-                        
-                            let progress = 0;
-                            let remaining = duration;
-                        
-                            $('#loaderProgress').css('width', '0%');
-                            $('#percentage').text('0%');
-                            $('#remainingTime').text(remaining + 's remaining');
-                        
-                            if (interval) clearInterval(interval);
-                        
-                            const progressPerSecond = 100 / duration;
-                        
-                            interval = setInterval(function () {
-                        
-                                progress += progressPerSecond;
-                                remaining -= 1;
-                        
-                                if (progress >= 100 || remaining <= 0) {
-                                    progress = 100;
-                                    remaining = 0;
-                        
-                                    clearInterval(interval);
-                                    $('#completionMessage').css('opacity', '1');
-                                }
-                        
-                                $('#loaderProgress').css('width', progress + '%');
-                                $('#percentage').text(Math.round(progress) + '%');
-                                $('#remainingTime').text(remaining + 's remaining');
-                        
-                            }, 1000);
-                        }
-                        startLoader(response.loader_second);*/
 
                         startTimer(response.loader_second);
 
@@ -672,9 +643,15 @@
                                 contentType: false
                             }).then(function (response) {
                                 if (response.success) {
+                                    stopTimer();
                                     ajaxInProgress = false;
+                                    evaluationCompleted = true;
                                     toastr.success(response.message, 'Success');
-                                    typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations, response.question_shortcut);
+                                    if ("is_pdf_based_evaluation" in response && response.is_pdf_based_evaluation) {
+                                        $("#answers-container").html(`<embed src="`+response.pdf_path+`" type="application/pdf" width="100%" height="500">`);
+                                    } else {
+                                        typeWriterHTML(response.view, "answers-container", 0, renderDashboardAnimations, response.question_shortcut);                                        
+                                    }
                                     $('.upload-file-btn').replaceWith(`
                                         <a href="{{ route('student.mains-evaluation') }}" class="refresh-btn">
                                             New Evaluation
@@ -690,7 +667,6 @@
                                     } else {
                                         ajaxInProgress = false;
                                         toastr.error("Max retries reached. Please try again later.", 'Error');
-                                        // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                                         $("#answers-container").html(`
                                             <div class="alert alert-danger" role="alert">
                                                 <h4 class="alert-heading">Error!</h4>
@@ -701,7 +677,6 @@
                                 } else {
                                     ajaxInProgress = false;
                                     toastr.error("Something went wrong please contact our support team.", 'Error');
-                                    // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                                     $("#answers-container").html(`
                                         <div class="alert alert-danger" role="alert">
                                             <h4 class="alert-heading">Error!</h4>
@@ -712,7 +687,6 @@
                             }).fail(function () {
                                 ajaxInProgress = false;
                                 toastr.error("Something went wrong please contact our support team.", 'Error');
-                                // $("#answers-container").html("<img src='{{ asset('public/images/chat-img.png') }}?v=1' alt='Upload your PDF to get instant, detailed feedback.'>");
                                 $("#answers-container").html(`
                                     <div class="alert alert-danger" role="alert">
                                         <h4 class="alert-heading">Error!</h4>
@@ -779,14 +753,14 @@
 
     function startTimer(maxSeconds) {
 
-        let currentSeconds = 0; // ⬅ start from 0
-    
+        let currentSeconds = 0;
+        clearInterval(timerInterval);
         function updateTimer() {
             if (
                 currentSeconds > maxSeconds ||
                 !document.getElementById('minutes')
             ) {
-                clearInterval(timerInterval);
+                stopTimer();
                 cancelTaskPolling = true;
                 $("#answers-container").html(`
                     <div class="alert alert-danger" role="alert">
@@ -794,26 +768,34 @@
                         Something went wrong with connection. Please upload your answer sheet once again
                     </div>
                 `);
+
                 return;
             }
-    
+
             const minutes = Math.floor((currentSeconds % 3600) / 60);
             const seconds = currentSeconds % 60;
-    
-            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-    
-            currentSeconds++; // ⬆ count UP
-        }
-    
-        updateTimer(); // initial render
-        const timerInterval = setInterval(updateTimer, 1000);
-    }
 
+            document.getElementById('minutes').textContent =
+                String(minutes).padStart(2, '0');
+
+            document.getElementById('seconds').textContent =
+                String(seconds).padStart(2, '0');
+
+            currentSeconds++;
+        }
+
+        updateTimer();
+
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+    function stopTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
 </script>
 <script>
     
-    function typeWriterHTML(html, elementId, speed = 50, callback = null, question_redirection_html) {
+    function typeWriterHTML(html, elementId, speed = 50, callback = null, question_redirection_html) {        
         const element = document.getElementById(elementId);
         element.innerHTML = "";
 

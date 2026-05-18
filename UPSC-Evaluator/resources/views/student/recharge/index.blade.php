@@ -166,7 +166,7 @@
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                                    <span>Evaluates up to 40 pages</span>
+                                    <span>Evaluates up to 19 pages</span>
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-star"></i></div>
@@ -208,7 +208,7 @@
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-copy"></i></div>
-                                    <span>Evaluates up to <span class="bonus-highlight">320 pages</span></span>
+                                    <span>Evaluates up to <span class="bonus-highlight">153 pages</span></span>
                                 </li>
                             </ul>
                         </div>
@@ -245,7 +245,7 @@
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-copy"></i></div>
-                                    <span>Evaluates up to <span class="bonus-highlight">1042 pages</span></span>
+                                    <span>Evaluates up to <span class="bonus-highlight">500 pages</span></span>
                                 </li>
                             </ul>
                         </div>
@@ -282,7 +282,7 @@
                                 </li>
                                 <li class="feature-item">
                                     <div class="feature-icon"><i class="fas fa-copy"></i></div>
-                                    <span>Evaluates up to <span class="bonus-highlight">1685 pages</span></span>
+                                    <span>Evaluates up to <span class="bonus-highlight">809 pages</span></span>
                                 </li>
                             </ul>
                         </div>

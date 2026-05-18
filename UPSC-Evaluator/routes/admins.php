@@ -8,7 +8,8 @@ use App\Http\Controllers\Admin\{
 	InstituteController,
 	TestController,
 	AffiliateController,
-	BulkPDFProcessController
+	BulkPDFProcessController,
+	PrepaidWalletController
 };
 
 Route::middleware('guest:admin')->group(function () {
@@ -64,6 +65,13 @@ Route::middleware('auth:admin')->group(function(){
 			Route::get('', 'index')->name('affiliate');
 			Route::post('/create', 'create')->name('affiliate.create');
 			Route::get('/{id}/delete', 'delete')->name('affiliate.delete');
+		});
+	});
+
+	Route::controller(PrepaidWalletController::class)->group(function(){
+		Route::prefix('prepaid-wallets')->group(function(){
+			Route::get('/', 'index')->name('prepaid-wallet');
+			Route::post('/make-paid', 'makePaid')->name('makePaid');
 		});
 	});
 

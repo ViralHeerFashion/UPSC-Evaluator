@@ -42,7 +42,11 @@
                         </span>
                     </div>
                 </a>
-                <a href="{{ route('student.mains-evaluation.download-evaluation', ['task_id' => $sheet->task_id]) }}" class="btn btn-default download-btn"><i class="fa fa-download" aria-hidden="true"></i> <span>Download</span></a>
+                @if($sheet->is_pdf_based_evaluation)
+                <a href="{{ Storage::disk('public')->url($sheet->success_file_path) }}" class="btn btn-default download-btn mb-3" download><i class="fa fa-download" aria-hidden="true"></i> <span>Download</span></a>
+                @else
+                <a href="{{ route('student.mains-evaluation.download-evaluation', ['task_id' => $sheet->task_id]) }}" class="btn btn-default download-btn mb-3"><i class="fa fa-download" aria-hidden="true"></i> <span>Download</span></a>
+                @endif
             </div>
             @endforeach
         </div>

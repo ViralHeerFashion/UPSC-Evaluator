@@ -427,7 +427,7 @@
                                                     <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+10% Bonus</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">320 pages</span></p>
+                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">153 pages</span></p>
                                                 </li>
                                             </ul>
                                         </div>
@@ -466,7 +466,7 @@
                                                     <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+25% Bonus</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">1042 pages</span></p>
+                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">500 pages</span></p>
                                                 </li>
                                             </ul>
                                         </div>
@@ -504,7 +504,7 @@
                                                     <i class="fa-regular fa-circle-check"></i> <span class="bonus-highlight">+35% Bonus</span>
                                                 </li>
                                                 <li>
-                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">1685 pages</span></p>
+                                                    <i class="fa-regular fa-circle-check"></i> <p>Evaluates up to <span class="bonus-highlight">809 pages</span></p>
                                                 </li>
                                             </ul>
                                         </div>

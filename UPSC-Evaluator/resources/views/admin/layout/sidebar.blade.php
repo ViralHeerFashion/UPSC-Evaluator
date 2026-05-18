@@ -75,6 +75,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.prepaid-wallet') }}" class="nav-link prepaid-wallet-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>
+                            Prepaid Wallet
+                        </p>
+                    </a>
+                </li>
                 @elseif(request()->is('institute/*') && auth()->guard('institute')->check())
                 @php($permissions = json_decode(auth()->guard('institute')->user()->permissions))
                 @if(!is_null($permissions) && in_array("students", $permissions))

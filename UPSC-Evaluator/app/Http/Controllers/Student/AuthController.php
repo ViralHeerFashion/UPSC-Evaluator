@@ -24,7 +24,7 @@ class AuthController extends Controller
     public function __construct(Request $request)
     {
         if ($request->filled('institute')) {
-            $institute = Institute::select('logo')
+            $institute = Institute::select('id', 'logo')
                                         ->where('uuid', $request->institute)
                                         ->first();
             Cookie::queue('institute', json_encode($institute), 525600);
@@ -145,11 +145,12 @@ class AuthController extends Controller
                  * then we will give 15 rs prepaid we need to collect this amount to institute
                  */
                 if($request->hasCookie('institute')) {
-                    $institute_logo = json_decode($request->cookie('institute'));
-                    $institute_id = Institute::where('logo', $institute_logo->logo)->value('id');
-                    $user->institute_id = $institute_id;
+                    $institute = json_decode($request->cookie('institute'));
+                    $institute_data = Institute::find($institute->id, ['id']);
+                    $user->institute_id = $institute_data->id;
                     $user->restart_wallet = 2;
                     $user->is_outside_institute_reference = 1;
+                    $user->is_wallet_referred_amount_received = 0;
                     $user->save();
 
                     $recharge = new Recharge;
